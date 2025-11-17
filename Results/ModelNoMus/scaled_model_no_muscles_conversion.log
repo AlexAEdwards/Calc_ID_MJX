@@ -1,0 +1,189 @@
+2025-10-17 10:24:07.010 | INFO     | myoconverter.O2MPipeline:O2MPipeline:52 - Start the conversion pipeline for : scaled_model_no_muscles
+2025-10-17 10:24:07.010 | INFO     | myoconverter.O2MPipeline:coordinate_kwargs:75 - Coordinate the input configurations, remove conflicts.
+2025-10-17 10:24:07.010 | INFO     | myoconverter.O2MPipeline:coordinate_kwargs:86 -    Checking configurations for step 2 conversion.
+2025-10-17 10:24:07.010 | INFO     | myoconverter.O2MPipeline:coordinate_kwargs:101 -        Configure of previous run does not exist, set osim_data_overwrite to TRUE.
+2025-10-17 10:24:07.010 | INFO     | myoconverter.O2MPipeline:coordinate_kwargs:103 -        All good now.
+2025-10-17 10:24:07.011 | INFO     | myoconverter.conversion_steps.O2MSteps:__init__:84 - Given OpenSim model file: /home/mobl/Documents/Classwork/BioSimClass/ConvertOpenSimToMJX/ModelsToConvert/scaled_model_no_muscles.osim
+2025-10-17 10:24:07.011 | INFO     | myoconverter.conversion_steps.O2MSteps:__init__:85 - Reading mesh files from folder /home/mobl/Documents/Classwork/BioSimClass/ConvertOpenSimToMJX/ModelsToConvert/ModelNoMus/FullBodyModel-4.0/Geometry
+2025-10-17 10:24:07.011 | INFO     | myoconverter.conversion_steps.O2MSteps:__init__:86 - Converted model will be saved in folder /home/mobl/Documents/Classwork/BioSimClass/ConvertOpenSimToMJX/Results/ModelNoMus
+2025-10-17 10:24:07.011 | INFO     | myoconverter.conversion_steps.O2MSteps:PipelineExecution:124 - Started step 1 conversion - cvt1.
+2025-10-17 10:24:07.130 | INFO     | myoconverter.xml.converter:convert:40 - Commencing the conversion procedure!
+2025-10-17 10:24:07.130 | INFO     | myoconverter.xml.converter:_parse_ground:138 - Parsing the ground
+2025-10-17 10:24:07.130 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Ground] ground
+2025-10-17 10:24:07.131 | INFO     | myoconverter.xml.converter:_parse_constraints:147 - Starting to parse constraints
+2025-10-17 10:24:07.131 | INFO     | myoconverter.xml.parsers:parse:59 - [ConstraintParser: CoordinateCouplerConstraint] patellofemoral_knee_angle_r_con
+2025-10-17 10:24:07.131 | INFO     | myoconverter.xml.parsers:parse:59 - [ConstraintParser: CoordinateCouplerConstraint] patellofemoral_knee_angle_l_con
+2025-10-17 10:24:07.131 | INFO     | myoconverter.xml.converter:_parse_bodies_and_joints:80 - Starting to parse bodies, wrapping objects, and joints
+2025-10-17 10:24:07.132 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] pelvis
+2025-10-17 10:24:07.138 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] Gmax1_at_pelvis_r
+2025-10-17 10:24:07.139 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] Gmax2_at_pelvis_r
+2025-10-17 10:24:07.139 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] Gmax3_at_pelvis_r
+2025-10-17 10:24:07.139 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] Gmax1_at_pelvis_l
+2025-10-17 10:24:07.139 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] Gmax2_at_pelvis_l
+2025-10-17 10:24:07.139 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] Gmax3_at_pelvis_l
+2025-10-17 10:24:07.139 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] PS_at_brim_r
+2025-10-17 10:24:07.139 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] PS_at_brim_l
+2025-10-17 10:24:07.139 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] IL_at_brim_r
+2025-10-17 10:24:07.140 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] IL_at_brim_l
+2025-10-17 10:24:07.140 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: CustomJoint] ground_pelvis
+2025-10-17 10:24:07.140 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] femur_r
+2025-10-17 10:24:07.144 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] Gastroc_at_condyles_r
+2025-10-17 10:24:07.144 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] KnExt_at_fem_r
+2025-10-17 10:24:07.144 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AB_at_femshaft_r
+2025-10-17 10:24:07.144 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AL_at_femshaft_r
+2025-10-17 10:24:07.144 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AMprox_at_femshaft_r
+2025-10-17 10:24:07.144 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AMmid_at_femshaft_r
+2025-10-17 10:24:07.145 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AMdist_at_femshaft_r
+2025-10-17 10:24:07.145 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AMisch_at_condyles_r
+2025-10-17 10:24:07.145 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] PECT_at_femshaft_r
+2025-10-17 10:24:07.145 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: CustomJoint] hip_r
+2025-10-17 10:24:07.146 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] tibia_r
+2025-10-17 10:24:07.151 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] GasLat_at_shank_r
+2025-10-17 10:24:07.151 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] GasMed_at_shank_r
+2025-10-17 10:24:07.151 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] GR_at_condyles_r
+2025-10-17 10:24:07.151 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] SM_at_condyles_r
+2025-10-17 10:24:07.151 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] ST_at_condyles_r
+2025-10-17 10:24:07.151 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] BF_at_gastroc_r
+2025-10-17 10:24:07.151 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: CustomJoint] walker_knee_r
+2025-10-17 10:24:07.331 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] talus_r
+2025-10-17 10:24:07.334 | WARNING  | myoconverter.xml.bodies.utils:get_rgba:94 - Setting mesh talus_r_geom_1 to invisible
+2025-10-17 10:24:07.334 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: PinJoint] ankle_r
+2025-10-17 10:24:07.334 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] calcn_r
+2025-10-17 10:24:07.342 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: PinJoint] subtalar_r
+2025-10-17 10:24:07.342 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] toes_r
+2025-10-17 10:24:07.349 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: PinJoint] mtp_r
+2025-10-17 10:24:07.349 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] patella_r
+2025-10-17 10:24:07.351 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: CustomJoint] patellofemoral_r
+2025-10-17 10:24:07.483 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] femur_l
+2025-10-17 10:24:07.487 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] Gastroc_at_condyles_l
+2025-10-17 10:24:07.487 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] KnExt_at_fem_l
+2025-10-17 10:24:07.487 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AB_at_femshaft_l
+2025-10-17 10:24:07.487 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AL_at_femshaft_l
+2025-10-17 10:24:07.487 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AMprox_at_femshaft_l
+2025-10-17 10:24:07.487 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AMmid_at_femshaft_l
+2025-10-17 10:24:07.488 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AMdist_at_femshaft_l
+2025-10-17 10:24:07.488 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] AMisch_at_condyles_l
+2025-10-17 10:24:07.488 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] PECT_at_femshaft_l
+2025-10-17 10:24:07.488 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: CustomJoint] hip_l
+2025-10-17 10:24:07.489 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] tibia_l
+2025-10-17 10:24:07.493 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] GasLat_at_shank_l
+2025-10-17 10:24:07.493 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] GasMed_at_shank_l
+2025-10-17 10:24:07.493 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] GR_at_condyles_l
+2025-10-17 10:24:07.493 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] SM_at_condyles_l
+2025-10-17 10:24:07.493 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] ST_at_condyles_l
+2025-10-17 10:24:07.493 | INFO     | myoconverter.xml.parsers:parse:59 - [WrapObjectParser: WrapCylinder] BF_at_gastroc_l
+2025-10-17 10:24:07.494 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: CustomJoint] walker_knee_l
+2025-10-17 10:24:07.663 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] talus_l
+2025-10-17 10:24:07.666 | WARNING  | myoconverter.xml.bodies.utils:get_rgba:94 - Setting mesh talus_l_geom_1 to invisible
+2025-10-17 10:24:07.666 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: PinJoint] ankle_l
+2025-10-17 10:24:07.666 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] calcn_l
+2025-10-17 10:24:07.673 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: PinJoint] subtalar_l
+2025-10-17 10:24:07.673 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] toes_l
+2025-10-17 10:24:07.680 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: PinJoint] mtp_l
+2025-10-17 10:24:07.681 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] patella_l
+2025-10-17 10:24:07.682 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: CustomJoint] patellofemoral_l
+2025-10-17 10:24:07.813 | INFO     | myoconverter.xml.parsers:parse:59 - [BodyParser: Body] torso
+2025-10-17 10:24:08.407 | INFO     | myoconverter.xml.parsers:parse:59 - [JointParser: CustomJoint] back
+2025-10-17 10:24:08.407 | INFO     | myoconverter.xml.converter:_parse_forces:156 - Starting to parse forces, including path points and wrap paths
+2025-10-17 10:24:08.408 | INFO     | myoconverter.xml.parsers:parse:59 - [ForceParser: CoordinateActuator] lumbar_ext
+2025-10-17 10:24:08.408 | INFO     | myoconverter.xml.parsers:parse:59 - [ForceParser: CoordinateActuator] lumbar_bend
+2025-10-17 10:24:08.408 | INFO     | myoconverter.xml.parsers:parse:59 - [ForceParser: CoordinateActuator] lumbar_rot
+2025-10-17 10:24:08.408 | INFO     | myoconverter.xml.converter:_parse_markers:165 - Starting to parse markers
+2025-10-17 10:24:08.408 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RASI
+2025-10-17 10:24:08.408 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LASI
+2025-10-17 10:24:08.408 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] CLAV
+2025-10-17 10:24:08.408 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RSHO
+2025-10-17 10:24:08.408 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LSHO
+2025-10-17 10:24:08.408 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RKNE
+2025-10-17 10:24:08.408 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RKNEmed
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RTHI
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RTHI2
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RTHI3
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RANK
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RANKmed
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RTIB
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RTIB2
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RTIB3
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RTOE
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RHEE
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RLatFoot
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LKNE
+2025-10-17 10:24:08.409 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LKNEmed
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LTHI
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LTHI2
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LTHI3
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LANK
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LANKmed
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LTIB
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LTIB2
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LTIB3
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LTOE
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LHEE
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LLatFoot
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RPSI
+2025-10-17 10:24:08.410 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] LPSI
+2025-10-17 10:24:08.411 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] SACR
+2025-10-17 10:24:08.411 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] C7
+2025-10-17 10:24:08.411 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] T10
+2025-10-17 10:24:08.411 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] RBAK
+2025-10-17 10:24:08.411 | INFO     | myoconverter.xml.parsers:parse:59 - [MarkerParser: Marker] STRN
+2025-10-17 10:24:08.411 | INFO     | myoconverter.xml.converter:_set_keyframe:176 - Setting the default keyframe
+2025-10-17 10:24:08.412 | INFO     | myoconverter.xml.converter:convert:65 - Writing the converted model into /home/mobl/Documents/Classwork/BioSimClass/ConvertOpenSimToMJX/Results/ModelNoMus/scaled_model_no_muscles_cvt1.xml
+2025-10-17 10:24:08.412 | INFO     | myoconverter.xml.converter:convert:68 - All good, conversion procedure is finished
+2025-10-17 10:24:08.412 | INFO     | myoconverter.conversion_steps.O2MSteps:PipelineExecution:126 - Finished step 1 conversion - cvt1.
+2025-10-17 10:24:08.412 | INFO     | myoconverter.conversion_steps.O2MSteps:PipelineExecution:132 - Started step 1 validation - val1.
+2025-10-17 10:24:08.413 | INFO     | myoconverter.conversion_steps.O2MStep1:vlt1_forwardKinematicsValidation:123 - Extract marker names (as endpoints) from osim model
+2025-10-17 10:24:08.421 | INFO     | myoconverter.conversion_steps.O2MStep1:vlt1_forwardKinematicsValidation:145 - Get the endpoint locations by meshing the joint angles within the range limits
+2025-10-17 10:24:09.403 | INFO     | myoconverter.conversion_steps.O2MStep1:vlt1_forwardKinematicsValidation:152 - Check if the joint motion ranges are the same between Osim and Mjc models
+2025-10-17 10:24:09.403 | INFO     | myoconverter.conversion_steps.O2MStep1:vlt1_forwardKinematicsValidation:172 - Finished with joint operation range check. Saved Results
+2025-10-17 10:24:09.403 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:180 - Plot each endpoint's location errors in x, y, z.
+2025-10-17 10:24:09.403 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RASI
+2025-10-17 10:24:09.462 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LASI
+2025-10-17 10:24:09.567 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : CLAV
+2025-10-17 10:24:09.621 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RSHO
+2025-10-17 10:24:09.674 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LSHO
+2025-10-17 10:24:09.727 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RKNE
+2025-10-17 10:24:09.781 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RKNEmed
+2025-10-17 10:24:09.833 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RTHI
+2025-10-17 10:24:09.887 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RTHI2
+2025-10-17 10:24:09.940 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RTHI3
+2025-10-17 10:24:10.065 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RANK
+2025-10-17 10:24:10.118 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RANKmed
+2025-10-17 10:24:10.171 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RTIB
+2025-10-17 10:24:10.224 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RTIB2
+2025-10-17 10:24:10.277 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RTIB3
+2025-10-17 10:24:10.329 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RTOE
+2025-10-17 10:24:10.382 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RHEE
+2025-10-17 10:24:10.435 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RLatFoot
+2025-10-17 10:24:10.549 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LKNE
+2025-10-17 10:24:10.601 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LKNEmed
+2025-10-17 10:24:10.654 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LTHI
+2025-10-17 10:24:10.707 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LTHI2
+2025-10-17 10:24:10.760 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LTHI3
+2025-10-17 10:24:10.812 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LANK
+2025-10-17 10:24:10.865 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LANKmed
+2025-10-17 10:24:10.976 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LTIB
+2025-10-17 10:24:11.028 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LTIB2
+2025-10-17 10:24:11.081 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LTIB3
+2025-10-17 10:24:11.134 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LTOE
+2025-10-17 10:24:11.187 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LHEE
+2025-10-17 10:24:11.239 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LLatFoot
+2025-10-17 10:24:11.291 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RPSI
+2025-10-17 10:24:11.343 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : LPSI
+2025-10-17 10:24:11.453 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : SACR
+2025-10-17 10:24:11.505 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : C7
+2025-10-17 10:24:11.558 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : T10
+2025-10-17 10:24:11.611 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : RBAK
+2025-10-17 10:24:11.664 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:192 - Endpoint : STRN
+2025-10-17 10:24:11.717 | INFO     | myoconverter.conversion_steps.O2MStep1:endPointsPlot:256 - Generate overall error Bar plot
+2025-10-17 10:24:11.880 | INFO     | myoconverter.conversion_steps.O2MSteps:PipelineExecution:142 - Finished step 1 validation - val1.
+2025-10-17 10:24:11.880 | INFO     | myoconverter.conversion_steps.O2MSteps:PipelineExecution:175 - xxx_cvt2 model does not exist, start from xxx_cvt1
+2025-10-17 10:24:11.930 | INFO     | myoconverter.conversion_steps.O2MStep2:__init__:102 - Overwrite command confirmed
+2025-10-17 10:24:11.930 | INFO     | myoconverter.conversion_steps.O2MStep2:__init__:103 - Generating MA data from OsimMuscleStates, may take a while
+2025-10-17 10:24:11.930 | INFO     | myoconverter.optimization.model_states.OsimMuscleStates:getWrapingCoords:65 - Extract the joints that muscle wrapped over from Osim model
+2025-10-17 10:24:11.931 | INFO     | myoconverter.optimization.model_states.OsimMuscleStates:getMomentArms:163 - Calculate moment arms from Osim model
+2025-10-17 10:24:11.931 | INFO     | myoconverter.conversion_steps.O2MStep2:__init__:173 - Finished cvt2 initialize
+2025-10-17 10:24:11.931 | INFO     | myoconverter.conversion_steps.O2MSteps:PipelineExecution:198 - Started step 2 conversion - cvt2.
+2025-10-17 10:24:11.931 | INFO     | myoconverter.conversion_steps.O2MStep2:optMomentArms:191 - Running MA optimization with the given muscle list one by one
+2025-10-17 10:24:11.931 | INFO     | myoconverter.conversion_steps.O2MSteps:PipelineExecution:200 - Finished step 2 conversion - cvt2.
+2025-10-17 10:24:11.931 | INFO     | myoconverter.conversion_steps.O2MSteps:PipelineExecution:206 - Started step 2 validation - val2.
