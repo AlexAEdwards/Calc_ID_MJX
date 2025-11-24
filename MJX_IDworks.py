@@ -1,4 +1,3 @@
-
 from pyexpat import model
 import mujoco  # Only needed for visualization code at bottom
 from mujoco import mjx
@@ -374,6 +373,185 @@ def calculate_knee_coupled_accelerations(qacc_matrix, qpos_matrix, qvel_matrix):
         qacc_matrix[:, idx] = d2q_dtheta2 * (theta_dot_l**2) + dq_dtheta * theta_ddot_l
 
     return qacc_matrix
+
+
+def calculate_coupled_coordinates_automated(qpos_matrix, qvel_matrix, qacc_matrix, xml_path):
+    """
+    Automatically extract polynomial constraints from XML model and populate coupled coordinates.
+    
+    This function reads the <equality> section from the MuJoCo XML file, extracts polynomial
+    constraints for coupled joints, and calculates the position, velocity, and acceleration
+    for all coupled coordinates.
+    
+    Parameters:
+    -----------
+    qpos_matrix : numpy array (num_timesteps, nq)
+        Position matrix with main joint angles already filled
+    qvel_matrix : numpy array (num_timesteps, nv)
+        Velocity matrix with main joint velocities already filled
+    qacc_matrix : numpy array (num_timesteps, nv)
+        Acceleration matrix with main joint accelerations already filled
+    xml_path : str
+        Path to the MuJoCo XML model file
+    
+    Returns:
+    --------
+    tuple : (qpos_matrix, qvel_matrix, qacc_matrix)
+        Updated matrices with all coupled coordinates populated
+        
+    Example:
+    --------
+    >>> qpos, qvel, qacc = calculate_coupled_coordinates_automated(
+    ...     qpos_matrix, qvel_matrix, qacc_matrix,
+    ...     "Results/ModelNoMus/scaled_model_no_muscles_cvt2.xml"
+    ... )
+    
+    Notes:
+    ------
+    The function parses XML joint equality constraints of the form:
+        <joint joint1="coupled_joint" joint2="driver_joint" polycoef="c0 c1 c2 c3 c4"/>
+    
+    where the relationship is: joint1 = c0 + c1*joint2 + c2*joint2^2 + c3*joint2^3 + c4*joint2^4
+    
+    Velocities and accelerations are computed using the chain rule:
+        dq/dt = dq/dtheta * dtheta/dt
+        d2q/dt2 = d2q/dtheta2 * (dtheta/dt)^2 + dq/dtheta * d2theta/dt2
+    """
+    import xml.etree.ElementTree as ET
+    
+    # Make copies to avoid modifying originals
+    qpos_matrix = qpos_matrix.copy()
+    qvel_matrix = qvel_matrix.copy()
+    qacc_matrix = qacc_matrix.copy()
+    
+    # Load the MuJoCo model to get joint name to index mapping
+    model = mujoco.MjModel.from_xml_path(xml_path)
+    
+    # Create mapping from joint name to qpos/qvel index
+    joint_name_to_qpos_idx = {}
+    joint_name_to_qvel_idx = {}
+    
+    for i in range(model.njnt):
+        joint_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_JOINT, i)
+        qpos_addr = model.jnt_qposadr[i]
+        qvel_addr = model.jnt_dofadr[i]
+        joint_name_to_qpos_idx[joint_name] = qpos_addr
+        joint_name_to_qvel_idx[joint_name] = qvel_addr
+    
+    # Parse the XML file to extract polynomial constraints
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+    
+    # Find all equality constraints with polynomial coefficients
+    equality_section = root.find('.//equality')
+    if equality_section is None:
+        print("Warning: No equality section found in XML")
+        return qpos_matrix, qvel_matrix, qacc_matrix
+    
+    # Dictionary to store constraints grouped by driver joint
+    # Format: {driver_joint_name: {coupled_joint_name: [c0, c1, c2, c3, c4]}}
+    constraints = {}
+    
+    for joint_elem in equality_section.findall('joint'):
+        joint1_name = joint_elem.get('joint1')  # Coupled joint
+        joint2_name = joint_elem.get('joint2')  # Driver joint (can be None for locked joints)
+        polycoef_str = joint_elem.get('polycoef')
+        
+        if polycoef_str is None:
+            continue
+            
+        # Parse polynomial coefficients
+        coeffs = [float(x) for x in polycoef_str.split()]
+        
+        # Skip if not a 5-coefficient polynomial (c0, c1, c2, c3, c4)
+        if len(coeffs) != 5:
+            continue
+        
+        # Handle locked joints (no joint2 specified, or all coeffs except c0 are zero)
+        if joint2_name is None or all(abs(c) < 1e-10 for c in coeffs[1:]):
+            # This is a locked joint - just set to constant value c0
+            if joint1_name in joint_name_to_qpos_idx:
+                idx = joint_name_to_qpos_idx[joint1_name]
+                qpos_matrix[:, idx] = coeffs[0]
+                # Locked joints have zero velocity and acceleration
+                if joint1_name in joint_name_to_qvel_idx:
+                    vel_idx = joint_name_to_qvel_idx[joint1_name]
+                    qvel_matrix[:, vel_idx] = 0.0
+                    qacc_matrix[:, vel_idx] = 0.0
+            continue
+        
+        # Store the constraint
+        if joint2_name not in constraints:
+            constraints[joint2_name] = {}
+        constraints[joint2_name][joint1_name] = coeffs
+    
+    print(f"\n{'='*70}")
+    print(f"Automated Coupled Coordinate Calculation")
+    print(f"{'='*70}")
+    print(f"Found {sum(len(v) for v in constraints.values())} polynomial constraints")
+    print(f"Driver joints: {list(constraints.keys())}")
+    
+    # Process each driver joint and its coupled coordinates
+    for driver_joint, coupled_joints in constraints.items():
+        if driver_joint not in joint_name_to_qpos_idx:
+            print(f"Warning: Driver joint '{driver_joint}' not found in model")
+            continue
+        
+        driver_qpos_idx = joint_name_to_qpos_idx[driver_joint]
+        driver_qvel_idx = joint_name_to_qvel_idx[driver_joint]
+        
+        # Get driver joint state
+        theta = qpos_matrix[:, driver_qpos_idx]
+        theta_dot = qvel_matrix[:, driver_qvel_idx]
+        theta_ddot = qacc_matrix[:, driver_qvel_idx]
+        
+        print(f"\nProcessing driver joint: {driver_joint} (qpos_idx={driver_qpos_idx}, qvel_idx={driver_qvel_idx})")
+        print(f"  Coupled joints: {len(coupled_joints)}")
+        
+        # Calculate each coupled coordinate
+        for coupled_joint, coeffs in coupled_joints.items():
+            if coupled_joint not in joint_name_to_qpos_idx:
+                print(f"  Warning: Coupled joint '{coupled_joint}' not found in model")
+                continue
+            
+            coupled_qpos_idx = joint_name_to_qpos_idx[coupled_joint]
+            coupled_qvel_idx = joint_name_to_qvel_idx[coupled_joint]
+            
+            # Position: q = c0 + c1*θ + c2*θ² + c3*θ³ + c4*θ⁴
+            qpos_matrix[:, coupled_qpos_idx] = (
+                coeffs[0]
+                + coeffs[1] * theta
+                + coeffs[2] * theta**2
+                + coeffs[3] * theta**3
+                + coeffs[4] * theta**4
+            )
+            
+            # Velocity: dq/dt = (c1 + 2*c2*θ + 3*c3*θ² + 4*c4*θ³) * dθ/dt
+            dq_dtheta = (
+                coeffs[1]
+                + 2 * coeffs[2] * theta
+                + 3 * coeffs[3] * theta**2
+                + 4 * coeffs[4] * theta**3
+            )
+            qvel_matrix[:, coupled_qvel_idx] = dq_dtheta * theta_dot
+            
+            # Acceleration: d²q/dt² = d²q/dθ² * (dθ/dt)² + dq/dθ * d²θ/dt²
+            d2q_dtheta2 = (
+                2 * coeffs[2]
+                + 6 * coeffs[3] * theta
+                + 12 * coeffs[4] * theta**2
+            )
+            qacc_matrix[:, coupled_qvel_idx] = (
+                d2q_dtheta2 * (theta_dot**2) + dq_dtheta * theta_ddot
+            )
+            
+            print(f"    ✓ {coupled_joint} (qpos_idx={coupled_qpos_idx}, qvel_idx={coupled_qvel_idx})")
+    
+    print(f"\n{'='*70}")
+    print(f"✓ Coupled coordinates calculated successfully")
+    print(f"{'='*70}\n")
+    
+    return qpos_matrix, qvel_matrix, qacc_matrix
 
 
 # ============================================================================
@@ -1480,6 +1658,7 @@ for i in range(num_timesteps):
 
 # Calculate coupled knee joint coordinates, velocities, and accelerations
 qpos_matrix, qvel_matrix, qacc_matrix = calculate_knee_coupled_coords_all(qpos_matrix, qvel_matrix, qacc_matrix)
+qpos_matrix, qvel_matrix, qacc_matrix = calculate_coupled_coordinates_automated(qpos_matrix, qvel_matrix, qacc_matrix, model_path)
 
 # Apply low-pass Butterworth filter to acceleration, velocity, and position data
 qacc_matrix_filtered = butter_lowpass_filter(qacc_matrix, cutoff=6, fs=100.5, order=4)
@@ -1497,8 +1676,7 @@ mjx_data = mjx_data.replace(qpos=jnp.array(qpos_matrix[0, :]), qvel=jnp.array(qv
 @jax.jit
 def compute_inverse_dynamics(model, data, qacc, qvel, qpos, external_forces):
     """Compute inverse dynamics - keep as simple wrapper, not JIT compiled."""
-    #  xfrc_applied=external_forces
-    data = data.replace(qpos=qpos, qvel=qvel, qacc=qacc)
+    data = data.replace(qpos=qpos, qvel=qvel, qacc=qacc, xfrc_applied=external_forces)
     return mjx.inverse(model, data)
 
 nb = mjx_model.nbody
@@ -1553,49 +1731,45 @@ external_forces = external_forces.at[body_id_r, 3:6, :].set(moment_right.T)
 # Initialize mjx_data (immutable structure)
 current_mjx_data = mjx_data
 
-# Pre-allocate ALL arrays for speed (avoid Python list operations)
-print("Pre-allocating result arrays for performance...")
-joint_forces_over_time = np.zeros((num_timesteps, mjx_model.nv))
-joint_forces_modified_over_time = np.zeros((num_timesteps, mjx_model.nv))
-distance_calcn_r_all = np.zeros(num_timesteps)
-distance_calcn_l_all = np.zeros(num_timesteps)
-
-# Force components
-contact_force_all = np.zeros((num_timesteps, mjx_model.nbody, 6))
-qfrc_bias_all = np.zeros((num_timesteps, mjx_model.nv))
-qfrc_passive_all = np.zeros((num_timesteps, mjx_model.nv))
-qfrc_constraint_all = np.zeros((num_timesteps, mjx_model.nv))
-qfrc_actuator_all = np.zeros((num_timesteps, mjx_model.nv))
-MA_qacc_all = np.zeros((num_timesteps, mjx_model.nv))
-MA_qacc_from_data_all = np.zeros((num_timesteps, mjx_model.nv))
+# To store muscle forces over time
+joint_forces_over_time = []
+joint_forces_modified_over_time = []
+distance_calcn_r_all = []
+distance_calcn_l_all = []
+qfrc_from_grf_l_all = []
+contact_force_all=[]
+qfrc_passive_all=[]
+qfrc_bias_all=[]
+qfrc_actuator_all=[]
+qfrc_inertial_all=[]
+qfrc_constraint_all=[]
+qfrc_actuator_all=[]
+MA_qacc_all=[]
+MA_qacc_from_data_all=[]
+Modified_Joint_Forces=[]
 
 # Store calcaneus and COP positions for plotting
-calcn_l_positions = np.zeros((num_timesteps, 3))
-cop_l_positions = np.zeros((num_timesteps, 3))
-calcn_r_positions = np.zeros((num_timesteps, 3))
-cop_r_positions = np.zeros((num_timesteps, 3))
-pelvis_positions = np.zeros((num_timesteps, 3))
-r_vec_r_all = np.zeros((num_timesteps, 3))
-r_vec_l_all = np.zeros((num_timesteps, 3))
-ankle_pos_l_all = np.zeros((num_timesteps, 3))
-acceleration_all = np.zeros((num_timesteps, mjx_model.nv))
-pos_all = np.zeros((num_timesteps, mjx_model.nq))
-vel_all = np.zeros((num_timesteps, mjx_model.nv))
+calcn_l_positions = []
+cop_l_positions = []
+calcn_r_positions = []
+cop_r_positions = []
+pelvis_positions = []
+r_vec_r_all=[]
+r_vec_l_all=[]
+ankle_pos_l_all=[]
+acceleration_all=[]
+pos_all=[]
+vel_all=[]
 
 # Store calculated moments
-moment_added_l_all = np.zeros((num_timesteps, 3))
-moment_added_r_all = np.zeros((num_timesteps, 3))
-
-print(f"✓ Allocated arrays: joint_forces shape={joint_forces_over_time.shape}, "
-      f"positions shape={pelvis_positions.shape}")
+moment_added_l_all = []
+moment_added_r_all = []
 
 # Save qpos_matrix, qvel_matrix, qacc_matrix for later analysis
 np.save("qpos_matrix.npy", qpos_matrix)
 np.save("qvel_matrix.npy", qvel_matrix)
 np.save("qacc_matrix.npy", qacc_matrix)
-np.save("grf_left.npy", grf_left)
-np.save("grf_right.npy", grf_right)
-np.save
+
 contact_force_total_normal = []  # Store total normal contact force at each timestep
 
 # Computing inverse dynamics
@@ -1604,218 +1778,142 @@ print(f"JAX devices: {jax.devices()}")
 
 a, b, c, jacobian_data = setup_and_precompute_jacobians(model_path, qpos_matrix, qvel_matrix)
 
-# ============================================================================
-# WARMUP: Pre-compile JAX JIT functions to avoid delays on first frames
-# ============================================================================
-print("\n" + "="*70)
-print("WARMING UP JAX JIT COMPILATION")
-print("="*70)
-print("Pre-compiling functions (takes 10-30s, makes main loop 100x faster)...")
-print()
-
-warmup_start_total = time.time()
-
-# Compile compute_inverse_dynamics with dummy data from first timestep
-print("1/2: Compiling compute_inverse_dynamics...", end='', flush=True)
-warmup_start = time.time()
-mjx_data = compute_inverse_dynamics(
-    mjx_model, mjx_data,
-    qacc_matrix[0, :],
-    qvel_matrix[0, :],
-    qpos_matrix[0, :],
-    external_forces[:, :, 0]
-)
-print(f" Done! ({time.time() - warmup_start:.1f}s)")
-
-# Compile compute_grf_contribution with dummy data
-print("2/2: Compiling compute_grf_contribution...", end='', flush=True)
-warmup_start = time.time()
-_ = compute_grf_contribution(
-    mjx_model,
-    external_forces[:, :, 0],
-    jacobian_data['jacp'][0],
-    jacobian_data['jacr'][0],
-    jacobian_data['body_ids']
-)
-print(f" Done! ({time.time() - warmup_start:.1f}s)")
-
-warmup_total = time.time() - warmup_start_total
-print()
-print(f"✓ Total warmup time: {warmup_total:.1f}s")
-print(f"✓ All JIT functions compiled! Main loop will run at consistent speed.")
-print("="*70 + "\n")
-
-
-# ============================================================================
-# MAIN COMPUTATION LOOP: Now with pre-compiled functions
-# ============================================================================
-start_time = time.time()
-for attempt in range(2):  # Single attempt for now
-    # for t in tqdm(range(num_timesteps), desc="Computing inverse dynamics"):
-    for t in range(num_timesteps):
-        frame_start = time.time()  # Start timing this frame
-        
+start = time.time()
+for t in tqdm(range(num_timesteps), desc="Computing inverse dynamics"):
+    # ====================================================================
+    # STEP 1: Update positions/velocities to get body positions
+    # ====================================================================
+    if t == 0:
+            distance_calcn_r_all.append(0.0)
+            distance_calcn_l_all.append(0.0)
+            pelvis_positions.append(np.array([0, 0, 0]))
+            # Store positions for 3D plotting
+            calcn_l_positions.append(np.array([0, 0, 0]))
+            cop_l_positions.append(np.array([0, 0, 0]))
+            calcn_r_positions.append(np.array([0, 0, 0]))
+            cop_r_positions.append(np.array([0, 0, 0]))
+            r_vec_r_all.append(np.array([0, 0, 0]))
+            r_vec_l_all.append(np.array([0, 0, 0]))
+            moment_added_l_all.append(np.array([0, 0, 0]))
+            moment_added_r_all.append(np.array([0, 0, 0]))
+            Modified_Joint_Forces.append(np.array([0]*mjx_model.nv))
+    else:
         # ====================================================================
-        # STEP 1: Update positions/velocities to get body positions
+        # STEP 2: Calculate moment arms and external forces using body positions
         # ====================================================================
-        if t == 0:
-                # Initialize first timestep with zeros
-                distance_calcn_r_all[0] = 0.0
-                distance_calcn_l_all[0] = 0.0
-                pelvis_positions[0] = [0, 0, 0]
-                calcn_l_positions[0] = [0, 0, 0]
-                cop_l_positions[0] = [0, 0, 0]
-                calcn_r_positions[0] = [0, 0, 0]
-                cop_r_positions[0] = [0, 0, 0]
-                r_vec_r_all[0] = [0, 0, 0]
-                r_vec_l_all[0] = [0, 0, 0]
-                moment_added_l_all[0] = [0, 0, 0]
-                moment_added_r_all[0] = [0, 0, 0]
-                joint_forces_modified_over_time[0] = 0.0
+        cop_l = jnp.array([cop_matrix[t, 4], -1*cop_matrix[t, 6], 0.0])
+        cop_r = jnp.array([cop_matrix[t, 1], -1*cop_matrix[t, 3], 0.0])
+
+        body_id_l = calcn_l_id
+        body_id_r = calcn_r_id
+
+        # Calculate moment arms: vector from COP to ankle
+        if sum(jnp.abs(cop_r)) > 0.0:
+            r_vec_r = cop_r - ankle_pos_r
+            distance_ankle_r_to_cop = jnp.linalg.norm(r_vec_r)
         else:
-            # ====================================================================
-            # STEP 2: Calculate moment arms and external forces using body positions
-            # ====================================================================
-            cop_l = jnp.array([cop_matrix[t, 4], -1*cop_matrix[t, 6], 0.0])
-            cop_r = jnp.array([cop_matrix[t, 1], -1*cop_matrix[t, 3], 0.0])
+            distance_ankle_r_to_cop = 0.0
+            r_vec_r = jnp.array([0.0, 0.0, 0.0])
 
-            body_id_l = calcn_l_id
-            body_id_r = calcn_r_id
-
-            # Calculate moment arms: vector from COP to ankle
-            if sum(jnp.abs(cop_r)) > 0.0:
-                r_vec_r = cop_r - ankle_pos_r
-                distance_ankle_r_to_cop = jnp.linalg.norm(r_vec_r)
-            else:
-                distance_ankle_r_to_cop = 0.0
-                r_vec_r = jnp.array([0.0, 0.0, 0.0])
-
-            if sum(jnp.abs(cop_l)) > 0.0:
-                r_vec_l = cop_l - ankle_pos_l
-                distance_ankle_l_to_cop = jnp.linalg.norm(r_vec_l)
-            else:
-                distance_ankle_l_to_cop = 0.0
-                r_vec_l = jnp.array([0.0, 0.0, 0.0])
-                
-            # Calculate moments from cross product: M = r × F
-            moment_added_l = jnp.cross(r_vec_l, grf_left[t, :])
-            moment_added_r = jnp.cross(r_vec_r, grf_right[t, :])
+        if sum(jnp.abs(cop_l)) > 0.0:
+            r_vec_l = cop_l - ankle_pos_l
+            distance_ankle_l_to_cop = jnp.linalg.norm(r_vec_l)
+        else:
+            distance_ankle_l_to_cop = 0.0
+            r_vec_l = jnp.array([0.0, 0.0, 0.0])
             
-            # Update external forces with calculated moments
-            external_forces = external_forces.at[body_id_l, 3:6, t].set(moment_left[t, :] + moment_added_l)
-            external_forces = external_forces.at[body_id_r, 3:6, t].set(moment_right[t, :] + moment_added_r)
+        # Calculate moments from cross product: M = r × F
+        moment_added_l = jnp.cross(r_vec_l, grf_left[t, :])
+        moment_added_r = jnp.cross(r_vec_r, grf_right[t, :])
         
-            # Store calculated values for plotting (direct indexing - JAX optimized)
-            distance_calcn_r_all[t] = float(distance_ankle_r_to_cop)
-            distance_calcn_l_all[t] = float(distance_ankle_l_to_cop)
-            pelvis_positions[t] = pelvis_pos
-            calcn_l_positions[t] = calcn_l_pos
-            cop_l_positions[t] = cop_l
-            calcn_r_positions[t] = calcn_r_pos
-            cop_r_positions[t] = cop_r
-            r_vec_r_all[t] = r_vec_r
-            r_vec_l_all[t] = r_vec_l
-            ankle_pos_l_all[t] = ankle_pos_l
-            moment_added_l_all[t] = moment_added_l
-            moment_added_r_all[t] = moment_added_r
-            
-
-        # ====================================================================
-        # STEP 3: NOW run inverse dynamics with everything ready
-        # ====================================================================
-        # JAX optimized - pass slices directly without jnp.array() conversions
-        current_mjx_data = compute_inverse_dynamics(mjx_model, current_mjx_data, 
-                                                    qacc_matrix[t, :], qvel_matrix[t, :], 
-                                                    qpos_matrix[t, :], external_forces[:, :, t])
-
-        
-        # JAX optimized - pass slice directly without jnp.array() conversion
-        qfrc_grf_contribution = compute_grf_contribution(mjx_model, external_forces[:, :, t], 
-                                                        jacobian_data['jacp'][t], jacobian_data['jacr'][t], 
-                                                        jacobian_data['body_ids'])
+        # Update external forces with calculated moments
+        external_forces = external_forces.at[body_id_l, 3:6, t].set(moment_left[t, :] + moment_added_l)
+        external_forces = external_forces.at[body_id_r, 3:6, t].set(moment_right[t, :] + moment_added_r)
+    
+        # Store calculated values for plotting (convert JAX arrays to numpy first)
+        distance_calcn_r_all.append(float(distance_ankle_r_to_cop))
+        distance_calcn_l_all.append(float(distance_ankle_l_to_cop))
+        pelvis_positions.append(np.array(pelvis_pos, dtype=np.float64))
+        calcn_l_positions.append(np.array(calcn_l_pos, dtype=np.float64))
+        cop_l_positions.append(np.array(cop_l, dtype=np.float64))
+        calcn_r_positions.append(np.array(calcn_r_pos, dtype=np.float64))
+        cop_r_positions.append(np.array(cop_r, dtype=np.float64))
+        r_vec_r_all.append(np.array(r_vec_r, dtype=np.float64))
+        r_vec_l_all.append(np.array(r_vec_l, dtype=np.float64))
+        ankle_pos_l_all.append(np.array(ankle_pos_l, dtype=np.float64))
+        moment_added_l_all.append(np.array(moment_added_l, dtype=np.float64))
+        moment_added_r_all.append(np.array(moment_added_r, dtype=np.float64))
         
 
-        # Get control forces (joint torques) from inverse dynamics
-        ctrl_forces = current_mjx_data.qfrc_inverse
+    # ====================================================================
+    # STEP 3: NOW run inverse dynamics with everything ready
+    # ====================================================================
+    current_mjx_data = compute_inverse_dynamics(mjx_model,current_mjx_data, jnp.array(qacc_matrix[t, :]), jnp.array(qvel_matrix[t, :]), jnp.array(qpos_matrix[t, :]), jnp.array(external_forces[:, :, t]))
+    
+    # Print all available fields in current_mjx_data (only once at t=1)
+    if t == 1:
+        print("\n" + "="*70)
+        print("AVAILABLE FIELDS IN current_mjx_data (MJX Data object):")
+        print("="*70)
+        for field in dir(current_mjx_data):
+            if not field.startswith('_'):  # Skip private attributes
+                try:
+                    value = getattr(current_mjx_data, field)
+                    if hasattr(value, 'shape'):
+                        print(f"  {field:25s} : shape {value.shape}, dtype {value.dtype}")
+                    elif callable(value):
+                        print(f"  {field:25s} : <method>")
+                    else:
+                        print(f"  {field:25s} : {type(value).__name__}")
+                except:
+                    print(f"  {field:25s} : <unavailable>")
+        print("="*70 + "\n")
+    
+    # Commented out - GRF contribution computation not currently used and requires jacobian_data
+    qfrc_grf_contribution=compute_grf_contribution(mjx_model, jnp.array(external_forces[:, :, t]), jacobian_data['jacp'][t], jacobian_data['jacr'][t], jacobian_data['body_ids'])
+    
+    # # Check constraint errors
+    # print("Number of constraints:", current_mjx_data.nefc)
+    # print("Constraint positions (errors):", current_mjx_data.efc_pos)
+    # print("Constraint forces:", current_mjx_data.efc_force)
+    # print("qfrc_constraint:", current_mjx_data.qfrc_constraint)
 
-        try:
-            contact_force_all[t] = current_mjx_data._impl.cfrc_ext
-        except AttributeError:
-            # If _impl.cfrc_ext is not available, store zeros or skip
-            contact_force_all[t] = jnp.zeros((mjx_model.nbody * 6,))
+    # Get control forces (joint torques) from inverse dynamics
+    ctrl_forces = current_mjx_data.qfrc_inverse
+
+    contact_force_all.append(np.array(current_mjx_data._impl.cfrc_ext, dtype=np.float64))
+    
+    qfrc_bias_all.append(np.array(current_mjx_data.qfrc_bias, dtype=np.float64))
+    qfrc_passive_all.append(np.array(current_mjx_data.qfrc_passive, dtype=np.float64))
+    qfrc_actuator_all.append(np.array(current_mjx_data.qfrc_actuator, dtype=np.float64))
+    qfrc_constraint_all.append(np.array(current_mjx_data.qfrc_constraint, dtype=np.float64))
+    qM_sparse = current_mjx_data._impl.qM
+    MA_qacc_all.append(np.array(jnp.matmul(qM_sparse, jnp.array(current_mjx_data.qacc)), dtype=np.float64))
+    MA_qacc_from_data_all.append(np.array(jnp.matmul(qM_sparse, jnp.array(qacc_matrix[t, :])), dtype=np.float64))
+    # Modified_Joint_Forces = ctrl_forces - jnp.matmul(qM_sparse, jnp.array(current_mjx_data.qacc)) + jnp.matmul(qM_sparse, jnp.array(qacc_matrix[t, :]))
+    # Store modified joint forces (qfrc_inverse + M·qacc)
+    # grf_in_joint_space = support.xfrc_accumulate(mjx_model, current_mjx_data)
+
+    Modified_Joint_Forces = ctrl_forces + current_mjx_data.qfrc_constraint - qfrc_grf_contribution
+    
+    joint_forces_modified_over_time.append(np.array(Modified_Joint_Forces, dtype=np.float64))
+
+    # Store acceleration, position, and velocity data from current timestep
+    acceleration_all.append(np.array(current_mjx_data.qacc, dtype=np.float64))
+    pos_all.append(np.array(current_mjx_data.qpos, dtype=np.float64))
+    vel_all.append(np.array(current_mjx_data.qvel, dtype=np.float64))
+
+    # joint_forces_over_time.append(np.array(ctrl_forces, dtype=np.float64))
+    joint_forces_over_time.append(np.array(Modified_Joint_Forces, dtype=np.float64))
+
+    ankle_pos_l = current_mjx_data.xpos[calcn_l_id]  # Left ankle (calcaneus) world position
+    ankle_pos_r = current_mjx_data.xpos[calcn_r_id]  # Right ankle (calcaneus) world position
+    calcn_l_pos = current_mjx_data.xpos[calcn_l_id]  # Left calcaneus world position
+    calcn_r_pos = current_mjx_data.xpos[calcn_r_id]  # Right calcaneus world position
+    pelvis_pos = current_mjx_data.xpos[pelvis_id]    # Pelvis world position
+
         
-        qfrc_bias_all[t] = current_mjx_data.qfrc_bias
-        qfrc_passive_all[t] = current_mjx_data.qfrc_passive
-        qfrc_actuator_all[t] = current_mjx_data.qfrc_actuator
-        qfrc_constraint_all[t] = current_mjx_data.qfrc_constraint
-        
-        try:
-            qM_sparse = current_mjx_data._impl.qM
-            MA_qacc_all[t] = jnp.matmul(qM_sparse, current_mjx_data.qacc)
-            MA_qacc_from_data_all[t] = jnp.matmul(qM_sparse, qacc_matrix[t, :])
-        except AttributeError:
-            # If mass matrix not available, store zeros
-            MA_qacc_all[t] = jnp.zeros((mjx_model.nv,))
-            MA_qacc_from_data_all[t] = jnp.zeros((mjx_model.nv,))
-        
-        # Calculate modified joint forces
-        Modified_Joint_Forces = ctrl_forces + current_mjx_data.qfrc_constraint - qfrc_grf_contribution
-        
-        joint_forces_modified_over_time[t] = Modified_Joint_Forces
 
-        # Store acceleration, position, and velocity data from current timestep
-        acceleration_all[t] = current_mjx_data.qacc
-        pos_all[t] = current_mjx_data.qpos
-        vel_all[t] = current_mjx_data.qvel
-
-        joint_forces_over_time[t] = Modified_Joint_Forces
-
-        ankle_pos_l = current_mjx_data.xpos[calcn_l_id]  # Left ankle (calcaneus) world position
-        ankle_pos_r = current_mjx_data.xpos[calcn_r_id]  # Right ankle (calcaneus) world position
-        calcn_l_pos = current_mjx_data.xpos[calcn_l_id]  # Left calcaneus world position
-        calcn_r_pos = current_mjx_data.xpos[calcn_r_id]  # Right calcaneus world position
-        pelvis_pos = current_mjx_data.xpos[pelvis_id]    # Pelvis world position
-        # ====================================================================
-
-# End of outer attempt loop
-end_time = time.time()
-# Record total duration - note: 'attempt' is the loop counter (0-49)
-total_attempts = attempt + 1  # Convert from 0-indexed to count
-print(f"\n✓ Completed inverse dynamics for {total_attempts} attempts in {end_time - start_time:.2f}s")
-print(f"Time per attempt: {(end_time - start_time)/total_attempts:.2f}s")
-print(f"Time per frame: {(end_time - start_time)/(total_attempts*num_timesteps):.4f}s")
-# ============================================================================
-# CONVERT JAX ARRAYS TO NUMPY: Single conversion after loop for efficiency
-# ============================================================================
-print("Converting JAX arrays to NumPy for visualization and saving...")
-
-# Convert all result arrays from JAX to NumPy in one batch
-joint_forces_over_time = np.array(joint_forces_over_time, dtype=np.float64)
-joint_forces_modified_over_time = np.array(joint_forces_modified_over_time, dtype=np.float64)
-acceleration_all = np.array(acceleration_all, dtype=np.float64)
-pos_all = np.array(pos_all, dtype=np.float64)
-vel_all = np.array(vel_all, dtype=np.float64)
-contact_force_all = np.array(contact_force_all, dtype=np.float64)
-qfrc_bias_all = np.array(qfrc_bias_all, dtype=np.float64)
-qfrc_passive_all = np.array(qfrc_passive_all, dtype=np.float64)
-qfrc_actuator_all = np.array(qfrc_actuator_all, dtype=np.float64)
-qfrc_constraint_all = np.array(qfrc_constraint_all, dtype=np.float64)
-MA_qacc_all = np.array(MA_qacc_all, dtype=np.float64)
-MA_qacc_from_data_all = np.array(MA_qacc_from_data_all, dtype=np.float64)
-pelvis_positions = np.array(pelvis_positions, dtype=np.float64)
-calcn_l_positions = np.array(calcn_l_positions, dtype=np.float64)
-cop_l_positions = np.array(cop_l_positions, dtype=np.float64)
-calcn_r_positions = np.array(calcn_r_positions, dtype=np.float64)
-cop_r_positions = np.array(cop_r_positions, dtype=np.float64)
-r_vec_r_all = np.array(r_vec_r_all, dtype=np.float64)
-r_vec_l_all = np.array(r_vec_l_all, dtype=np.float64)
-ankle_pos_l_all = np.array(ankle_pos_l_all, dtype=np.float64)
-moment_added_l_all = np.array(moment_added_l_all, dtype=np.float64)
-moment_added_r_all = np.array(moment_added_r_all, dtype=np.float64)
-distance_calcn_r_all = np.array(distance_calcn_r_all, dtype=np.float64)
-distance_calcn_l_all = np.array(distance_calcn_l_all, dtype=np.float64)
-
-print("Conversion complete!")
 
 # ============================================================================
 # VISUALIZATION: Plot all results

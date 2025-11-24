@@ -1,0 +1,300 @@
+<mujoco model="template">
+  
+  <compiler angle="radian" autolimits="true" boundmass="0.25" boundinertia="0.01" />
+  <option />
+  <option timestep="0.01" />
+  <size njmax="1000" nconmax="400" nkey="1" nuser_jnt="1" />
+  <visual>
+    <scale framelength="0.5" framewidth="0.01" />
+  </visual>
+  <statistic meansize="0.172063" extent="2.06697" center="0 0 -0.0334843" />
+  <default class="main">
+    <joint limited="true" armature="0.01" damping="0.05" />
+    <geom margin="0.001" rgba="0.8 0.6 0.4 1" contype="0" conaffinity="0" />
+    <site size="0.001 0.005 0.005" />
+    <tendon limited="false" width="0.005" rgba="0.95 0.3 0.3 1" />
+    <default class="muscle">
+      <general ctrllimited="true" ctrlrange="0 1" dyntype="muscle" gaintype="muscle" biastype="muscle" dynprm="0.01 0.04 0 0 0 0 0 0 0 0" gainprm="0.75 1.05 -1 200 0.5 1.6 1.5 1.3 1.2 0" biasprm="0.75 1.05 -1 200 0.5 1.6 1.5 1.3 1.2 0" />
+    </default>
+    <default class="motor">
+      <general gainprm="5 0 0 0 0 0 0 0 0 0" />
+    </default>
+  </default>
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="1 1 1" rgb2="0.6 0.8 1" width="256" height="1536" />
+    <mesh name="pelvis_geom_1_r_pelvis" file="Geometry/r_pelvis.stl" scale="1.02591 1.00881 1.03484" />
+    <mesh name="pelvis_geom_2_l_pelvis" file="Geometry/l_pelvis.stl" scale="1.02591 1.00881 1.03484" />
+    <mesh name="pelvis_geom_3_sacrum" file="Geometry/sacrum.stl" scale="1.02591 1.00881 1.03484" />
+    <mesh name="femur_r_geom_1_r_femur" file="Geometry/r_femur.stl" scale="1.0521 1.03563 1.03339" />
+    <mesh name="tibia_r_geom_1_r_tibia" file="Geometry/r_tibia.stl" scale="1.08061 1.08906 1.06499" />
+    <mesh name="tibia_r_geom_2_r_fibula" file="Geometry/r_fibula.stl" scale="1.08061 1.08906 1.06499" />
+    <mesh name="talus_r_geom_1_r_talus" file="Geometry/r_talus.stl" scale="1.02262 1.0267 1.03187" />
+    <mesh name="calcn_r_geom_1_r_foot" file="Geometry/r_foot.stl" scale="0.891806 0.876135 0.89245" />
+    <mesh name="toes_r_geom_1_r_bofoot" file="Geometry/r_bofoot.stl" scale="1.02409 1.02455 1.02513" />
+    <mesh name="patella_r_geom_1_r_patella" file="Geometry/r_patella.stl" />
+    <mesh name="femur_l_geom_1_l_femur" file="Geometry/l_femur.stl" scale="1.0521 1.03563 1.03339" />
+    <mesh name="tibia_l_geom_1_l_tibia" file="Geometry/l_tibia.stl" scale="1.08061 1.08906 1.06499" />
+    <mesh name="tibia_l_geom_2_l_fibula" file="Geometry/l_fibula.stl" scale="1.08061 1.08906 1.06499" />
+    <mesh name="talus_l_geom_1_l_talus" file="Geometry/l_talus.stl" scale="1.02262 1.0267 1.03187" />
+    <mesh name="calcn_l_geom_1_l_foot" file="Geometry/l_foot.stl" scale="0.891806 0.876135 0.89245" />
+    <mesh name="toes_l_geom_1_l_bofoot" file="Geometry/l_bofoot.stl" scale="1.02409 1.02455 1.02513" />
+    <mesh name="patella_l_geom_1_l_patella" file="Geometry/l_patella.stl" />
+    <mesh name="torso_geom_1_hat_spine" file="Geometry/hat_spine.stl" scale="1.1417 0.99196 1.055" />
+    <mesh name="torso_geom_2_hat_jaw" file="Geometry/hat_jaw.stl" scale="1.1417 0.99196 1.055" />
+    <mesh name="torso_geom_3_hat_skull" file="Geometry/hat_skull.stl" scale="1.1417 0.99196 1.055" />
+    <mesh name="torso_geom_4_hat_ribs_scap" file="Geometry/hat_ribs_scap.stl" scale="1.1417 0.99196 1.055" />
+  </asset>
+  <worldbody>
+    
+    <site name="grf_left_tail" pos="0 0 0" size="0.02" rgba="0 1 0 1" />
+    <site name="grf_left_tip" pos="0 0 0.1" size="0.02" rgba="1 0 0 1" />
+    <site name="grf_right_tail" pos="0 0 0" size="0.02" rgba="0 1 0 1" />
+    <site name="grf_right_tip" pos="0 0 0.1" size="0.02" rgba="1 0 0 1" />
+    <light pos="0 0 0" dir="0 0 -1" directional="true" />
+    <body name="ground" quat="0.707035 0.707179 0 0">
+      <geom name="ground-plane" size="10 10 0.125" quat="0.707035 -0.707179 0 0" type="plane" rgba="1 0.7 0.4 1" />
+    </body>
+    <body name="pelvis" quat="0.707035 0.707179 0 0">
+      <inertial pos="-0.0707 0 0" mass="10.2627" diaginertia="0.0895821 0.0759008 0.0504553" />
+      <joint name="pelvis_tx" pos="0 0 0" axis="1 0 0" type="slide" range="-40 40" damping="0" />
+      <joint name="pelvis_ty" pos="0 0 0" axis="0 1 0" type="slide" range="-5 5" damping="0" user="0.93" />
+      <joint name="pelvis_tz" pos="0 0 0" axis="0 0 1" type="slide" range="-40 40" damping="0" />
+      <joint name="pelvis_tilt" pos="0 0 0" axis="0 0 1" range="-3.142 3.142" damping="0" />
+      <joint name="pelvis_list" pos="0 0 0" axis="1 0 0" range="-3.142 3.142" damping="0" />
+      <joint name="pelvis_rotation" pos="0 0 0" axis="0 1 0" range="-3.142 3.142" damping="0" />
+      <geom name="pelvis_geom_1" type="mesh" rgba="1 1 1 1" mesh="pelvis_geom_1_r_pelvis" />
+      <geom name="pelvis_geom_2" type="mesh" rgba="1 1 1 1" mesh="pelvis_geom_2_l_pelvis" />
+      <geom name="pelvis_geom_3" type="mesh" rgba="1 1 1 1" mesh="pelvis_geom_3_sacrum" />
+      <geom name="Gmax1_at_pelvis_r_cylinder" size="0.04086 0.07699" pos="-0.079 -0.09987 0.06313" quat="0.931256 -0.288071 0.213142 -0.0659324" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+      <geom name="Gmax2_at_pelvis_r_cylinder" size="0.04093 0.05116" pos="-0.08207 -0.08373 0.07037" quat="0.912872 -0.359331 0.180301 -0.0709714" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+      <geom name="Gmax3_at_pelvis_r_cylinder" size="0.0407 0.05173" pos="-0.08515 -0.08878 0.07037" quat="0.99875 -0.0499792 0 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+      <geom name="Gmax1_at_pelvis_l_cylinder" size="0.04086 0.07699" pos="-0.079 -0.09987 -0.06313" quat="0.931256 0.288071 -0.213142 -0.0659324" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+      <geom name="Gmax2_at_pelvis_l_cylinder" size="0.04093 0.05116" pos="-0.08207 -0.08373 -0.07037" quat="0.912872 0.359331 -0.180301 -0.0709714" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+      <geom name="Gmax3_at_pelvis_l_cylinder" size="0.0407 0.05173" pos="-0.08515 -0.08878 -0.07037" quat="0.99875 0.0499792 0 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+      <geom name="PS_at_brim_r_cylinder" size="0.05092 0.05164" pos="-0.07592 -0.06053 0.06789" quat="0.981103 -0.13006 -0.127199 0.0658971" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+      <geom name="PS_at_brim_l_cylinder" size="0.05092 0.05164" pos="-0.07592 -0.06053 -0.06789" quat="0.981103 0.13006 0.127199 0.0658971" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+      <geom name="IL_at_brim_r_cylinder" size="0.05594 0.0516" pos="-0.07284 -0.06557 0.07823" quat="0.874257 -0.193832 -0.0376181 0.443495" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+      <geom name="IL_at_brim_l_cylinder" size="0.05594 0.0516" pos="-0.07284 -0.06557 -0.07823" quat="0.874257 0.193832 0.0376181 0.443495" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+      <site name="Gmax1_at_pelvis_r_sidesite" pos="-0.1167 -0.08959 0.07815" size="0.0005" />
+      <site name="Gmax1_at_pelvis_l_sidesite" pos="-0.1167 -0.08959 -0.07815" size="0.0005" />
+      <site name="PS_at_brim_r_sidesite" pos="-0.07092 -0.1102 0.08201" size="0.0005" />
+      <site name="PS_at_brim_l_sidesite" pos="-0.07092 -0.1102 -0.08201" size="0.0005" />
+      <site name="IL_at_brim_r_sidesite" pos="-0.02952 -0.09583 0.09943" size="0.0005" />
+      <site name="IL_at_brim_l_sidesite" pos="-0.02952 -0.09583 -0.09943" size="0.0005" />
+      <site name="RASI_marker" pos="0.01311 0.01554 0.1322" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+      <site name="LASI_marker" pos="0.0123 0.01675 -0.1377" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+      <site name="RPSI_marker" pos="-0.1658 0.04571 0.05563" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+      <site name="LPSI_marker" pos="-0.1617 0.04833 -0.05695" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+      <site name="SACR_marker" pos="-0.1661 0.0508 0.0001781" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+      <body name="femur_r" pos="-0.05773 -0.07918 0.07995">
+        <inertial pos="0 -0.17 0" quat="0.5 0.5 -0.5 0.5" mass="8.10543" diaginertia="0.123045 0.116683 0.0305869" />
+        <joint name="hip_flexion_r" pos="0 0 0" axis="0 0 1" range="-0.5236 2.094" />
+        <joint name="hip_adduction_r" pos="0 0 0" axis="1 0 0" range="-0.8727 0.5236" />
+        <joint name="hip_rotation_r" pos="0 0 0" axis="0 1 0" range="-0.6981 0.6981" />
+        <geom name="femur_r_geom_1" type="mesh" rgba="1 1 1 1" mesh="femur_r_geom_1_r_femur" />
+        <geom name="Gastroc_at_condyles_r_cylinder" size="0.0261 0.05167" pos="0.00526 -0.4246 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="KnExt_at_fem_r_cylinder" size="0.0261 0.05167" pos="0.003775 -0.4171 0.002161" quat="0.999192 -0.0311549 0.0253649 -0.000790882" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AB_at_femshaft_r_cylinder" size="0.0172 0.03627" pos="0.01541 -0.1166 0.02415" quat="0.671205 0.735393 0.0628058 0.068812" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AL_at_femshaft_r_cylinder" size="0.02096 0.05179" pos="0.03233 -0.2402 0.01562" quat="0.629109 0.77432 0.0430035 0.0529295" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AMprox_at_femshaft_r_cylinder" size="0.022 0.03627" pos="0.005453 -0.07549 0.02625" quat="0.689738 0.718041 0.0645399 0.0671882" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AMmid_at_femshaft_r_cylinder" size="0.02231 0.06216" pos="0.02421 -0.1664 0.02127" quat="0.691136 0.719496 0.0472781 0.0492181" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AMdist_at_femshaft_r_cylinder" size="0.02273 0.1036" pos="0.03325 -0.27 0.009677" quat="0.652613 0.751942 0.0610661 0.0703605" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AMisch_at_condyles_r_cylinder" size="0.04165 0.1247" pos="-0.02383 -0.3903 -0.00326" quat="0.638315 0.734726 -0.150602 -0.173349" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="PECT_at_femshaft_r_cylinder" size="0.01563 0.02592" pos="0.006403 -0.08751 0.03146" quat="0.610631 0.779849 0.0848995 0.108427" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <site name="RKNE_marker" pos="-0.0009574 -0.4282 0.05637" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="RKNEmed_marker" pos="-0.02814 -0.4057 -0.06099" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="RTHI_marker" pos="0.0467 -0.166 0.08276" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="RTHI2_marker" pos="-0.05619 -0.1669 0.0704" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="RTHI3_marker" pos="-0.000924 -0.2408 0.0809" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <body name="tibia_r" pos="0.0002302 -0.4186 -0.001261">
+          <inertial pos="0 -0.1867 0" quat="0.5 0.5 -0.5 0.5" mass="3.23079" diaginertia="0.0445296 0.0439196 0.01" />
+          <joint name="walker_knee_r_translation1" pos="0 0 0" axis="-0.124295 0.989762 -0.0701573" type="slide" range="0 0.001656" user="9.87716e-08" />
+          <joint name="walker_knee_r_translation2" pos="0 0 0" axis="0.992243 0.124005 -0.00878938" type="slide" range="0 0.007019" user="7.94939e-11" />
+          <joint name="knee_angle_r" pos="0 0 0" axis="-4.56599e-07 -0.0707098 -0.997497" range="0 2.094" />
+          <joint name="walker_knee_r_rotation2" pos="0 0 0" axis="0.992243 0.124005 -0.00878938" range="-0.001678 0.03354" user="-1.47325e-08" />
+          <joint name="walker_knee_r_rotation3" pos="0 0 0" axis="-0.124295 0.989762 -0.0701573" range="0 0.2628" user="1.08939e-08" />
+          <geom name="tibia_r_geom_1" type="mesh" rgba="1 1 1 1" mesh="tibia_r_geom_1_r_tibia" />
+          <geom name="tibia_r_geom_2" type="mesh" rgba="1 1 1 1" mesh="tibia_r_geom_2_r_fibula" />
+          <geom name="GasLat_at_shank_r_cylinder" size="0.05962 0.05334" pos="-0.007997 -0.08059 -0.003514" quat="-0.0297182 0.737325 0.65545 -0.160791" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <geom name="GasMed_at_shank_r_cylinder" size="0.05965 0.05329" pos="-0.007997 -0.08059 -0.003514" quat="0.0738196 0.735435 0.67182 -0.0484208" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <geom name="GR_at_condyles_r_cylinder" size="0.03901 0.05337" pos="-0.003242 -0.02178 0" quat="0.980067 0 -0.198669 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <geom name="SM_at_condyles_r_cylinder" size="0.03818 0.05326" pos="-0.001081 -0.02178 0" quat="0.99875 0 -0.0499792 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <geom name="ST_at_condyles_r_cylinder" size="0.04609 0.05328" pos="-0.002161 -0.02233 0" quat="0.995004 0 -0.0998334 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <geom name="BF_at_gastroc_r_cylinder" size="0.03255 0.07987" pos="-0.06268 -0.06534 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <site name="GasLat_at_shank_r_sidesite" pos="-0.06601 -0.07218 0.01192" size="0.0005" />
+          <site name="GasMed_at_shank_r_sidesite" pos="-0.06836 -0.07536 -0.006151" size="0.0005" />
+          <site name="BF_at_gastroc_r_sidesite" pos="-0.06268 -0.0318 0" size="0.0005" />
+          <site name="RANK_marker" pos="-0.02098 -0.4183 0.05563" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+          <site name="RANKmed_marker" pos="0.01494 -0.3995 -0.03393" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+          <site name="RTIB_marker" pos="0.0158 -0.2138 0.05833" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+          <site name="RTIB2_marker" pos="-0.05381 -0.216 0.06813" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+          <site name="RTIB3_marker" pos="-0.01972 -0.2654 0.06454" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+          <body name="talus_r" pos="-0.01081 -0.4356 0">
+            <inertial pos="0 0 0" mass="0.25" diaginertia="0.01 0.01 0.01" />
+            <joint name="ankle_angle_r" pos="0 0 0" axis="-0.105003 -0.174005 0.97913" range="-0.6981 0.5236" />
+            <geom name="talus_r_geom_1" type="mesh" rgba="1 1 1 0" mesh="talus_r_geom_1_r_talus" />
+            <body name="calcn_r" pos="-0.04987 -0.04307 0.008172">
+              <inertial pos="0.1 0.03 0" quat="0 0.707107 0 0.707107" mass="1.08928" diaginertia="0.01 0.01 0.01" />
+              <joint name="subtalar_angle_r" pos="0 0 0" axis="0.787215 0.604711 -0.120902" range="-0.3491 0.3491" />
+              <geom name="calcn_r_geom_1" type="mesh" rgba="1 1 1 1" mesh="calcn_r_geom_1_r_foot" />
+              <site name="RTOE_marker" pos="0.1841 0.01248 0.01295" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+              <site name="RHEE_marker" pos="-0.01277 0.02009 -0.001019" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+              <site name="RLatFoot_marker" pos="0.1113 0.01755 0.0407" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+              <body name="toes_r" pos="0.1595 -0.001752 0.0009638">
+                <inertial pos="0.0346 0.006 -0.0175" quat="0 0.707107 0 0.707107" mass="0.25" diaginertia="0.01 0.01 0.01" />
+                <joint name="mtp_angle_r" pos="0 0 0" axis="0.581002 2.16001e-06 -0.813902" range="-0.5236 0.5236" />
+                <geom name="toes_r_geom_1" type="mesh" rgba="1 1 1 1" mesh="toes_r_geom_1_r_bofoot" />
+              </body>
+            </body>
+          </body>
+        </body>
+        <body name="patella_r" pos="-0.008511 -0.4225 -0.002842">
+          <inertial pos="0.0018 0.0264 0" quat="0.5 0.5 0.5 0.5" mass="0.25" diaginertia="0.01 0.01 0.01" />
+          <joint name="patellofemoral_r_translation1" pos="0 0 0" axis="1 0 0" type="slide" range="-0.02388 0.05513" user="0.0551501" />
+          <joint name="patellofemoral_r_translation2" pos="0 0 0" axis="0 1 0" type="slide" range="-0.04225 -0.01118" user="-0.011214" />
+          <joint name="patellofemoral_r_translation3" pos="0 0 0" axis="0 0 1" limited="false" type="slide" />
+          <joint name="patellofemoral_r_rotation1" pos="0 0 0" axis="0 0 1" range="-1.786 0.001137" user="0.010506" />
+          <geom name="patella_r_geom_1" type="mesh" rgba="1 1 1 1" mesh="patella_r_geom_1_r_patella" />
+        </body>
+      </body>
+      <body name="femur_l" pos="-0.05773 -0.07918 -0.07995">
+        <inertial pos="0 -0.17 0" quat="0.5 0.5 -0.5 0.5" mass="8.10543" diaginertia="0.123045 0.116683 0.0305869" />
+        <joint name="hip_flexion_l" pos="0 0 0" axis="0 0 1" range="-0.5236 2.094" />
+        <joint name="hip_adduction_l" pos="0 0 0" axis="-1 0 0" range="-0.8727 0.5236" />
+        <joint name="hip_rotation_l" pos="0 0 0" axis="0 -1 0" range="-0.6981 0.6981" />
+        <geom name="femur_l_geom_1" type="mesh" rgba="1 1 1 1" mesh="femur_l_geom_1_l_femur" />
+        <geom name="Gastroc_at_condyles_l_cylinder" size="0.0261 0.05167" pos="0.00526 -0.4246 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="KnExt_at_fem_l_cylinder" size="0.0261 0.05167" pos="0.003775 -0.4171 -0.002161" quat="0.999192 0.0311549 -0.0253649 -0.000790882" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AB_at_femshaft_l_cylinder" size="0.0172 0.03627" pos="0.01541 -0.1166 -0.02415" quat="0.671205 -0.735393 -0.0628058 0.068812" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AL_at_femshaft_l_cylinder" size="0.02096 0.05179" pos="0.03233 -0.2402 -0.01562" quat="0.629109 -0.77432 -0.0430035 0.0529295" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AMprox_at_femshaft_l_cylinder" size="0.022 0.03627" pos="0.005453 -0.07549 -0.02625" quat="0.689738 -0.718041 -0.0645399 0.0671882" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AMmid_at_femshaft_l_cylinder" size="0.02231 0.06216" pos="0.02421 -0.1664 -0.02127" quat="0.691136 -0.719496 -0.0472781 0.0492181" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AMdist_at_femshaft_l_cylinder" size="0.02273 0.1036" pos="0.03325 -0.27 -0.009677" quat="0.652613 -0.751942 -0.0610661 0.0703605" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="AMisch_at_condyles_l_cylinder" size="0.04165 0.1247" pos="-0.02383 -0.3903 0.00326" quat="0.638315 -0.734726 0.150602 -0.173349" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <geom name="PECT_at_femshaft_l_cylinder" size="0.01563 0.02592" pos="0.006403 -0.08751 -0.03146" quat="0.610631 -0.779849 -0.0848995 0.108427" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+        <site name="LKNE_marker" pos="-0.0009274 -0.4273 -0.05871" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="LKNEmed_marker" pos="-0.02391 -0.4118 0.05322" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="LTHI_marker" pos="0.06445 -0.1785 -0.1007" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="LTHI2_marker" pos="-0.04279 -0.1643 -0.08636" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="LTHI3_marker" pos="0.001754 -0.2438 -0.095" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <body name="tibia_l" pos="0.0002302 -0.4186 0.001261">
+          <inertial pos="0 -0.1867 0" quat="0.5 0.5 -0.5 0.5" mass="3.23079" diaginertia="0.0445296 0.0439196 0.01" />
+          <joint name="walker_knee_l_translation1" pos="0 0 0" axis="-0.124295 0.989762 0.0701573" type="slide" range="0 0.001656" user="9.87716e-08" />
+          <joint name="walker_knee_l_translation2" pos="0 0 0" axis="-0.992243 -0.124005 -0.00878938" type="slide" range="-0.007019 0" user="-7.94939e-11" />
+          <joint name="knee_angle_l" pos="0 0 0" axis="4.56599e-07 0.0707098 -0.997497" range="0 2.094" />
+          <joint name="walker_knee_l_rotation2" pos="0 0 0" axis="-0.992243 -0.124005 -0.00878938" range="-0.001678 0.03354" user="-1.47325e-08" />
+          <joint name="walker_knee_l_rotation3" pos="0 0 0" axis="-0.124295 0.989762 0.0701573" range="-0.2628 0" user="-1.08939e-08" />
+          <geom name="tibia_l_geom_1" type="mesh" rgba="1 1 1 1" mesh="tibia_l_geom_1_l_tibia" />
+          <geom name="tibia_l_geom_2" type="mesh" rgba="1 1 1 1" mesh="tibia_l_geom_2_l_fibula" />
+          <geom name="GasLat_at_shank_l_cylinder" size="0.05962 0.05334" pos="-0.007997 -0.08059 0.003514" quat="-0.0297182 -0.737325 -0.65545 -0.160791" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <geom name="GasMed_at_shank_l_cylinder" size="0.05965 0.05329" pos="-0.007997 -0.08059 0.003514" quat="0.0738196 -0.735435 -0.67182 -0.0484208" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <geom name="GR_at_condyles_l_cylinder" size="0.03901 0.05337" pos="-0.003242 -0.02178 0" quat="0.980067 0 0.198669 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <geom name="SM_at_condyles_l_cylinder" size="0.03818 0.05326" pos="-0.001081 -0.02178 0" quat="0.99875 0 0.0499792 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <geom name="ST_at_condyles_l_cylinder" size="0.04609 0.05328" pos="-0.002161 -0.02233 0" quat="0.995004 0 0.0998334 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <geom name="BF_at_gastroc_l_cylinder" size="0.03255 0.07987" pos="-0.06268 -0.06534 0" type="cylinder" group="2" rgba="0.19 0.83 0.78 0.2" />
+          <site name="GasLat_at_shank_l_sidesite" pos="-0.06601 -0.07218 -0.01192" size="0.0005" />
+          <site name="GasMed_at_shank_l_sidesite" pos="-0.06836 -0.07536 0.006151" size="0.0005" />
+          <site name="LANK_marker" pos="-0.02191 -0.4207 -0.05585" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+          <site name="LANKmed_marker" pos="0.01203 -0.4028 0.03273" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+          <site name="LTIB_marker" pos="0.01856 -0.2305 -0.05554" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+          <site name="LTIB2_marker" pos="-0.04936 -0.2418 -0.06717" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+          <site name="LTIB3_marker" pos="-0.0113 -0.2776 -0.0636" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+          <body name="talus_l" pos="-0.01081 -0.4356 0">
+            <inertial pos="0 0 0" mass="0.25" diaginertia="0.01 0.01 0.01" />
+            <joint name="ankle_angle_l" pos="0 0 0" axis="0.105003 0.174005 0.97913" range="-0.6981 0.5236" />
+            <geom name="talus_l_geom_1" type="mesh" rgba="1 1 1 0" mesh="talus_l_geom_1_l_talus" />
+            <body name="calcn_l" pos="-0.04987 -0.04307 -0.008172">
+              <inertial pos="0.1 0.03 0" quat="0 0.707107 0 0.707107" mass="1.08928" diaginertia="0.01 0.01 0.01" />
+              <joint name="subtalar_angle_l" pos="0 0 0" axis="-0.787215 -0.604711 -0.120902" range="-0.3491 0.3491" />
+              <geom name="calcn_l_geom_1" type="mesh" rgba="1 1 1 1" mesh="calcn_l_geom_1_l_foot" />
+              <site name="LTOE_marker" pos="0.1795 0.01193 -0.008255" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+              <site name="LHEE_marker" pos="-0.01286 0.02091 0.0006656" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+              <site name="LLatFoot_marker" pos="0.1113 0.01503 -0.04714" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+              <body name="toes_l" pos="0.1595 -0.001752 -0.0009638">
+                <inertial pos="0.0346 0.006 0.0175" quat="0 0.707107 0 0.707107" mass="0.25" diaginertia="0.01 0.01 0.01" />
+                <joint name="mtp_angle_l" pos="0 0 0" axis="-0.581002 2.16001e-06 -0.813902" range="-0.5236 0.5236" />
+                <geom name="toes_l_geom_1" type="mesh" rgba="1 1 1 1" mesh="toes_l_geom_1_l_bofoot" />
+              </body>
+            </body>
+          </body>
+        </body>
+        <body name="patella_l" pos="-0.008511 -0.4225 0.002842">
+          <inertial pos="0.0018 0.0264 0" quat="0.5 0.5 0.5 0.5" mass="0.25" diaginertia="0.01 0.01 0.01" />
+          <joint name="patellofemoral_l_translation1" pos="0 0 0" axis="1 0 0" type="slide" range="-0.02388 0.05513" user="0.0551501" />
+          <joint name="patellofemoral_l_translation2" pos="0 0 0" axis="0 1 0" type="slide" range="-0.04225 -0.01118" user="-0.011214" />
+          <joint name="patellofemoral_l_translation3" pos="0 0 0" axis="0 0 1" limited="false" type="slide" />
+          <joint name="patellofemoral_l_rotation1" pos="0 0 0" axis="0 0 1" range="-1.786 0.001137" user="0.010506" />
+          <geom name="patella_l_geom_1" type="mesh" rgba="1 1 1 1" mesh="patella_l_geom_1_l_patella" />
+        </body>
+      </body>
+      <body name="torso" pos="-0.1033 0.08222 0">
+        <inertial pos="-0.03 0.32 0" quat="0.707107 0.707107 0 0" mass="29.8345" diaginertia="1.28491 1.24735 0.658358" />
+        <joint name="lumbar_extension" pos="0 0 0" axis="0 0 1" range="-1.571 1.571" />
+        <joint name="lumbar_bending" pos="0 0 0" axis="1 0 0" range="-1.571 1.571" />
+        <joint name="lumbar_rotation" pos="0 0 0" axis="0 1 0" range="-1.571 1.571" />
+        <geom name="torso_geom_1" type="mesh" rgba="1 1 1 1" mesh="torso_geom_1_hat_spine" />
+        <geom name="torso_geom_2" type="mesh" rgba="1 1 1 1" mesh="torso_geom_2_hat_jaw" />
+        <geom name="torso_geom_3" type="mesh" rgba="1 1 1 1" mesh="torso_geom_3_hat_skull" />
+        <geom name="torso_geom_4" type="mesh" rgba="1 1 1 1" mesh="torso_geom_4_hat_ribs_scap" />
+        <site name="CLAV_marker" pos="0.02766 0.387 0.001007" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="RSHO_marker" pos="-0.02314 0.3962 0.2036" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="LSHO_marker" pos="-0.0283 0.3999 -0.198" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="C7_marker" pos="-0.08174 0.4306 -0.005021" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="T10_marker" pos="-0.1129 0.1975 -4.856e-05" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="RBAK_marker" pos="-0.1417 0.3112 0.09869" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+        <site name="STRN_marker" pos="0.1156 0.2273 0.002486" size="0.01" group="4" rgba="1 0.1 0.5 0.5" />
+      </body>
+    </body>
+  </worldbody>
+  <contact>
+    <pair geom1="ground-plane" geom2="pelvis_geom_1" />
+    <pair geom1="ground-plane" geom2="pelvis_geom_2" />
+    <pair geom1="ground-plane" geom2="pelvis_geom_3" />
+    <pair geom1="ground-plane" geom2="femur_r_geom_1" />
+    <pair geom1="ground-plane" geom2="tibia_r_geom_1" />
+    <pair geom1="ground-plane" geom2="tibia_r_geom_2" />
+    <pair geom1="ground-plane" geom2="talus_r_geom_1" />
+    <pair geom1="ground-plane" geom2="calcn_r_geom_1" />
+    <pair geom1="ground-plane" geom2="toes_r_geom_1" />
+    <pair geom1="ground-plane" geom2="patella_r_geom_1" />
+    <pair geom1="ground-plane" geom2="femur_l_geom_1" />
+    <pair geom1="ground-plane" geom2="tibia_l_geom_1" />
+    <pair geom1="ground-plane" geom2="tibia_l_geom_2" />
+    <pair geom1="ground-plane" geom2="talus_l_geom_1" />
+    <pair geom1="ground-plane" geom2="calcn_l_geom_1" />
+    <pair geom1="ground-plane" geom2="toes_l_geom_1" />
+    <pair geom1="ground-plane" geom2="patella_l_geom_1" />
+    <pair geom1="ground-plane" geom2="torso_geom_1" />
+    <pair geom1="ground-plane" geom2="torso_geom_2" />
+    <pair geom1="ground-plane" geom2="torso_geom_3" />
+    <pair geom1="ground-plane" geom2="torso_geom_4" />
+  </contact>
+  <equality>
+    <joint joint1="walker_knee_r_translation1" joint2="knee_angle_r" polycoef="9.877e-08 0.00324 -0.00239 0.0005816 5.886e-07" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="walker_knee_r_translation2" joint2="knee_angle_r" polycoef="7.949e-11 0.006076 -0.001298 -2.706e-06 6.452e-07" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="walker_knee_r_rotation2" joint2="knee_angle_r" polycoef="-1.473e-08 0.0791 -0.03285 -0.02522 0.01083" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="walker_knee_r_rotation3" joint2="knee_angle_r" polycoef="1.089e-08 0.3695 -0.1695 0.02516 3.505e-07" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint name="mtp_angle_r_locked" joint1="mtp_angle_r" polycoef="0 0 0 0 0" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="patellofemoral_r_translation1" joint2="knee_angle_r" polycoef="0.05515 -0.0158 -0.03583 0.01403 -0.000925" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="patellofemoral_r_translation2" joint2="knee_angle_r" polycoef="-0.01121 -0.05052 0.009607 0.01364 -0.003621" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="patellofemoral_r_rotation1" joint2="knee_angle_r" polycoef="0.01051 0.02476 -1.316 0.7163 -0.1383" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint name="patellofemoral_r_translation3_locked" joint1="patellofemoral_r_translation3" polycoef="0.00284182 0 0 0 0" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="walker_knee_l_translation1" joint2="knee_angle_l" polycoef="9.877e-08 0.00324 -0.00239 0.0005816 5.886e-07" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="walker_knee_l_translation2" joint2="knee_angle_l" polycoef="-7.949e-11 -0.006076 0.001298 2.706e-06 -6.452e-07" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="walker_knee_l_rotation2" joint2="knee_angle_l" polycoef="-1.473e-08 0.0791 -0.03285 -0.02522 0.01083" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="walker_knee_l_rotation3" joint2="knee_angle_l" polycoef="-1.089e-08 -0.3695 0.1695 -0.02516 -3.505e-07" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint name="mtp_angle_l_locked" joint1="mtp_angle_l" polycoef="0 0 0 0 0" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="patellofemoral_l_translation1" joint2="knee_angle_l" polycoef="0.05515 -0.0158 -0.03583 0.01403 -0.000925" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="patellofemoral_l_translation2" joint2="knee_angle_l" polycoef="-0.01121 -0.05052 0.009607 0.01364 -0.003621" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint joint1="patellofemoral_l_rotation1" joint2="knee_angle_l" polycoef="0.01051 0.02476 -1.316 0.7163 -0.1383" solimp="0.9999 0.9999 0.001 0.5 2" />
+    <joint name="patellofemoral_l_translation3_locked" joint1="patellofemoral_l_translation3" polycoef="-0.00284182 0 0 0 0" solimp="0.9999 0.9999 0.001 0.5 2" />
+  </equality>
+  <actuator>
+    <general name="lumbar_ext" class="motor" joint="lumbar_extension" gainprm="1 0 0 0 0 0 0 0 0 0" />
+    <general name="lumbar_bend" class="motor" joint="lumbar_bending" gainprm="1 0 0 0 0 0 0 0 0 0" />
+    <general name="lumbar_rot" class="motor" joint="lumbar_rotation" gainprm="1 0 0 0 0 0 0 0 0 0" />
+  </actuator>
+  <keyframe>
+    <key name="default-pose" qpos="0 0.93 0 0 0 0 0 0 0 9.877e-08 7.949e-11 0 -1.473e-08 1.089e-08 0 0 0 0.05515 -0.01121 0.002842 0.01051 0 0 0 9.877e-08 -7.949e-11 0 -1.473e-08 -1.089e-08 0 0 0 0.05515 -0.01121 -0.002842 0.01051 0 0 0" />
+  </keyframe>
+</mujoco>
