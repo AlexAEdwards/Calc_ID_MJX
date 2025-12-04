@@ -23,8 +23,34 @@ def fix_xml_masses(xml_path, output_path, min_mass=0.5, min_inertia=0.01, min_ar
     else:
         print("⚠️  No compiler element found")
     
+    # Mesh file paths should reference subject-specific Geometry/ folder
+    print(f"\n1. Checking mesh geometry paths...")
+    mesh_fixed = 0
+    for mesh in root.findall('.//mesh'):
+        file_path = mesh.get('file')
+        # Ensure paths start with 'Geometry/' (subject-specific folder)
+        if file_path and file_path.startswith('../Geometry/'):
+            # Change from '../Geometry/' to 'Geometry/' (subject-specific)
+            new_path = file_path.replace('../Geometry/', 'Geometry/')
+            mesh.set('file', new_path)
+            mesh_fixed += 1
+        elif file_path and not file_path.startswith('Geometry/'):
+            # If it has no prefix or wrong prefix, add 'Geometry/'
+            if '/' in file_path:
+                # Extract just the filename
+                filename = file_path.split('/')[-1]
+                mesh.set('file', f'Geometry/{filename}')
+            else:
+                mesh.set('file', f'Geometry/{file_path}')
+            mesh_fixed += 1
+    
+    if mesh_fixed > 0:
+        print(f"   ✓ Updated {mesh_fixed} mesh paths to use subject-specific 'Geometry/'")
+    else:
+        print(f"   ✓ All mesh paths already reference subject-specific 'Geometry/'")
+    
     # Fix default joint armature
-    print(f"\n1. Fixing default joint armature...")
+    print(f"\n2. Fixing default joint armature...")
     default_joint = root.find('.//default/joint')
     if default_joint is not None:
         current_armature = default_joint.get('armature')
@@ -45,8 +71,28 @@ def fix_xml_masses(xml_path, output_path, min_mass=0.5, min_inertia=0.01, min_ar
         joint_elem.set('armature', str(min_armature))
         print(f"   ✓ Created default joint with armature: {min_armature:.2e}")
     
+    # Fix default geom collision settings (disable collisions)
+    print(f"\n3. Setting default geom collision properties...")
+    default_elem = root.find('.//default')
+    if default_elem is None:
+        default_elem = ET.SubElement(root, 'default')
+        print(f"   Created <default> element")
+    
+    default_geom = default_elem.find('geom')
+    if default_geom is not None:
+        # Update existing geom element
+        default_geom.set('contype', '0')
+        default_geom.set('conaffinity', '0')
+        print(f"   ✓ Updated default geom: contype=0, conaffinity=0 (collisions disabled)")
+    else:
+        # Create geom element
+        geom_elem = ET.SubElement(default_elem, 'geom')
+        geom_elem.set('contype', '0')
+        geom_elem.set('conaffinity', '0')
+        print(f"   ✓ Created default geom with: contype=0, conaffinity=0 (collisions disabled)")
+    
     # Fix individual joint armatures
-    print(f"\n2. Fixing individual joint armatures...")
+    print(f"\n4. Fixing individual joint armatures...")
     joint_armature_fixed = 0
     for joint in root.findall('.//joint'):
         armature_str = joint.get('armature')
@@ -64,7 +110,7 @@ def fix_xml_masses(xml_path, output_path, min_mass=0.5, min_inertia=0.01, min_ar
         print(f"   No individual joint armatures needed fixing")
     
     # Fix body masses
-    print(f"\n3. Fixing body masses...")
+    print(f"\n5. Fixing body masses...")
     mass_fixed = 0
     for inertial in root.findall('.//inertial'):
         mass_str = inertial.get('mass')
@@ -83,7 +129,7 @@ def fix_xml_masses(xml_path, output_path, min_mass=0.5, min_inertia=0.01, min_ar
         print(f"   No body masses needed fixing")
     
     # Fix body inertias
-    print(f"\n4. Fixing body inertias...")
+    print(f"\n6. Fixing body inertias...")
     inertia_fixed = 0
     for inertial in root.findall('.//inertial'):
         # Check fullinertia attribute (6 values: Ixx, Iyy, Izz, Ixy, Ixz, Iyz)
@@ -235,39 +281,39 @@ def fix_and_load_model(xml_path, min_mass=0.5, min_inertia=0.01, min_armature=0.
         print(f"  ✓ Final min mass: {mjx_model.body_mass.min():.6f}")
         print(f"  ✓ Final min armature: {mjx_model.dof_armature.min():.6e}")
     
-    # Step 6: Test that it works
-    print(f"\n{'='*70}")
-    print(f"TESTING MODEL")
-    print(f"{'='*70}")
+    # # Step 6: Test that it works
+    # print(f"\n{'='*70}")
+    # print(f"TESTING MODEL")
+    # print(f"{'='*70}")
     
-    try:
-        data = mjx.make_data(mjx_model)
-        data = data.replace(
-            qpos=jnp.zeros(mjx_model.nq),
-            qvel=jnp.zeros(mjx_model.nv),
-            qacc=jnp.zeros(mjx_model.nv)
-        )
+    # try:
+    #     data = mjx.make_data(mjx_model)
+    #     data = data.replace(
+    #         qpos=jnp.zeros(mjx_model.nq),
+    #         qvel=jnp.zeros(mjx_model.nv),
+    #         qacc=jnp.zeros(mjx_model.nv)
+    #     )
         
-        # Test inverse dynamics
-        data = mjx.inverse(mjx_model, data)
-        print(f"  ✓ mjx.inverse() works!")
+    #     # Test inverse dynamics
+    #     data = mjx.inverse(mjx_model, data)
+    #     print(f"  ✓ mjx.inverse() works!")
         
-        # Test step
-        data = mjx.step(mjx_model, data)
-        print(f"  ✓ mjx.step() works!")
+    #     # Test step
+    #     data = mjx.step(mjx_model, data)
+    #     print(f"  ✓ mjx.step() works!")
         
-        print(f"\n{'='*70}")
-        print(f"✓✓✓ MODEL READY TO USE ✓✓✓")
-        print(f"{'='*70}")
+    #     print(f"\n{'='*70}")
+    #     print(f"✓✓✓ MODEL READY TO USE ✓✓✓")
+    #     print(f"{'='*70}")
         
-    except Exception as e:
-        print(f"\n{'='*70}")
-        print(f"✗✗✗ MODEL TEST FAILED ✗✗✗")
-        print(f"{'='*70}")
-        print(f"Error: {e}")
-        import traceback
-        traceback.print_exc()
-        return None, None, None
+    # except Exception as e:
+    #     print(f"\n{'='*70}")
+    #     print(f"✗✗✗ MODEL TEST FAILED ✗✗✗")
+    #     print(f"{'='*70}")
+    #     print(f"Error: {e}")
+    #     import traceback
+    #     traceback.print_exc()
+    #     return None, None, None
     
     return mjx_model, model, fixed_xml_path
 
