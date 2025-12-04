@@ -1,4 +1,3 @@
-
 from pyexpat import model
 import mujoco  # Only needed for visualization code at bottom
 from mujoco import mjx
@@ -340,14 +339,186 @@ def calculate_knee_coupled_accelerations(qacc_matrix, qpos_matrix, qvel_matrix):
     theta_dot_r = qvel_matrix[:, 11]
     theta_ddot_r = qacc_matrix[:, 11]
     for idx, coeffs in right_knee_polys.items():
-        # First derivative: dq/dtheta
+        # Position
+        qpos_matrix[:, idx] = (
+            coeffs[0]
+            + coeffs[1] * theta_r
+            + coeffs[2] * theta_r**2
+            + coeffs[3] * theta_r**3
+            + coeffs[4] * theta_r**4
+        )
+        # Velocity (chain rule)
         dq_dtheta = (
             coeffs[1]
             + 2 * coeffs[2] * theta_r
             + 3 * coeffs[3] * theta_r**2
             + 4 * coeffs[4] * theta_r**3
         )
-        # Second derivative: d2q/dtheta2
+        qvel_matrix[:, idx] = dq_dtheta * theta_dot_r
+        # Acceleration (chain rule)
+        d2q_dtheta2 = (
+            2 * coeffs[2]
+            + 6 * coeffs[3] * theta_r
+            + 12 * coeffs[4] * theta_r**2
+        )
+        qacc_matrix[:, idx] = d2q_dtheta2 * (theta_dot_r**2) + dq_dtheta * theta_ddot_r
+
+    # Left knee: main angle index 26, velocity index 26, acceleration index 26
+    theta_l = qpos_matrix[:, 26]
+    theta_dot_l = qvel_matrix[:, 26]
+    theta_ddot_l = qacc_matrix[:, 26]
+    for idx, coeffs in left_knee_polys.items():
+        qpos_matrix[:, idx] = (
+            coeffs[0]
+            + coeffs[1] * theta_l
+            + coeffs[2] * theta_l**2
+            + coeffs[3] * theta_l**3
+            + coeffs[4] * theta_l**4
+        )
+        dq_dtheta = (
+            coeffs[1]
+            + 2 * coeffs[2] * theta_l
+            + 3 * coeffs[3] * theta_l**2
+            + 4 * coeffs[4] * theta_l**3
+        )
+        qvel_matrix[:, idx] = dq_dtheta * theta_dot_l
+        d2q_dtheta2 = (
+            2 * coeffs[2]
+            + 6 * coeffs[3] * theta_l
+            + 12 * coeffs[4] * theta_l**2
+        )
+        qacc_matrix[:, idx] = d2q_dtheta2 * (theta_dot_l**2) + dq_dtheta * theta_ddot_l
+
+    return qpos_matrix, qvel_matrix, qacc_matrix
+
+def map_patient_to_qpos(patient_row, qpos_size=39):
+    """Map a single row of patient data to MuJoCo qpos array"""
+    qpos = np.zeros(qpos_size)
+    for col_name, qpos_idx in qpos_mapping.items():
+        if col_name in patient_row:
+            qpos[qpos_idx] = patient_row[col_name]
+    return qpos
+
+def resample_dataframes_to_uniform_timestep(pos_data, vel_data, acc_data, moment_matrix=None, grf_matrix=None, cop_data=None, dt=0.01):
+    """
+    Resample pos_data, vel_data, acc_data, and optionally moment_matrix, grf_matrix, cop_data so that their time vectors are consistent and uniformly spaced at dt (default 0.01s).
+    Assumes the first column is the time vector for each DataFrame or matrix.
+    Returns new DataFrames for pos/vel/acc/cop and numpy arrays for moment_matrix and grf_matrix, all resampled to the new time base.
+    """
+    import numpy as np
+    import pandas as pd
+    # Extract time vectors
+    t_pos = pos_data.iloc[:, 0].values
+    t_vel = vel_data.iloc[:, 0].values
+    t_acc = acc_data.iloc[:, 0].values
+    t_list = [t_pos, t_vel, t_acc]
+    dfs = [pos_data, vel_data, acc_data]
+    names = ['pos_data', 'vel_data', 'acc_data']
+    # Convert moment_matrix and grf_matrix to DataFrames if provided
+    moment_df = None
+    grf_df = None
+    if moment_matrix is not None:
+        t_mom = moment_matrix[:, 0]
+        t_list.append(t_mom)
+        moment_df = pd.DataFrame(moment_matrix, columns=[f'col_{i}' for i in range(moment_matrix.shape[1])])
+        dfs.append(moment_df)
+        names.append('moment_matrix')
+    if grf_matrix is not None:
+        t_grf = grf_matrix[:, 0]
+        t_list.append(t_grf)
+        grf_df = pd.DataFrame(grf_matrix, columns=[f'col_{i}' for i in range(grf_matrix.shape[1])])
+        dfs.append(grf_df)
+        names.append('grf_matrix')
+    if cop_data is not None:
+        t_cop = cop_data.iloc[:, 0].values
+        t_list.append(t_cop)
+        dfs.append(cop_data)
+        names.append('cop_data')
+    # Use the union of all time points, then create a uniform grid
+    t_min = max(t[0] for t in t_list)
+    t_max = min(t[-1] for t in t_list)
+    t_uniform = np.arange(t_min, t_max + dt/2, dt)
+    print("\n--- Resampling DataFrames ---")
+    for name, df in zip(names, dfs):
+        print(f"{name}: before = {len(df)} timesteps, after = {len(t_uniform)} timesteps")
+    # Interpolate each DataFrame to the new time base
+    def interp_df(df, t_uniform):
+        t = df.iloc[:, 0].values
+        data_interp = np.empty((len(t_uniform), df.shape[1]))
+        data_interp[:, 0] = t_uniform
+        for col in range(1, df.shape[1]):
+            data_interp[:, col] = np.interp(t_uniform, t, df.iloc[:, col].values)
+        return pd.DataFrame(data_interp, columns=df.columns)
+    resampled = [interp_df(df, t_uniform) for df in dfs]
+    # Convert moment and grf back to numpy arrays if they were provided
+    out = []
+    idx = 0
+    for arg, name in zip([pos_data, vel_data, acc_data, moment_matrix, grf_matrix, cop_data],
+                         ['pos_data', 'vel_data', 'acc_data', 'moment_matrix', 'grf_matrix', 'cop_data']):
+        if arg is not None:
+            if name == 'moment_matrix' or name == 'grf_matrix':
+                out.append(resampled[idx].to_numpy())
+            else:
+                out.append(resampled[idx])
+            idx += 1
+        else:
+            out.append(None)
+    return tuple(out)
+
+def calculate_knee_coupled_coords_all(qpos_matrix, qvel_matrix, qacc_matrix):
+    """
+    Fill coupled knee coordinates for position, velocity, and acceleration using polynomials and their derivatives.
+    Returns updated (qpos_matrix, qvel_matrix, qacc_matrix).
+    """
+    qpos_matrix = qpos_matrix.copy()
+    qvel_matrix = qvel_matrix.copy()
+    qacc_matrix = qacc_matrix.copy()
+
+    # Right knee polynomials (driven by knee_angle_r at index 11)
+    right_knee_polys = {
+        9: [9.877e-08, 0.00324, -0.00239, 0.0005816, 5.886e-07],
+        10: [7.949e-11, 0.006076, -0.001298, -2.706e-06, 6.452e-07],
+        12: [-1.473e-08, 0.0791, -0.03285, -0.02522, 0.01083],
+        13: [1.089e-08, 0.3695, -0.1695, 0.02516, 3.505e-07],
+        17: [0.05515, -0.0158, -0.03583, 0.01403, -0.000925],
+        18: [-0.01121, -0.05052, 0.009607, 0.01364, -0.003621],
+        19: [0.00284182, 0, 0, 0, 0],
+        20: [0.01051, 0.02476, -1.316, 0.7163, -0.1383],
+    }
+    # Left knee polynomials (driven by knee_angle_l at index 26)
+    left_knee_polys = {
+        24: [1.003e-07, 0.00324, -0.00239, 0.0005816, 5.886e-07],
+        25: [8.073e-11, 0.006076, -0.001298, -2.706e-06, 6.452e-07],
+        27: [-1.473e-08, 0.0791, -0.03285, -0.02522, 0.01083],
+        28: [1.089e-08, 0.3695, -0.1695, 0.02516, 3.505e-07],
+        32: [0.05515, -0.0158, -0.03583, 0.01403, -0.000925],
+        33: [-0.01121, -0.05052, 0.009607, 0.01364, -0.003621],
+        34: [0.00284182, 0, 0, 0, 0],
+        35: [0.01051, 0.02476, -1.316, 0.7163, -0.1383],
+    }
+
+    # Right knee: main angle index 11
+    theta_r = qpos_matrix[:, 11]
+    theta_dot_r = qvel_matrix[:, 11]
+    theta_ddot_r = qacc_matrix[:, 11]
+    for idx, coeffs in right_knee_polys.items():
+        # Position
+        qpos_matrix[:, idx] = (
+            coeffs[0]
+            + coeffs[1] * theta_r
+            + coeffs[2] * theta_r**2
+            + coeffs[3] * theta_r**3
+            + coeffs[4] * theta_r**4
+        )
+        # Velocity (chain rule)
+        dq_dtheta = (
+            coeffs[1]
+            + 2 * coeffs[2] * theta_r
+            + 3 * coeffs[3] * theta_r**2
+            + 4 * coeffs[4] * theta_r**3
+        )
+        qvel_matrix[:, idx] = dq_dtheta * theta_dot_r
+        # Acceleration (chain rule)
         d2q_dtheta2 = (
             2 * coeffs[2]
             + 6 * coeffs[3] * theta_r
@@ -360,12 +531,20 @@ def calculate_knee_coupled_accelerations(qacc_matrix, qpos_matrix, qvel_matrix):
     theta_dot_l = qvel_matrix[:, 26]
     theta_ddot_l = qacc_matrix[:, 26]
     for idx, coeffs in left_knee_polys.items():
+        qpos_matrix[:, idx] = (
+            coeffs[0]
+            + coeffs[1] * theta_l
+            + coeffs[2] * theta_l**2
+            + coeffs[3] * theta_l**3
+            + coeffs[4] * theta_l**4
+        )
         dq_dtheta = (
             coeffs[1]
             + 2 * coeffs[2] * theta_l
             + 3 * coeffs[3] * theta_l**2
             + 4 * coeffs[4] * theta_l**3
         )
+        qvel_matrix[:, idx] = dq_dtheta * theta_dot_l
         d2q_dtheta2 = (
             2 * coeffs[2]
             + 6 * coeffs[3] * theta_l
@@ -373,8 +552,116 @@ def calculate_knee_coupled_accelerations(qacc_matrix, qpos_matrix, qvel_matrix):
         )
         qacc_matrix[:, idx] = d2q_dtheta2 * (theta_dot_l**2) + dq_dtheta * theta_ddot_l
 
-    return qacc_matrix
+    return qpos_matrix, qvel_matrix, qacc_matrix
 
+def setup_and_precompute_jacobians(model_path, qpos_matrix, qvel_matrix):
+    """
+    One-time setup: compute Jacobians for entire trajectory.
+    
+    Returns:
+        mj_model, mjx_model, body_ids, jacobian_data
+    """
+    # Load model
+    mj_model = mujoco.MjModel.from_xml_path(model_path)
+    
+    # Find calcaneus bodies
+    calcn_r_id = mujoco.mj_name2id(mj_model, mujoco.mjtObj.mjOBJ_BODY, 'calcn_r')
+    calcn_l_id = mujoco.mj_name2id(mj_model, mujoco.mjtObj.mjOBJ_BODY, 'calcn_l')
+    body_ids = [calcn_r_id, calcn_l_id]
+
+    # Pre-compute Jacobians
+    print("\nPre-computing Jacobians for trajectory...")
+    n_timesteps = qpos_matrix.shape[0]
+    n_bodies = len(body_ids)
+    nv = mj_model.nv
+    
+    # Storage: [timestep, body, direction, dof]
+    jacp_all = np.zeros((n_timesteps, n_bodies, 3, nv))
+    jacr_all = np.zeros((n_timesteps, n_bodies, 3, nv))
+    
+    mj_data = mujoco.MjData(mj_model)
+    
+    for t in range(n_timesteps):
+        # Set configuration
+        mj_data.qpos[:] = qpos_matrix[t, :]
+        mj_data.qvel[:] = qvel_matrix[t, :]
+        
+        # CRITICAL: Update kinematics AND dynamics so Jacobians are computed correctly
+        # mj_kinematics only updates positions, not the quantities needed for Jacobians
+        mujoco.mj_forward(mj_model, mj_data)  # Full forward pass
+        
+        # Compute Jacobian for each foot
+        for i, body_id in enumerate(body_ids):
+            jacp = np.zeros((3, nv))
+            jacr = np.zeros((3, nv))
+            # Use MuJoCo's built-in Jacobian computation (correct!)
+            mujoco.mj_jacBody(mj_model, mj_data, jacp, jacr, body_id)
+            
+            jacp_all[t, i] = jacp
+            jacr_all[t, i] = jacr
+            
+            # Debug: Check if Jacobian is non-zero
+            if t == 0:
+                print(f"  Body {body_id} (index {i}): jacp norm = {np.linalg.norm(jacp):.6f}, jacr norm = {np.linalg.norm(jacr):.6f}")
+        
+        if t % 500 == 0:
+            print(f"  Processed {t}/{n_timesteps} timesteps")
+    
+    print(f"✓ Jacobians computed for all {n_timesteps} timesteps")
+    
+    # Create MJX model
+    mjx_model = mjx.put_model(mj_model)
+    
+    jacobian_data = {
+        'jacp': jnp.array(jacp_all),
+        'jacr': jnp.array(jacr_all),
+        'body_ids': jnp.array(body_ids)
+    }
+    
+    return mj_model, mjx_model, body_ids, jacobian_data
+
+def compute_grf_contribution(model, external_forces,
+                          jacp_t, jacr_t, body_ids_array):
+    """
+    Compute GRF contribution to joint torques using Jacobian transpose method.
+    
+    Args:
+        model: MJX model
+        external_forces: (nbody, 6) - GRFs on all bodies [torque(3), force(3)]
+        jacp_t: (n_bodies, 3, nv) - Position Jacobians at timestep t
+        jacr_t: (n_bodies, 3, nv) - Rotation Jacobians at timestep t
+        body_ids_array: (n_bodies,) - Body IDs with GRFs
+    
+    Returns:
+        qfrc_from_grf: (nv,) - Joint torques from GRF contribution
+    """
+    
+    # Compute GRF contribution using pre-computed Jacobians
+    qfrc_from_grf = jnp.zeros(model.nv)
+    
+    for i in range(len(body_ids_array)):
+        body_id = body_ids_array[i]  # Get the actual body ID
+        
+        # Index external_forces by body_id (full array of all bodies)
+        xfrc = external_forces[body_id]  # (6,) [torque(3), force(3)]
+        
+        # Extract torque and force components  
+        # NOTE: MuJoCo xfrc format is [torque(3), force(3)]
+        force = xfrc[:3]
+        torque = xfrc[3:]
+        
+        # Get the corresponding Jacobian for THIS body
+        # jacp_t and jacr_t are shape (n_bodies, 3, nv) where n_bodies=len(body_ids_array)
+        # Index by i (0, 1, ...) to get Jacobian for i-th body in body_ids_array
+        jacp = jacp_t[i]  # (3, nv) - Jacobian for body_ids_array[i]
+        jacr = jacr_t[i]  # (3, nv) - Jacobian for body_ids_array[i]
+        
+        # Map to joint space: tau = J^T @ F
+        # Force contribution: J_p^T @ force
+        # Torque contribution: J_r^T @ torque
+        qfrc_from_body = jacp.T @ force + jacr.T @ torque
+        qfrc_from_grf += qfrc_from_body
+    return qfrc_from_grf
 
 # ============================================================================
 # PLOTTING FUNCTIONS
@@ -616,762 +903,89 @@ def compare_with_reference_tau(time_vec, joint_forces_computed, tau_csv_path, jo
     print("✓ Torque comparison plots generated")
     print("="*70)
 
-def plot_moment_arm_vectors(time_vec, r_vec_r_all, r_vec_l_all):
-    """Plot moment arm vectors (distance from COP to ankle)."""
-    r_vec_r_all = jnp.array(r_vec_r_all)
-    r_vec_l_all = jnp.array(r_vec_l_all)
-    fig, axes = plt.subplots(1,2, figsize=(14, 5))
-
-    axes[0].plot(time_vec, r_vec_r_all[:,0], label='Right Foot X', linewidth=2)
-    axes[0].plot(time_vec, r_vec_r_all[:,1], label='Right Foot Y', linewidth=2)
-    axes[0].plot(time_vec, r_vec_r_all[:,2], label='Right Foot Z', linewidth=2)
-    axes[0].set_xlabel('Time (s)')
-    axes[0].set_ylabel('Distance (m)')
-    axes[0].set_title('Moment Arm Vectors: Right Foot (Ankle - COP)')
-    axes[0].legend()
-    axes[0].grid(True, alpha=0.3)
-    axes[1].plot(time_vec, r_vec_l_all[:,0], label='Left Foot X', linewidth=2)
-    axes[1].plot(time_vec, r_vec_l_all[:,1], label='Left Foot Y', linewidth=2)
-    axes[1].plot(time_vec, r_vec_l_all[:,2], label='Left Foot Z', linewidth=2)
-    axes[1].set_xlabel('Time (s)')
-    axes[1].set_ylabel('Distance (m)')
-    axes[1].set_title('Moment Arm Vectors: Left Foot (Ankle - COP)')
-    axes[1].legend()
-    axes[1].grid(True, alpha=0.3)
-    plt.show()
-
-def plot_calculated_moments(time_vec, moment_added_l_matrix, moment_added_r_matrix):
-    """Plot calculated moments from cross product M = r × F."""
-    fig_moments, axes_moments = plt.subplots(3, 2, figsize=(14, 10), facecolor='white')
-    fig_moments.suptitle('Calculated Moments from Cross Product: M = r × F (Ankle-COP distance × GRF)', 
-                         fontsize=14, fontweight='bold')
-
-    # Left foot moments
-    axes_moments[0, 0].plot(time_vec, moment_added_l_matrix[:, 0], 'b-', linewidth=2)
-    axes_moments[0, 0].set_ylabel('Mx (N⋅m)', fontsize=12)
-    axes_moments[0, 0].set_title('Left Foot - X Component', fontsize=12, fontweight='bold')
-    axes_moments[0, 0].grid(True, alpha=0.3)
-
-    axes_moments[1, 0].plot(time_vec, moment_added_l_matrix[:, 1], 'g-', linewidth=2)
-    axes_moments[1, 0].set_ylabel('My (N⋅m)', fontsize=12)
-    axes_moments[1, 0].set_title('Left Foot - Y Component', fontsize=12, fontweight='bold')
-    axes_moments[1, 0].grid(True, alpha=0.3)
-
-    axes_moments[2, 0].plot(time_vec, moment_added_l_matrix[:, 2], 'r-', linewidth=2)
-    axes_moments[2, 0].set_ylabel('Mz (N⋅m)', fontsize=12)
-    axes_moments[2, 0].set_xlabel('Time (s)', fontsize=12)
-    axes_moments[2, 0].set_title('Left Foot - Z Component', fontsize=12, fontweight='bold')
-    axes_moments[2, 0].grid(True, alpha=0.3)
-
-    # Right foot moments
-    axes_moments[0, 1].plot(time_vec, moment_added_r_matrix[:, 0], 'b-', linewidth=2)
-    axes_moments[0, 1].set_ylabel('Mx (N⋅m)', fontsize=12)
-    axes_moments[0, 1].set_title('Right Foot - X Component', fontsize=12, fontweight='bold')
-    axes_moments[0, 1].grid(True, alpha=0.3)
-
-    axes_moments[1, 1].plot(time_vec, moment_added_r_matrix[:, 1], 'g-', linewidth=2)
-    axes_moments[1, 1].set_ylabel('My (N⋅m)', fontsize=12)
-    axes_moments[1, 1].set_title('Right Foot - Y Component', fontsize=12, fontweight='bold')
-    axes_moments[1, 1].grid(True, alpha=0.3)
-
-    axes_moments[2, 1].plot(time_vec, moment_added_r_matrix[:, 2], 'r-', linewidth=2)
-    axes_moments[2, 1].set_ylabel('Mz (N⋅m)', fontsize=12)
-    axes_moments[2, 1].set_xlabel('Time (s)', fontsize=12)
-    axes_moments[2, 1].set_title('Right Foot - Z Component', fontsize=12, fontweight='bold')
-    axes_moments[2, 1].grid(True, alpha=0.3)
-
-    plt.tight_layout()
-    plt.show()
-
-def plot_moment_magnitudes(time_vec, moment_added_l_matrix, moment_added_r_matrix):
-    """Plot magnitude of calculated moments."""
-    fig_mag, (ax_l, ax_r) = plt.subplots(1, 2, figsize=(14, 5), facecolor='white')
-    fig_mag.suptitle('Magnitude of Calculated Moments: ||M|| = ||r × F||', 
-                     fontsize=14, fontweight='bold')
-
-    moment_mag_l = np.linalg.norm(moment_added_l_matrix, axis=1)
-    moment_mag_r = np.linalg.norm(moment_added_r_matrix, axis=1)
-
-    ax_l.plot(time_vec, moment_mag_l, 'purple', linewidth=2)
-    ax_l.set_xlabel('Time (s)', fontsize=12)
-    ax_l.set_ylabel('Moment Magnitude (N⋅m)', fontsize=12)
-    ax_l.set_title('Left Foot', fontsize=12, fontweight='bold')
-    ax_l.grid(True, alpha=0.3)
-
-    ax_r.plot(time_vec, moment_mag_r, 'orange', linewidth=2)
-    ax_r.set_xlabel('Time (s)', fontsize=12)
-    ax_r.set_ylabel('Moment Magnitude (N⋅m)', fontsize=12)
-    ax_r.set_title('Right Foot', fontsize=12, fontweight='bold')
-    ax_r.grid(True, alpha=0.3)
-
-    plt.tight_layout()
-    plt.show()
-
-def plot_ground_reaction_forces(time_vec, external_forces, body_id_l, body_id_r):
+def compare_with_reference_tau_individual(time_vec, joint_forces_computed, tau_csv_path, joint_names):
     """
-    Plot ground reaction forces from external_forces array.
+    Compare computed joint forces with reference tau.csv data.
+    Generates individual, professional-quality plots for specific joints.
     
     Parameters:
     -----------
     time_vec : array
-        Time vector
-    external_forces : array (nbody, 6, num_timesteps)
-        External forces array where first 3 rows are forces [Fx, Fy, Fz]
-    body_id_l : int
-        Body ID for left foot (calcaneus)
-    body_id_r : int
-        Body ID for right foot (calcaneus)
-    """
-    # Extract GRF data (first 3 rows are forces)
-    grf_left = external_forces[body_id_l, 0:3, :].T  # Shape: (num_timesteps, 3)
-    grf_right = external_forces[body_id_r, 0:3, :].T  # Shape: (num_timesteps, 3)
-    
-    fig, axes = plt.subplots(3, 2, figsize=(14, 10), facecolor='white')
-    fig.suptitle('Ground Reaction Forces from External Forces Array', 
-                 fontsize=14, fontweight='bold')
-    
-    # Left foot GRFs
-    axes[0, 0].plot(time_vec, grf_left[:, 0], 'b-', linewidth=2)
-    axes[0, 0].set_ylabel('Fx (N)', fontsize=12)
-    axes[0, 0].set_title('Left Foot - Anterior-Posterior Force', fontsize=12, fontweight='bold')
-    axes[0, 0].grid(True, alpha=0.3)
-    
-    axes[1, 0].plot(time_vec, grf_left[:, 1], 'g-', linewidth=2)
-    axes[1, 0].set_ylabel('Fy (N)', fontsize=12)
-    axes[1, 0].set_title('Left Foot - Medial-Lateral Force', fontsize=12, fontweight='bold')
-    axes[1, 0].grid(True, alpha=0.3)
-    
-    axes[2, 0].plot(time_vec, grf_left[:, 2], 'r-', linewidth=2)
-    axes[2, 0].set_ylabel('Fz (N)', fontsize=12)
-    axes[2, 0].set_xlabel('Time (s)', fontsize=12)
-    axes[2, 0].set_title('Left Foot - Vertical Force', fontsize=12, fontweight='bold')
-    axes[2, 0].grid(True, alpha=0.3)
-    
-    # Right foot GRFs
-    axes[0, 1].plot(time_vec, grf_right[:, 0], 'b-', linewidth=2)
-    axes[0, 1].set_ylabel('Fx (N)', fontsize=12)
-    axes[0, 1].set_title('Right Foot - Anterior-Posterior Force', fontsize=12, fontweight='bold')
-    axes[0, 1].grid(True, alpha=0.3)
-    
-    axes[1, 1].plot(time_vec, grf_right[:, 1], 'g-', linewidth=2)
-    axes[1, 1].set_ylabel('Fy (N)', fontsize=12)
-    axes[1, 1].set_title('Right Foot - Medial-Lateral Force', fontsize=12, fontweight='bold')
-    axes[1, 1].grid(True, alpha=0.3)
-    
-    axes[2, 1].plot(time_vec, grf_right[:, 2], 'r-', linewidth=2)
-    axes[2, 1].set_ylabel('Fz (N)', fontsize=12)
-    axes[2, 1].set_xlabel('Time (s)', fontsize=12)
-    axes[2, 1].set_title('Right Foot - Vertical Force', fontsize=12, fontweight='bold')
-    axes[2, 1].grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-
-def plot_ankle_cop_distances(time_vec, distance_ankle_r_all, distance_ankle_l_all):
-    """Plot distances between ankle and center of pressure."""
-    plt.figure(figsize=(10, 5))
-    plt.plot(time_vec, distance_ankle_r_all, label='Right Foot', linewidth=2)
-    plt.plot(time_vec, distance_ankle_l_all, label='Left Foot', linewidth=2)
-    plt.xlabel('Time (s)')
-    plt.ylabel('Distance (m)')
-    plt.title('Distance between Ankle and COP')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.show()
-
-def plot_3d_trajectories(calcn_l_positions, cop_l_positions, calcn_r_positions, 
-                         cop_r_positions, ankle_pos_l_all):
-    """Plot 3D trajectories of calcaneus, ankle, and COP positions."""
-    calcn_l_array = np.array(calcn_l_positions)
-    cop_l_array = np.array(cop_l_positions)
-    calcn_r_array = np.array(calcn_r_positions)
-    cop_r_array = np.array(cop_r_positions)
-    ankle_pos_l_all = np.array(ankle_pos_l_all)
-
-    fig = plt.figure(figsize=(14, 6))
-
-    # Left foot subplot
-    ax1 = fig.add_subplot(121, projection='3d')
-    ax1.plot(calcn_l_array[:, 0], calcn_l_array[:, 1], calcn_l_array[:, 2], 
-            label='Left Calcaneus', linewidth=2, color='blue')
-    ax1.plot(cop_l_array[:, 0], cop_l_array[:, 1], cop_l_array[:, 2], 
-            label='Left COP', linewidth=2, color='red', linestyle='--')
-    ax1.plot(ankle_pos_l_all[:, 0], ankle_pos_l_all[:, 1], ankle_pos_l_all[:, 2], 
-            label='Left Ankle', linewidth=2, color='green', linestyle='--')
-    ax1.set_xlabel('X (m)')
-    ax1.set_ylabel('Y (m)')
-    ax1.set_zlabel('Z (m)')
-    ax1.set_title('Left Foot: Calcaneus and COP')
-    ax1.legend()
-
-    # Set equal aspect ratio for left foot
-    all_left_data = np.vstack([calcn_l_array, cop_l_array, ankle_pos_l_all])
-    max_range_l = np.array([all_left_data[:,0].max()-all_left_data[:,0].min(),
-                            all_left_data[:,1].max()-all_left_data[:,1].min(),
-                            all_left_data[:,2].max()-all_left_data[:,2].min()]).max() / 2.0
-    mid_x_l = (all_left_data[:,0].max()+all_left_data[:,0].min()) * 0.5
-    mid_y_l = (all_left_data[:,1].max()+all_left_data[:,1].min()) * 0.5
-    mid_z_l = (all_left_data[:,2].max()+all_left_data[:,2].min()) * 0.5
-    ax1.set_xlim(mid_x_l - max_range_l, mid_x_l + max_range_l)
-    ax1.set_ylim(mid_y_l - max_range_l, mid_y_l + max_range_l)
-    ax1.set_zlim(mid_z_l - max_range_l, mid_z_l + max_range_l)
-
-    # Right foot subplot
-    ax2 = fig.add_subplot(122, projection='3d')
-    ax2.plot(calcn_r_array[:, 0], calcn_r_array[:, 1], calcn_r_array[:, 2], 
-            label='Right Calcaneus', linewidth=2, color='blue')
-    ax2.plot(cop_r_array[:, 0], cop_r_array[:, 1], cop_r_array[:, 2], 
-            label='Right COP', linewidth=2, color='red', linestyle='--')
-    ax2.set_xlabel('X (m)')
-    ax2.set_ylabel('Y (m)')
-    ax2.set_zlabel('Z (m)')
-    ax2.set_title('Right Foot: Calcaneus and COP')
-    ax2.legend()
-
-    # Set equal aspect ratio for right foot
-    all_right_data = np.vstack([calcn_r_array, cop_r_array])
-    max_range_r = np.array([all_right_data[:,0].max()-all_right_data[:,0].min(),
-                            all_right_data[:,1].max()-all_right_data[:,1].min(),
-                            all_right_data[:,2].max()-all_right_data[:,2].min()]).max() / 2.0
-    mid_x_r = (all_right_data[:,0].max()+all_right_data[:,0].min()) * 0.5
-    mid_y_r = (all_right_data[:,1].max()+all_right_data[:,1].min()) * 0.5
-    mid_z_r = (all_right_data[:,2].max()+all_right_data[:,2].min()) * 0.5
-    ax2.set_xlim(mid_x_r - max_range_r, mid_x_r + max_range_r)
-    ax2.set_ylim(mid_y_r - max_range_r, mid_y_r + max_range_r)
-    ax2.set_zlim(mid_z_r - max_range_r, mid_z_r + max_range_r)
-
-    plt.tight_layout()
-    plt.show()
-
-def plot_pelvis_trajectory(pelvis_positions):
-    """Plot 3D trajectory of pelvis during gait."""
-    pelvis_array = np.array(pelvis_positions)
-
-    fig = plt.figure(figsize=(10, 8))
-    ax = fig.add_subplot(111, projection='3d')
-    ax.plot(pelvis_array[:, 0], pelvis_array[:, 1], pelvis_array[:, 2], 
-            linewidth=2, color='purple', marker='o', markersize=2)
-    ax.set_xlabel('X (m) - Anterior-Posterior')
-    ax.set_ylabel('Y (m) - Medial-Lateral')
-    ax.set_zlabel('Z (m) - Vertical')
-    ax.set_title('Pelvis 3D Trajectory During Gait')
-    ax.grid(True, alpha=0.3)
-
-    # Set equal aspect ratio
-    max_range = np.array([pelvis_array[:,0].max()-pelvis_array[:,0].min(),
-                          pelvis_array[:,1].max()-pelvis_array[:,1].min(),
-                          pelvis_array[:,2].max()-pelvis_array[:,2].min()]).max() / 2.0
-    mid_x = (pelvis_array[:,0].max()+pelvis_array[:,0].min()) * 0.5
-    mid_y = (pelvis_array[:,1].max()+pelvis_array[:,1].min()) * 0.5
-    mid_z = (pelvis_array[:,2].max()+pelvis_array[:,2].min()) * 0.5
-    ax.set_xlim(mid_x - max_range, mid_x + max_range)
-    ax.set_ylim(mid_y - max_range, mid_y + max_range)
-    ax.set_zlim(mid_z - max_range, mid_z + max_range)
-
-    plt.tight_layout()
-    plt.show()
-
-def plot_force_components(time_vec, qfrc_bias_all, qfrc_passive_all, qfrc_actuator_all, qfrc_constraint_all, ctrl_forces_all, MA_qacc_all, MA_qacc_from_data_all, joint_names):
-    """
-    Plot the components of generalized forces: bias, passive, actuator, constraint, inverse dynamics control, and mass-acceleration forces.
-    
-    Parameters:
-    -----------
-    time_vec : array
-        Time vector
-    qfrc_bias_all : list or array
-        Bias forces (Coriolis and centrifugal) at each timestep
-    qfrc_passive_all : list or array
-        Passive forces (springs, dampers) at each timestep
-    qfrc_actuator_all : list or array
-        Actuator forces at each timestep
-    qfrc_constraint_all : list or array
-        Constraint forces (joint limits, contacts) at each timestep
-    ctrl_forces_all : list or array
-        Control forces from inverse dynamics (qfrc_inverse) at each timestep
-    MA_qacc_all : list or array
-        Mass-acceleration forces from inverse dynamics (M * qacc from mjx.inverse)
-    MA_qacc_from_data_all : list or array
-        Mass-acceleration forces from mass matrix (M * qacc directly calculated)
+        Time vector from simulation
+    joint_forces_computed : array
+        Computed joint forces (num_timesteps, nv)
+    tau_csv_path : str
+        Path to tau.csv reference file
     joint_names : list
         Names of joints/DOFs
     """
-    # Convert to numpy arrays if needed
-    qfrc_bias_array = np.array(qfrc_bias_all)
-    qfrc_passive_array = np.array(qfrc_passive_all)
-    qfrc_actuator_array = np.array(qfrc_actuator_all)
-    qfrc_constraint_array = np.array(qfrc_constraint_all)
-    ctrl_forces_array = np.array(ctrl_forces_all)
-    MA_qacc_array = np.array(MA_qacc_all)
-    MA_qacc_from_data_array = np.array(MA_qacc_from_data_all)
-    
-    # Group DOFs for organized plotting
-    dof_groups = {
-        'Pelvis': [
-            (3, 'pelvis_tilt'), (4, 'pelvis_list'), (5, 'pelvis_rotation'),
-            (0, 'pelvis_tx'), (1, 'pelvis_ty'), (2, 'pelvis_tz')
-        ],
-        'Right Leg - Hip & Knee': [
-            (6, 'hip_flexion_r'), (7, 'hip_adduction_r'), (8, 'hip_rotation_r'),
-            (11, 'knee_angle_r')
-        ],
-        'Right Leg - Ankle & Foot': [
-            (14, 'ankle_angle_r'), (15, 'subtalar_angle_r'), (16, 'mtp_angle_r')
-        ],
-        'Left Leg - Hip & Knee': [
-            (21, 'hip_flexion_l'), (22, 'hip_adduction_l'), (23, 'hip_rotation_l'),
-            (26, 'knee_angle_l')
-        ],
-        'Left Leg - Ankle & Foot': [
-            (29, 'ankle_angle_l'), (30, 'subtalar_angle_l'), (31, 'mtp_angle_l')
-        ],
-        'Lumbar': [
-            (32, 'lumbar_extension'), (33, 'lumbar_bending'), (34, 'lumbar_rotation')
-        ]
-    }
-    
     print("\n" + "="*70)
-    print("FORCE COMPONENTS ANALYSIS")
+    print("GENERATING INDIVIDUAL COMPARISON PLOTS (MJX vs Addbiomechanics)")
     print("="*70)
     
-    for group_name, dof_indices in dof_groups.items():
-        n_dofs = len(dof_indices)
-        n_cols = min(3, n_dofs)
-        n_rows = (n_dofs + n_cols - 1) // n_cols
+    # Load reference tau data
+    import pandas as pd
+    tau_df = pd.read_csv(tau_csv_path)
+    
+    # Convert to numpy array
+    joint_forces_array = np.array(joint_forces_computed)
+    
+    # Create mapping between joint names and tau columns
+    joint_name_mapping = {
+        'hip_flexion_r': 'hip_flexion_r',
+        'knee_angle_r': 'knee_angle_r',
+        'ankle_angle_r': 'ankle_angle_r',
+        'subtalar_angle_r': 'subtalar_angle_r',
+    }
+    
+    # Get tau time vector
+    tau_time = tau_df['time'].values
+    
+    # Joints to plot
+    target_joints = ['ankle_angle_r', 'subtalar_angle_r', 'knee_angle_r', 'hip_flexion_r']
+    
+    for target_joint in target_joints:
+        # Find index of this joint in joint_names
+        if target_joint not in joint_names:
+            print(f"Warning: {target_joint} not found in joint_names list.")
+            continue
+            
+        dof_idx = joint_names.index(target_joint)
+        joint_name = joint_names[dof_idx]
+        computed_torque = joint_forces_array[:, dof_idx]
         
-        fig, axes = plt.subplots(n_rows, n_cols, figsize=(4.5*n_cols, 3.5*n_rows), facecolor='white', dpi=80)
-        fig.suptitle(f'Force Components: {group_name}', fontsize=14, fontweight='bold')
+        # Create individual figure
+        fig, ax = plt.subplots(figsize=(10, 6), facecolor='white', dpi=100)
         
-        if n_dofs == 1:
-            axes = [axes]
+        # Try to find matching column in tau.csv
+        tau_column = joint_name_mapping.get(target_joint)
+        
+        if tau_column and tau_column in tau_df.columns:
+            reference_torque = tau_df[tau_column].values
+            
+            # Plot both signals with thicker lines
+            ax.plot(time_vec, computed_torque, linewidth=3, label='MJX', 
+                   color='blue', alpha=0.9)
+            ax.plot(tau_time, reference_torque, linewidth=3, label='Addbiomechanics', 
+                   color='red', alpha=0.9, linestyle='--')
+            
         else:
-            axes = axes.flatten() if n_rows > 1 else axes
+            # Only plot computed if no reference available
+            ax.plot(time_vec, computed_torque, linewidth=3, label='MJX', 
+                   color='blue', alpha=0.9)
+            print(f"  {joint_name}: No reference data found")
         
-        for plot_idx, (dof_idx, joint_name) in enumerate(dof_indices):
-            if dof_idx >= qfrc_bias_array.shape[1]:
-                continue
-                
-            ax = axes[plot_idx]
-            ax.set_facecolor('white')
-            
-            # Extract forces for this DOF
-            bias_forces = qfrc_bias_array[:, dof_idx]
-            passive_forces = qfrc_passive_array[:, dof_idx]
-            actuator_forces = qfrc_actuator_array[:, dof_idx]
-            constraint_forces = qfrc_constraint_array[:, dof_idx]
-            ctrl_forces = ctrl_forces_array[:, dof_idx]
-            MA_qacc_forces = MA_qacc_array[:, dof_idx]
-            MA_qacc_from_data_forces = MA_qacc_from_data_array[:, dof_idx]
-            
-            # Plot each component
-            ax.plot(time_vec, bias_forces, linewidth=2, label='Bias (Coriolis/Centrifugal)', 
-                   color='blue', alpha=0.7)
-            ax.plot(time_vec, passive_forces, linewidth=2, label='Passive (Springs/Dampers)', 
-                   color='green', alpha=0.7)
-            ax.plot(time_vec, actuator_forces, linewidth=2, label='Actuator', 
-                   color='red', alpha=0.7)
-            ax.plot(time_vec, constraint_forces, linewidth=2, label='Constraint (Limits/Contacts)', 
-                   color='purple', alpha=0.7)
-            ax.plot(time_vec, ctrl_forces, linewidth=2.5, label='Control (Inverse Dynamics)', 
-                   color='orange', alpha=0.8, linestyle='--')
-            ax.plot(time_vec, MA_qacc_forces, linewidth=2, label='M·qacc (from inverse)', 
-                   color='brown', alpha=0.7, linestyle='-.')
-            ax.plot(time_vec, MA_qacc_from_data_forces, linewidth=2, label='M·qacc (from M matrix)', 
-                   color='darkred', alpha=0.7, linestyle=':')
-            
-            ax.axhline(y=0, color='k', linestyle='--', linewidth=0.8, alpha=0.5)
-            
-            # Labels and formatting
-            ax.set_xlabel('Time (s)', fontsize=10)
-            ax.set_ylabel('Force/Torque (N·m or N)', fontsize=10)
-            
-            # Calculate statistics
-            bias_max = np.abs(bias_forces).max()
-            passive_max = np.abs(passive_forces).max()
-            actuator_max = np.abs(actuator_forces).max()
-            constraint_max = np.abs(constraint_forces).max()
-            ctrl_max = np.abs(ctrl_forces).max()
-            MA_qacc_max = np.abs(MA_qacc_forces).max()
-            MA_qacc_from_data_max = np.abs(MA_qacc_from_data_forces).max()
-            
-            ax.set_title(f'{joint_name}\n|Bias|: {bias_max:.1f}, |Pass|: {passive_max:.1f}, |Act|: {actuator_max:.1f}, |Const|: {constraint_max:.1f}, |Ctrl|: {ctrl_max:.1f}, |M·q(inv)|: {MA_qacc_max:.1f}, |M·q(M)|: {MA_qacc_from_data_max:.1f}', 
-                        fontsize=7, fontweight='bold')
-            ax.grid(True, alpha=0.3)
-            ax.legend(fontsize=5, loc='best', ncol=2)
-            
-            print(f"  {joint_name:25s}: Bias={bias_max:8.2f}, Passive={passive_max:8.2f}, Actuator={actuator_max:8.2f}, Constraint={constraint_max:8.2f}, Control={ctrl_max:8.2f}, M·qacc(inv)={MA_qacc_max:8.2f}, M·qacc(M)={MA_qacc_from_data_max:8.2f}")
-        
-        # Hide unused subplots
-        for idx in range(n_dofs, len(axes)):
-            axes[idx].set_visible(False)
+        # Styling
+        ax.set_title(f'{joint_name} Torque', fontsize=18, fontweight='bold')
+        ax.set_xlabel('Time (s)', fontsize=16)
+        ax.set_ylabel('Torque (N·m)', fontsize=16)
+        ax.tick_params(axis='both', which='major', labelsize=14)
+        ax.grid(True, alpha=0.3)
+        ax.legend(fontsize=14, loc='best')
         
         plt.tight_layout()
-        print(f"\n✓ Figure created: {group_name}")
-        
-        # Clear memory after each group to prevent OOM
-        import gc
-        gc.collect()
-    
-    # Create summary comparison plot with reduced size to save memory
-    fig_summary, axes_summary = plt.subplots(7, 1, figsize=(12, 18), facecolor='white', dpi=80)
-    fig_summary.suptitle('Force Components - Total Magnitude Across All DOFs', 
-                         fontsize=14, fontweight='bold')
-    
-    # Calculate total magnitudes at each timestep
-    total_bias = np.linalg.norm(qfrc_bias_array, axis=1)
-    total_passive = np.linalg.norm(qfrc_passive_array, axis=1)
-    total_actuator = np.linalg.norm(qfrc_actuator_array, axis=1)
-    total_constraint = np.linalg.norm(qfrc_constraint_array, axis=1)
-    total_ctrl = np.linalg.norm(ctrl_forces_array, axis=1)
-    total_MA_qacc = np.linalg.norm(MA_qacc_array, axis=1)
-    total_MA_qacc_from_data = np.linalg.norm(MA_qacc_from_data_array, axis=1)
-    
-    axes_summary[0].plot(time_vec, total_bias, linewidth=2, color='blue')
-    axes_summary[0].set_ylabel('Total |Bias| (N·m)', fontsize=12)
-    axes_summary[0].set_title('Bias Forces (Coriolis/Centrifugal)', fontsize=12, fontweight='bold')
-    axes_summary[0].grid(True, alpha=0.3)
-    
-    axes_summary[1].plot(time_vec, total_passive, linewidth=2, color='green')
-    axes_summary[1].set_ylabel('Total |Passive| (N·m)', fontsize=12)
-    axes_summary[1].set_title('Passive Forces (Springs/Dampers)', fontsize=12, fontweight='bold')
-    axes_summary[1].grid(True, alpha=0.3)
-    
-    axes_summary[2].plot(time_vec, total_actuator, linewidth=2, color='red')
-    axes_summary[2].set_ylabel('Total |Actuator| (N·m)', fontsize=12)
-    axes_summary[2].set_title('Actuator Forces', fontsize=12, fontweight='bold')
-    axes_summary[2].grid(True, alpha=0.3)
-    
-    axes_summary[3].plot(time_vec, total_constraint, linewidth=2, color='purple')
-    axes_summary[3].set_ylabel('Total |Constraint| (N·m)', fontsize=12)
-    axes_summary[3].set_title('Constraint Forces (Limits/Contacts)', fontsize=12, fontweight='bold')
-    axes_summary[3].grid(True, alpha=0.3)
-    
-    axes_summary[4].plot(time_vec, total_ctrl, linewidth=2, color='orange')
-    axes_summary[4].set_ylabel('Total |Control| (N·m)', fontsize=12)
-    axes_summary[4].set_title('Control Forces (Inverse Dynamics)', fontsize=12, fontweight='bold')
-    axes_summary[4].grid(True, alpha=0.3)
-    
-    # Plot both MA_qacc datasets together for comparison
-    axes_summary[5].plot(time_vec, total_MA_qacc, linewidth=2, color='brown', label='M·qacc (from inverse)', linestyle='-.')
-    axes_summary[5].plot(time_vec, total_MA_qacc_from_data, linewidth=2, color='darkred', label='M·qacc (from M matrix)', linestyle=':')
-    axes_summary[5].set_ylabel('Total |M·qacc| (N·m)', fontsize=12)
-    axes_summary[5].set_title('Mass-Acceleration Forces Comparison', fontsize=12, fontweight='bold')
-    axes_summary[5].legend(fontsize=10, loc='best')
-    axes_summary[5].grid(True, alpha=0.3)
-    
-    # Plot the difference between the two MA_qacc calculations
-    diff_MA_qacc = total_MA_qacc - total_MA_qacc_from_data
-    axes_summary[6].plot(time_vec, diff_MA_qacc, linewidth=2, color='black')
-    axes_summary[6].set_xlabel('Time (s)', fontsize=12)
-    axes_summary[6].set_ylabel('Difference (N·m)', fontsize=12)
-    axes_summary[6].set_title('Difference: M·qacc(inverse) - M·qacc(M matrix)', fontsize=12, fontweight='bold')
-    axes_summary[6].axhline(y=0, color='red', linestyle='--', linewidth=1, alpha=0.5)
-    axes_summary[6].grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-    
-    print("\n" + "="*70)
-    print("FORCE COMPONENTS PLOTTING COMPLETE")
-    print("="*70)
+        plt.show()
 
-def plot_inverse_dynamics_forces(joint_forces_array, joint_forces_modified_array, time_array, joint_names):
-    """
-    Plot inverse dynamics forces organized by body region.
-    
-    Parameters:
-    -----------
-    joint_forces_array : array
-        Original qfrc_inverse forces
-    joint_forces_modified_array : array
-        Modified forces (qfrc_inverse + M*qacc)
-    time_array : array
-        Time vector
-    joint_names : list
-        Names of joints/DOFs
-    """
-    # Group DOFs for organized plotting
-    dof_groups = {
-        'Pelvis': [
-            (3, 'pelvis_tilt'), (4, 'pelvis_list'), (5, 'pelvis_rotation'),
-            (0, 'pelvis_tx'), (1, 'pelvis_ty'), (2, 'pelvis_tz')
-        ],
-        'Right Leg - Hip & Knee': [
-            (6, 'hip_flexion_r'), (7, 'hip_adduction_r'), (8, 'hip_rotation_r'),
-            (11, 'knee_angle_r')
-        ],
-        'Right Leg - Ankle & Foot': [
-            (14, 'ankle_angle_r'), (15, 'subtalar_angle_r'), (16, 'mtp_angle_r')
-        ],
-        'Left Leg - Hip & Knee': [
-            (21, 'hip_flexion_l'), (22, 'hip_adduction_l'), (23, 'hip_rotation_l'),
-            (26, 'knee_angle_l')
-        ],
-        'Left Leg - Ankle & Foot': [
-            (29, 'ankle_angle_l'), (30, 'subtalar_angle_l'), (31, 'mtp_angle_l')
-        ],
-        'Lumbar': [
-            (36, 'lumbar_extension'), (37, 'lumbar_bending'), (38, 'lumbar_rotation')
-        ]
-    }
-
-    # Create a figure for each DOF group
-    for group_name, dof_list in dof_groups.items():
-        # Determine subplot layout
-        n_dofs = len(dof_list)
-        if n_dofs <= 3:
-            n_rows, n_cols = n_dofs, 1
-        elif n_dofs == 4:
-            n_rows, n_cols = 2, 2
-        elif n_dofs <= 6:
-            n_rows, n_cols = 3, 2
-        else:
-            n_rows, n_cols = 4, 2
-        
-        fig, axes = plt.subplots(n_rows, n_cols, figsize=(10, 2.5*n_rows), facecolor='white', dpi=80)
-        fig.suptitle(f'Inverse Dynamics Forces: {group_name}', fontsize=16, fontweight='bold')
-        
-        # Flatten axes array for easier indexing
-        if n_dofs == 1:
-            axes = [axes]
-        else:
-            axes = axes.flatten() if isinstance(axes, np.ndarray) else [axes]
-        
-        # Plot each DOF in the group
-        for idx, (joint_idx, joint_name) in enumerate(dof_list):
-            ax = axes[idx]
-            ax.set_facecolor('white')
-            
-            # Get force data for this DOF
-            forces = joint_forces_array[:, joint_idx]
-            forces_modified = joint_forces_modified_array[:, joint_idx]
-            
-            # Calculate statistics for original forces
-            mean_val = np.mean(forces)
-            max_val = np.max(forces)
-            min_val = np.min(forces)
-            std_val = np.std(forces)
-            
-            # Calculate statistics for modified forces
-            mean_val_mod = np.mean(forces_modified)
-            max_val_mod = np.max(forces_modified)
-            min_val_mod = np.min(forces_modified)
-            std_val_mod = np.std(forces_modified)
-            
-            # Plot both datasets
-            ax.plot(time_array, forces, linewidth=2, color='darkblue', label='qfrc_inverse', alpha=0.8)
-            ax.plot(time_array, forces_modified, linewidth=2, color='darkorange', 
-                   label='qfrc_inverse + M·qacc', alpha=0.8, linestyle='--')
-            ax.axhline(y=0, color='k', linestyle='--', linewidth=0.8, alpha=0.5)
-            ax.axhline(y=mean_val, color='darkblue', linestyle=':', linewidth=1, alpha=0.5, 
-                       label=f'Mean (orig): {mean_val:.1f}')
-            ax.axhline(y=mean_val_mod, color='darkorange', linestyle=':', linewidth=1, alpha=0.5, 
-                       label=f'Mean (mod): {mean_val_mod:.1f}')
-            
-            # Labels and formatting
-            ax.set_xlabel('Time (s)', fontsize=10)
-            ax.set_ylabel('Force/Torque (N·m or N)', fontsize=10)
-            ax.set_title(f'{joint_name}\nOrig: [{min_val:.1f}, {max_val:.1f}] | Mod: [{min_val_mod:.1f}, {max_val_mod:.1f}]', 
-                         fontsize=10, fontweight='bold')
-            ax.grid(True, alpha=0.3)
-            ax.legend(fontsize=7, loc='upper right')
-            
-            print(f"  {joint_name:25s}: Orig=[{min_val:8.2f}, {max_val:8.2f}], Mod=[{min_val_mod:8.2f}, {max_val_mod:8.2f}]")
-        
-        # Hide unused subplots
-        for idx in range(n_dofs, len(axes)):
-            axes[idx].set_visible(False)
-        
-        plt.tight_layout()
-        print(f"\n✓ Figure created: {group_name}")
-
-    # Create two additional figures showing all DOFs overlaid for comparison
-    # Figure 1: Original forces only
-    fig_all, ax_all = plt.subplots(figsize=(14, 7), facecolor='white', dpi=80)
-    ax_all.set_facecolor('white')
-
-    # Plot all DOFs with different colors
-    colors = plt.cm.tab20(np.linspace(0, 1, len(joint_names)))
-    for idx in range(min(joint_forces_array.shape[1], len(joint_names))):
-        forces = joint_forces_array[:, idx]
-        ax_all.plot(time_array, forces, linewidth=1.5, alpha=0.7, 
-                    color=colors[idx], label=joint_names[idx])
-
-    ax_all.axhline(y=0, color='k', linestyle='--', linewidth=1, alpha=0.5)
-    ax_all.set_xlabel('Time (s)', fontsize=12)
-    ax_all.set_ylabel('Force/Torque (N·m or N)', fontsize=12)
-    ax_all.set_title('All DOFs - Original Inverse Dynamics Forces (qfrc_inverse)', fontsize=14, fontweight='bold')
-    ax_all.grid(True, alpha=0.3)
-    ax_all.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=9, ncol=1)
-    plt.tight_layout()
-
-    print("\n✓ Figure created: All DOFs - Original Forces")
-    
-    # Figure 2: Modified forces only
-    fig_mod, ax_mod = plt.subplots(figsize=(14, 7), facecolor='white', dpi=80)
-    ax_mod.set_facecolor('white')
-
-    # Plot all modified DOFs with different colors
-    for idx in range(min(joint_forces_modified_array.shape[1], len(joint_names))):
-        forces_modified = joint_forces_modified_array[:, idx]
-        ax_mod.plot(time_array, forces_modified, linewidth=1.5, alpha=0.7, 
-                    color=colors[idx], label=joint_names[idx])
-
-    ax_mod.axhline(y=0, color='k', linestyle='--', linewidth=1, alpha=0.5)
-    ax_mod.set_xlabel('Time (s)', fontsize=12)
-    ax_mod.set_ylabel('Force/Torque (N·m or N)', fontsize=12)
-    ax_mod.set_title('All DOFs - Modified Inverse Dynamics Forces (qfrc_inverse + M·qacc)', fontsize=14, fontweight='bold')
-    ax_mod.grid(True, alpha=0.3)
-    ax_mod.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=9, ncol=1)
-    plt.tight_layout()
-
-    print("\n✓ Figure created: All DOFs - Modified Forces")
-
-    # Print overall statistics for both datasets
-    print("\n" + "="*70)
-    print("SUMMARY STATISTICS FOR INVERSE DYNAMICS FORCES")
-    print("="*70)
-    
-    all_forces = joint_forces_array.flatten()
-    all_forces_mod = joint_forces_modified_array.flatten()
-    
-    print("\nOriginal Forces (qfrc_inverse):")
-    print(f"  Overall min:  {np.min(all_forces):10.2f} N·m")
-    print(f"  Overall max:  {np.max(all_forces):10.2f} N·m")
-    print(f"  Overall mean: {np.mean(all_forces):10.2f} N·m")
-    print(f"  Overall std:  {np.std(all_forces):10.2f} N·m")
-    
-    print("\nModified Forces (qfrc_inverse + M·qacc):")
-    print(f"  Overall min:  {np.min(all_forces_mod):10.2f} N·m")
-    print(f"  Overall max:  {np.max(all_forces_mod):10.2f} N·m")
-    print(f"  Overall mean: {np.mean(all_forces_mod):10.2f} N·m")
-    print(f"  Overall std:  {np.std(all_forces_mod):10.2f} N·m")
-
-    # Find the DOF with maximum absolute force
-    max_abs_forces = np.abs(joint_forces_array).max(axis=0)
-    max_abs_forces_mod = np.abs(joint_forces_modified_array).max(axis=0)
-    
-    max_dof_idx = np.argmax(max_abs_forces)
-    max_force = max_abs_forces[max_dof_idx]
-    print(f"\nDOF with largest original force: {joint_names[max_dof_idx]} (DOF {max_dof_idx}) = {max_force:.2f} N·m")
-    
-    max_dof_idx_mod = np.argmax(max_abs_forces_mod)
-    max_force_mod = max_abs_forces_mod[max_dof_idx_mod]
-    print(f"DOF with largest modified force: {joint_names[max_dof_idx_mod]} (DOF {max_dof_idx_mod}) = {max_force_mod:.2f} N·m")
-
-    print("\n✓ Displaying all inverse dynamics plots...")
-    plt.show()
-
-def setup_and_precompute_jacobians(xml_path, qpos_matrix, qvel_matrix):
-    """
-    One-time setup: compute Jacobians for entire trajectory.
-    
-    Returns:
-        mj_model, mjx_model, body_ids, jacobian_data
-    """
-    print("Loading model...")
-    mj_model = mujoco.MjModel.from_xml_path(xml_path)
-    
-    # Find calcaneus bodies
-    calcn_r_id = mujoco.mj_name2id(mj_model, mujoco.mjtObj.mjOBJ_BODY, 'calcn_r')
-    calcn_l_id = mujoco.mj_name2id(mj_model, mujoco.mjtObj.mjOBJ_BODY, 'calcn_l')
-    body_ids = [calcn_r_id, calcn_l_id]
-
-    
-    # Pre-compute Jacobians
-    print("\nPre-computing Jacobians for trajectory...")
-    n_timesteps = qpos_matrix.shape[0]
-    n_bodies = len(body_ids)
-    nv = mj_model.nv
-    
-    # Storage: [timestep, body, direction, dof]
-    jacp_all = np.zeros((n_timesteps, n_bodies, 3, nv))
-    jacr_all = np.zeros((n_timesteps, n_bodies, 3, nv))
-    
-    mj_data = mujoco.MjData(mj_model)
-    
-    for t in range(n_timesteps):
-        # Set configuration
-        mj_data.qpos[:] = qpos_matrix[t, :]
-        mj_data.qvel[:] = qvel_matrix[t, :]
-        
-        # CRITICAL: Update kinematics AND dynamics so Jacobians are computed correctly
-        # mj_kinematics only updates positions, not the quantities needed for Jacobians
-        mujoco.mj_forward(mj_model, mj_data)  # Full forward pass
-        
-        # Compute Jacobian for each foot
-        for i, body_id in enumerate(body_ids):
-            jacp = np.zeros((3, nv))
-            jacr = np.zeros((3, nv))
-            # Use MuJoCo's built-in Jacobian computation (correct!)
-            mujoco.mj_jacBody(mj_model, mj_data, jacp, jacr, body_id)
-            
-            jacp_all[t, i] = jacp
-            jacr_all[t, i] = jacr
-            
-            # Debug: Check if Jacobian is non-zero
-            if t == 0:
-                print(f"  Body {body_id} (index {i}): jacp norm = {np.linalg.norm(jacp):.6f}, jacr norm = {np.linalg.norm(jacr):.6f}")
-        
-        if t % 500 == 0:
-            print(f"  Processed {t}/{n_timesteps} timesteps")
-    
-    print(f"✓ Jacobians computed for all {n_timesteps} timesteps")
-    
-    # Create MJX model
-    mjx_model = mjx.put_model(mj_model)
-    
-    jacobian_data = {
-        'jacp': jnp.array(jacp_all),
-        'jacr': jnp.array(jacr_all),
-        'body_ids': jnp.array(body_ids)
-    }
-    
-    return mj_model, mjx_model, body_ids, jacobian_data
-
-@jax.jit
-def compute_grf_contribution(model, external_forces,
-                          jacp_t, jacr_t, body_ids_array):
-    """
-    Compute GRF contribution to joint torques using Jacobian transpose method.
-    
-    Args:
-        model: MJX model
-        external_forces: (nbody, 6) - GRFs on all bodies [torque(3), force(3)]
-        jacp_t: (n_bodies, 3, nv) - Position Jacobians at timestep t
-        jacr_t: (n_bodies, 3, nv) - Rotation Jacobians at timestep t
-        body_ids_array: (n_bodies,) - Body IDs with GRFs
-    
-    Returns:
-        qfrc_from_grf: (nv,) - Joint torques from GRF contribution
-    """
-    
-    # Compute GRF contribution using pre-computed Jacobians
-    qfrc_from_grf = jnp.zeros(model.nv)
-    
-    for i in range(len(body_ids_array)):
-        body_id = body_ids_array[i]  # Get the actual body ID
-        
-        # Index external_forces by body_id (full array of all bodies)
-        xfrc = external_forces[body_id]  # (6,) [torque(3), force(3)]
-        
-        # Extract torque and force components  
-        # NOTE: MuJoCo xfrc format is [torque(3), force(3)]
-        force = xfrc[:3]
-        torque = xfrc[3:]
-        
-        # Get the corresponding Jacobian for THIS body
-        # jacp_t and jacr_t are shape (n_bodies, 3, nv) where n_bodies=len(body_ids_array)
-        # Index by i (0, 1, ...) to get Jacobian for i-th body in body_ids_array
-        jacp = jacp_t[i]  # (3, nv) - Jacobian for body_ids_array[i]
-        jacr = jacr_t[i]  # (3, nv) - Jacobian for body_ids_array[i]
-        
-        # Map to joint space: tau = J^T @ F
-        # Force contribution: J_p^T @ force
-        # Torque contribution: J_r^T @ torque
-        qfrc_from_body = jacp.T @ force + jacr.T @ torque
-        qfrc_from_grf += qfrc_from_body
-    return qfrc_from_grf
 # ============================================================================
 # MAIN SCRIPT
 # ============================================================================
@@ -1590,12 +1204,12 @@ print(f"✓ Allocated arrays: joint_forces shape={joint_forces_over_time.shape},
       f"positions shape={pelvis_positions.shape}")
 
 # Save qpos_matrix, qvel_matrix, qacc_matrix for later analysis
-np.save("qpos_matrix.npy", qpos_matrix)
-np.save("qvel_matrix.npy", qvel_matrix)
-np.save("qacc_matrix.npy", qacc_matrix)
-np.save("grf_left.npy", grf_left)
-np.save("grf_right.npy", grf_right)
-np.save
+# np.save("qpos_matrix.npy", qpos_matrix)
+# np.save("qvel_matrix.npy", qvel_matrix)
+# np.save("qacc_matrix.npy", qacc_matrix)
+# np.save("grf_left.npy", grf_left)
+# np.save("grf_right.npy", grf_right)
+# np.save
 contact_force_total_normal = []  # Store total normal contact force at each timestep
 
 # Computing inverse dynamics
@@ -1870,6 +1484,10 @@ tip_id_R = mujoco.mj_name2id(mj_model, mujoco.mjtObj.mjOBJ_SITE, "grf_right_tip"
 arrow_id_R = mujoco.mj_name2id(mj_model, mujoco.mjtObj.mjOBJ_GEOM, "grf_right_arrow")
 
 with mujoco.viewer.launch_passive(mj_model, mj_data) as viewer:
+    # Hide wrapping surfaces (often in geom group 1 or 2)
+    viewer.opt.geomgroup[1] = 0
+    viewer.opt.geomgroup[2] = 0
+
     t = 0
     scale = 0.001  # Adjust as needed for force arrow length
     while viewer.is_running():
@@ -1935,15 +1553,16 @@ joint_names = [
 
 # Plot all inverse dynamics results (original and modified)
 joint_forces_modified_array = np.array(joint_forces_modified_over_time)
-plot_inverse_dynamics_forces(joint_forces_array, joint_forces_modified_array, time_array, joint_names)
+# plot_inverse_dynamics_forces(joint_forces_array, joint_forces_modified_array, time_array, joint_names)
 
 # # Plot force components (bias, passive, actuator, constraint, control, and mass-acceleration forces)
-plot_force_components(time_array, qfrc_bias_all, qfrc_passive_all, 
-                      qfrc_actuator_all, qfrc_constraint_all, joint_forces_over_time, MA_qacc_all, MA_qacc_from_data_all, joint_names)
+# plot_force_components(time_array, qfrc_bias_all, qfrc_passive_all, 
+#                       qfrc_actuator_all, qfrc_constraint_all, joint_forces_over_time, MA_qacc_all, MA_qacc_from_data_all, joint_names)
 
 # Compare computed torques with reference tau.csv
 tau_csv_path = "PatientData/Falisse_2017_subject_01/tau.csv"
-compare_with_reference_tau(time_array, joint_forces_over_time, tau_csv_path, joint_names)
+# compare_with_reference_tau(time_array, joint_forces_over_time, tau_csv_path, joint_names)
+compare_with_reference_tau_individual(time_array, joint_forces_over_time, tau_csv_path, joint_names)
 
 print("="*70)
 print("All plots generated successfully!")
