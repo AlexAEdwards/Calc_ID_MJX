@@ -1,0 +1,75 @@
+program: "TransformerFinal/train.py"
+method: "bayes"
+run_cap: 1000
+metric:
+  name: "val/torque_mae_percent_bilateral_mean"
+  goal: "minimize"
+
+command:
+  - "--output_dir=outputs/local_hpo_202606"
+  - "--exp_name=LocalBayesEqualKnee202606"
+  - "--epochs=40"
+  - "--batch_size=64"
+  - "--stride=16"
+  - "--prediction_margin_frames=20"
+  - "--log_interval=10"
+  - "--scan_workers=3"
+  - "--moments_weight=0.02"
+  - "--val_subjects_json=TransformerFinal/HPO_shared_val_subjects_subj_oa_y.json"
+  - "--trim_cop=false"
+  - "--includePelvisEuler=false"
+  - "--includeJacobianInput=true"
+  - "--UseNoised=true"
+  - "--NoisedGT=true"
+  - "--UseGRFNormCOP=false"
+  - "--UseOSFiltering=false"
+  - "--use_GRF_NoFilt=true"
+  - "--cop_mask=false"
+  - "--use_contact_weighting=false"
+  - "--magOnOff=false"
+  - "--contactOnOff=false"
+  - "--magWeight=1.0"
+  - "--grf_correction_weight=0"
+  - "--output_reg_weight=0"
+  - "--balance_speed_gender=false"
+  - "--gender_balance=true"
+  - "--speed_bin_width=0.1"
+  - "--speed_weight_power=0.5"
+  - "--weight_clip_ratio=3.0"
+  - "--BestModel_TorqueWeighting={\"hip_flexion\":1.0,\"hip_add\":1.0,\"knee\":1.0,\"ankle\":3.0,\"subtalar\":1.0,\"lumbar_extension\":1.0,\"lumbar_bending\":1.0,\"lumbar_rotation\":1.0}"
+
+parameters:
+  data_dir:
+    values:
+      - "TrustedDataSetNoised12Distributed_EdgeHold_OYIncluded"
+      - "TrustedDataSetNoised12Distributed_AllPatients_EstimatedWeights"
+  d_model:
+    values: [192, 256, 384, 512]
+  num_layers:
+    values: [4, 5]
+  window_size:
+    values: [100, 110, 128]
+  dropout_rate:
+    distribution: "uniform"
+    min: 0.08
+    max: 0.22
+  learning_rate:
+    distribution: "log_uniform_values"
+    min: 9.0e-05
+    max: 0.0009
+  cop_weight:
+    distribution: "log_uniform_values"
+    min: 0.55
+    max: 2.2
+  grf_weight:
+    distribution: "log_uniform_values"
+    min: 6.0
+    max: 24.0
+  torque_weight:
+    distribution: "uniform"
+    min: 1.9
+    max: 2.8
+  knee_weight:
+    distribution: "uniform"
+    min: 1.5
+    max: 3.5

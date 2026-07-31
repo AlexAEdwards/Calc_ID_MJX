@@ -1,0 +1,3969 @@
+{
+  "dataset_root": "/home/mobl/mnt/mobl-nas/MOBL_shared/Datasets/OldYoungAdultWalking_MJX_Processed",
+  "metric": "mean framewise pelvis translation speed magnitude (m/s)",
+  "pelvis_translation_columns": [
+    3,
+    4,
+    5
+  ],
+  "n_ranked_trials": 624,
+  "n_skipped_trials": 42,
+  "ranked_subject_trials": [
+    {
+      "subject": "OA19",
+      "trial": "Trial_13",
+      "subject_trial": "OA19/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.9826735672788758
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_12",
+      "subject_trial": "OA19/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.9742663411870274
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_10",
+      "subject_trial": "OA19/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.9549375811894496
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_9",
+      "subject_trial": "OA19/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.9263294237475876
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_14",
+      "subject_trial": "OA24/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.9161299881618588
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_11",
+      "subject_trial": "OA24/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.9115815185941485
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_11",
+      "subject_trial": "OA19/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.9105156234740104
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_13",
+      "subject_trial": "Y8/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.895171367462218
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_13",
+      "subject_trial": "OA24/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.8832707450328283
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_12",
+      "subject_trial": "Y15/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.8760512583008722
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_11",
+      "subject_trial": "OA11/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.8699328449159751
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_15",
+      "subject_trial": "OA24/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.8690706482310895
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_12",
+      "subject_trial": "OA24/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.860222872733927
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_12",
+      "subject_trial": "OA11/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.848923322465667
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_15",
+      "subject_trial": "Y15/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.8486220991241675
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_15",
+      "subject_trial": "OA11/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.8476409023297244
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_14",
+      "subject_trial": "OA11/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.8407542885332804
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_11",
+      "subject_trial": "Y10/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.8400545880365828
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_14",
+      "subject_trial": "Y15/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.8385884492906288
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_15",
+      "subject_trial": "Y8/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.834730940258049
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_14",
+      "subject_trial": "Y8/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.8243973975532324
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_13",
+      "subject_trial": "Y10/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.8146159938780093
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_13",
+      "subject_trial": "OA11/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.8079814779290633
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_12",
+      "subject_trial": "Y10/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.7976641315476736
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_13",
+      "subject_trial": "Y15/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.7887518027290399
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_11",
+      "subject_trial": "Y8/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.7870278792822774
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_15",
+      "subject_trial": "Y10/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.7799742448393192
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_12",
+      "subject_trial": "Y8/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.7759689584224678
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_13",
+      "subject_trial": "Y4/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.7733775401385714
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_14",
+      "subject_trial": "Y10/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.7643716049544391
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_14",
+      "subject_trial": "Y4/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.7639094614704023
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_15",
+      "subject_trial": "Y4/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.7596458691270627
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_12",
+      "subject_trial": "Y6/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.7380070642341536
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_11",
+      "subject_trial": "Y15/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.7361700214851559
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_14",
+      "subject_trial": "Y6/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.7326243047740295
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_11",
+      "subject_trial": "Y6/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.718295159081054
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_12",
+      "subject_trial": "OA20/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.7120334212502466
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_13",
+      "subject_trial": "Y17/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.7119581557129777
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_12",
+      "subject_trial": "Y16/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.7028149970783988
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_12",
+      "subject_trial": "Y14/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.691747454496826
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_11",
+      "subject_trial": "Y4/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6913119064124864
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_11",
+      "subject_trial": "OA9/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6882828898391036
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_6",
+      "subject_trial": "OA24/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.6729772986267755
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_12",
+      "subject_trial": "Y19/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.6691310467185287
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_12",
+      "subject_trial": "OA2/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.668279861970216
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_12",
+      "subject_trial": "Y17/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.66599606016209
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_14",
+      "subject_trial": "OA20/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.6645533057573603
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_11",
+      "subject_trial": "Y5/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6630275824809615
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_10",
+      "subject_trial": "Y21/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.6627864305402702
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_13",
+      "subject_trial": "OA20/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.6619391501761172
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_12",
+      "subject_trial": "Y11/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.660897145201832
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_14",
+      "subject_trial": "Y17/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.6602713326199579
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_13",
+      "subject_trial": "OA17/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.6592942169543623
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_11",
+      "subject_trial": "OA17/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6586066099129737
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_15",
+      "subject_trial": "OA20/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.6585430331620563
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_13",
+      "subject_trial": "Y6/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.6566036656032637
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_12",
+      "subject_trial": "OA17/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.6559517710177831
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_7",
+      "subject_trial": "OA19/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.6552946983036534
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_15",
+      "subject_trial": "Y16/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.65434816692323
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_11",
+      "subject_trial": "OA13/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6531778734760072
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_4",
+      "subject_trial": "OA19/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.6524205957791152
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_13",
+      "subject_trial": "OA7/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.649844170616455
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_12",
+      "subject_trial": "Y4/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.6495032493195454
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_11",
+      "subject_trial": "Y17/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6494963284514363
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_15",
+      "subject_trial": "Y14/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.6473184602731339
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_14",
+      "subject_trial": "OA7/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.6466601992044732
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_12",
+      "subject_trial": "OA9/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.642879007183604
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_15",
+      "subject_trial": "OA17/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.6414064596147422
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_10",
+      "subject_trial": "Y6/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.6383685720698455
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_15",
+      "subject_trial": "Y11/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.637328471582594
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_14",
+      "subject_trial": "Y14/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.636262922536509
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_7",
+      "subject_trial": "OA24/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.6359072636753584
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_15",
+      "subject_trial": "OA12/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.632381734784223
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_6",
+      "subject_trial": "OA19/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.6301037939198948
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_15",
+      "subject_trial": "Y5/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.629860021703354
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_11",
+      "subject_trial": "Y14/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6290165715498475
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_10",
+      "subject_trial": "OA24/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.6287381765348015
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_13",
+      "subject_trial": "OA9/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.6281801959471143
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_15",
+      "subject_trial": "OA7/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.6274312449054897
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_13",
+      "subject_trial": "Y14/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.6273281212817021
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_12",
+      "subject_trial": "Y13/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.6260331579427274
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_11",
+      "subject_trial": "OA20/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6221224273151786
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_14",
+      "subject_trial": "Y5/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.6205263238108742
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_11",
+      "subject_trial": "Y19/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6198406856295235
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_15",
+      "subject_trial": "OA9/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.6178761995170825
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_15",
+      "subject_trial": "Y19/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.6176012988633555
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_11",
+      "subject_trial": "Y11/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6170283842468036
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_15",
+      "subject_trial": "OA5/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.615588736264948
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_13",
+      "subject_trial": "Y5/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.6149302225466848
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_14",
+      "subject_trial": "OA17/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.6144772488063126
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_11",
+      "subject_trial": "OA8/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6139584682361852
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_9",
+      "subject_trial": "OA24/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.6125130675505186
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_14",
+      "subject_trial": "OA12/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.6123133301323826
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_11",
+      "subject_trial": "Y13/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6107973445852286
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_13",
+      "subject_trial": "OA13/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.6101851060229657
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_12",
+      "subject_trial": "OA7/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.6098884016324486
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_13",
+      "subject_trial": "OA12/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.609218057869008
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_8",
+      "subject_trial": "OA24/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.604914970560796
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_14",
+      "subject_trial": "Y16/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.6046584410587776
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_14",
+      "subject_trial": "Y19/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.6044018364262362
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_13",
+      "subject_trial": "Y16/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.603875038867786
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_11",
+      "subject_trial": "Y16/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6021172243900503
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_11",
+      "subject_trial": "Y21/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.6019778389981074
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_14",
+      "subject_trial": "OA5/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.601274584578259
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_13",
+      "subject_trial": "Y19/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.5989238005431654
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_7",
+      "subject_trial": "OA11/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.5960594528132297
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_11",
+      "subject_trial": "OA12/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.5935347053758715
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_12",
+      "subject_trial": "Y21/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5933205184297277
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_13",
+      "subject_trial": "Y21/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.5913882855793213
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_12",
+      "subject_trial": "Y5/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5908069448158804
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_14",
+      "subject_trial": "Y11/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5870271625509205
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_14",
+      "subject_trial": "Y13/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5839868648576614
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_6",
+      "subject_trial": "OA11/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.5829745630234007
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_15",
+      "subject_trial": "Y13/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.5829459927903726
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_10",
+      "subject_trial": "Y15/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.5827963741937239
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_13",
+      "subject_trial": "OA5/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.5813592533956085
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_8",
+      "subject_trial": "OA19/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.5804057876617212
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_14",
+      "subject_trial": "Y21/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5803273618880853
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_14",
+      "subject_trial": "OA13/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5756093653370882
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_14",
+      "subject_trial": "OA9/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5755527432570544
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_13",
+      "subject_trial": "OA2/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.5752667755535805
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_14",
+      "subject_trial": "OA2/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5741578799483522
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_13",
+      "subject_trial": "Y11/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.573129073352026
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_12",
+      "subject_trial": "OA13/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5714937974714331
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_11",
+      "subject_trial": "OA2/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.5694634542117971
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_9",
+      "subject_trial": "Y8/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.5686804393327505
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_12",
+      "subject_trial": "OA12/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5678972996188225
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_13",
+      "subject_trial": "Y13/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.5677593383411204
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_9",
+      "subject_trial": "Y15/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.5672441165331086
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_12",
+      "subject_trial": "OA10/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.565109623150237
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_15",
+      "subject_trial": "OA2/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.5624030832066478
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_14",
+      "subject_trial": "Y12/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5617042934716385
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_12",
+      "subject_trial": "OA5/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5609407650857308
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_11",
+      "subject_trial": "OA7/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.5585022246803826
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_11",
+      "subject_trial": "OA23/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.5573658582268992
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_7",
+      "subject_trial": "Y15/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.5563879169575072
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_12",
+      "subject_trial": "OA23/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.555531130222904
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_12",
+      "subject_trial": "Y1/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5549352256116815
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_12",
+      "subject_trial": "Y20/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5524968519359286
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_13",
+      "subject_trial": "OA10/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.5503557116368676
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_15",
+      "subject_trial": "Y12/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.547106909666832
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_12",
+      "subject_trial": "Y12/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5468611732582838
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_11",
+      "subject_trial": "OA4/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.546483658832293
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_11",
+      "subject_trial": "OA5/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.5456651867141653
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_14",
+      "subject_trial": "Y1/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.544775891543545
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_13",
+      "subject_trial": "OA8/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.539277893890235
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_11",
+      "subject_trial": "Y1/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.5390490471710836
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_13",
+      "subject_trial": "OA23/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.538390280970757
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_8",
+      "subject_trial": "Y15/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.535600164968753
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_13",
+      "subject_trial": "OA1/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.5355952971052627
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_13",
+      "subject_trial": "Y12/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.5346484409755945
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_11",
+      "subject_trial": "Y7/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.5314441406470831
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_6",
+      "subject_trial": "Y8/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.530234186852135
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_14",
+      "subject_trial": "OA23/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5298830312308538
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_10",
+      "subject_trial": "Y10/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.5292957350742844
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_9",
+      "subject_trial": "Y4/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.5264467104210409
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_6",
+      "subject_trial": "Y15/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.5259243673425913
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_13",
+      "subject_trial": "OA18/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.5230957896074382
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_13",
+      "subject_trial": "OA4/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.5226407042349255
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_12",
+      "subject_trial": "OA8/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5222905065980024
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_10",
+      "subject_trial": "OA11/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.520832643774994
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_15",
+      "subject_trial": "Y7/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.517015399830725
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_15",
+      "subject_trial": "Y1/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.516995545735087
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_5",
+      "subject_trial": "OA19/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.5150739719700599
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_14",
+      "subject_trial": "OA10/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5143310223828323
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_11",
+      "subject_trial": "OA10/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.5141529441533903
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_15",
+      "subject_trial": "OA4/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.513995217161138
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_12",
+      "subject_trial": "Y7/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5138139817546605
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_11",
+      "subject_trial": "OA1/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.5132232803991277
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_12",
+      "subject_trial": "OA1/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5112176734174754
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_15",
+      "subject_trial": "OA13/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.5107338511910686
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_14",
+      "subject_trial": "OA1/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5090257876991569
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_8",
+      "subject_trial": "Y8/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.5083484358996864
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_14",
+      "subject_trial": "OA18/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5073481561403357
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_8",
+      "subject_trial": "Y6/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.506537002320289
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_12",
+      "subject_trial": "OA25/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5062011263604995
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_7",
+      "subject_trial": "Y8/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.5051702363937978
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_12",
+      "subject_trial": "Y18/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.5051614239758737
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_14",
+      "subject_trial": "Y20/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.5049450752987545
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_6",
+      "subject_trial": "Y4/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.5045819917527452
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_10",
+      "subject_trial": "Y17/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.5017339016770752
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_14",
+      "subject_trial": "Y18/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.501634422739757
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_13",
+      "subject_trial": "Y18/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.5008030565547386
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_12",
+      "subject_trial": "OA4/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.4995906591081714
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_6",
+      "subject_trial": "OA12/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.4987027507228863
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_9",
+      "subject_trial": "Y10/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.4986996944122641
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_11",
+      "subject_trial": "Y20/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.498518710436667
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_15",
+      "subject_trial": "OA18/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.498497927323196
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_7",
+      "subject_trial": "Y6/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.4980856666931828
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_9",
+      "subject_trial": "OA11/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.498006951787461
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_13",
+      "subject_trial": "Y20/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.4961026724296118
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_9",
+      "subject_trial": "Y6/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.4935284836672102
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_9",
+      "subject_trial": "Y17/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.4926579904765422
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_15",
+      "subject_trial": "Y18/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.4912522687613876
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_15",
+      "subject_trial": "OA1/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.4890763651604348
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_17",
+      "subject_trial": "Y7/Trial_17",
+      "avg_pelvis_translation_speed_m_per_s": 1.4867497318269534
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_11",
+      "subject_trial": "OA14/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.4859046409339338
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_10",
+      "subject_trial": "Y4/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.4855259812340618
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_11",
+      "subject_trial": "Y18/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.482529778649229
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_14",
+      "subject_trial": "OA25/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.4811652095237282
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_11",
+      "subject_trial": "Y12/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.4774887477684244
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_6",
+      "subject_trial": "Y10/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.476904864812695
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_8",
+      "subject_trial": "OA11/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.4758940919664865
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_10",
+      "subject_trial": "Y8/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.475568946822673
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_12",
+      "subject_trial": "OA18/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.4741114463017901
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_11",
+      "subject_trial": "Y9/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.4710669066201272
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_16",
+      "subject_trial": "Y7/Trial_16",
+      "avg_pelvis_translation_speed_m_per_s": 1.4655881936579664
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_13",
+      "subject_trial": "Y1/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.464627065013833
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_11",
+      "subject_trial": "OA18/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.459649719358691
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_6",
+      "subject_trial": "Y6/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.4594705769649217
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_7",
+      "subject_trial": "Y4/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.4589420264664954
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_13",
+      "subject_trial": "Y7/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.4539226846222324
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_14",
+      "subject_trial": "Y9/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.4523736538240204
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_12",
+      "subject_trial": "OA14/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.4521085892722514
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_11",
+      "subject_trial": "OA25/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.4507353284608813
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_8",
+      "subject_trial": "Y17/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.4501526489796477
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_7",
+      "subject_trial": "Y21/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.4487977029514632
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_7",
+      "subject_trial": "Y17/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.4485635610898917
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_13",
+      "subject_trial": "OA25/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.4468519695908069
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_8",
+      "subject_trial": "OA17/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.444892355618431
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_7",
+      "subject_trial": "OA17/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.4438654773773185
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_8",
+      "subject_trial": "Y10/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.4407113063737973
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_8",
+      "subject_trial": "OA12/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.440539248442602
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_8",
+      "subject_trial": "Y4/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.4392339079770429
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_7",
+      "subject_trial": "Y5/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.4388241820700358
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_15",
+      "subject_trial": "OA14/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.4378292124553083
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_7",
+      "subject_trial": "Y10/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.4339108441610082
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_6",
+      "subject_trial": "Y21/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.4338293109186855
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_14",
+      "subject_trial": "OA8/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.429370575021034
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_15",
+      "subject_trial": "OA25/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.4282184979018486
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_14",
+      "subject_trial": "OA4/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.4268815635187295
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_9",
+      "subject_trial": "Y5/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.424647909064244
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_12",
+      "subject_trial": "Y9/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.4243741379115136
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_13",
+      "subject_trial": "OA14/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.4186657384699588
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_7",
+      "subject_trial": "OA12/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.4180078482504803
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_14",
+      "subject_trial": "Y22/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.4169338781068879
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_10",
+      "subject_trial": "Y5/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.4159791866455693
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_6",
+      "subject_trial": "Y5/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.4132694978898361
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_14",
+      "subject_trial": "Y7/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.412321005893534
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_11",
+      "subject_trial": "Y22/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.4062427015046173
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_10",
+      "subject_trial": "Y11/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.4030173088771358
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_13",
+      "subject_trial": "Y9/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.4016787605164318
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_15",
+      "subject_trial": "Y22/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.4013829618182803
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_15",
+      "subject_trial": "OA22/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.399856802789894
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_15",
+      "subject_trial": "Y2/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.3997876199037906
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_15",
+      "subject_trial": "Y9/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.3977670588620201
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_8",
+      "subject_trial": "Y14/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.396030199923469
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_8",
+      "subject_trial": "Y5/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3932484842077337
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_9",
+      "subject_trial": "Y21/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.3926293826626508
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_9",
+      "subject_trial": "Y11/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.3925219227828587
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_6",
+      "subject_trial": "Y13/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3921640204509844
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_14",
+      "subject_trial": "OA14/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.390750189887793
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_11",
+      "subject_trial": "Y2/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.3904930524054195
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_6",
+      "subject_trial": "OA17/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3890340720215208
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_14",
+      "subject_trial": "OA15/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.3815213879279642
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_15",
+      "subject_trial": "OA8/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.3792500321119845
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_7",
+      "subject_trial": "Y11/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.3785991668949016
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_8",
+      "subject_trial": "Y11/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.375344355771103
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_12",
+      "subject_trial": "Y2/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.3731971834164525
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_6",
+      "subject_trial": "Y17/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3721955661934462
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_6",
+      "subject_trial": "OA5/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3717548051196895
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_11",
+      "subject_trial": "OA22/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.3674709260717368
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_12",
+      "subject_trial": "Y22/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.3643989203511604
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_15",
+      "subject_trial": "OA15/Trial_15",
+      "avg_pelvis_translation_speed_m_per_s": 1.36294607095237
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_9",
+      "subject_trial": "OA17/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.3589885716456525
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_7",
+      "subject_trial": "OA2/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.3586633086182616
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_8",
+      "subject_trial": "Y20/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.35823458574758
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_9",
+      "subject_trial": "OA10/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.35749657120274
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_7",
+      "subject_trial": "OA5/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.3565500926103542
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_8",
+      "subject_trial": "Y21/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3556233774799153
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_13",
+      "subject_trial": "Y22/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.355174963702104
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_10",
+      "subject_trial": "OA17/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.3551635531192683
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_7",
+      "subject_trial": "Y20/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.354981019591249
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_10",
+      "subject_trial": "OA12/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.3546545930287102
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_6",
+      "subject_trial": "Y11/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.352651981086266
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_10",
+      "subject_trial": "OA7/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.351985771442045
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_12",
+      "subject_trial": "OA22/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.351659789555383
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_9",
+      "subject_trial": "OA2/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.3513553740042887
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_6",
+      "subject_trial": "OA10/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3511358549600412
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_13",
+      "subject_trial": "OA22/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.3504439288575287
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_9",
+      "subject_trial": "OA13/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.3492742576917747
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_12",
+      "subject_trial": "OA15/Trial_12",
+      "avg_pelvis_translation_speed_m_per_s": 1.3485904190197748
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_14",
+      "subject_trial": "OA22/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.3481176286304002
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_10",
+      "subject_trial": "OA2/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.3468540782051066
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_13",
+      "subject_trial": "OA15/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.3458902843268081
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_9",
+      "subject_trial": "Y20/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.344058925839278
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_13",
+      "subject_trial": "Y2/Trial_13",
+      "avg_pelvis_translation_speed_m_per_s": 1.3425850572993983
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_6",
+      "subject_trial": "Y16/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3425629144139877
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_10",
+      "subject_trial": "OA20/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.3415159935640322
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_9",
+      "subject_trial": "OA7/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.339077648106596
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_6",
+      "subject_trial": "OA13/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3385298645824446
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_10",
+      "subject_trial": "OA9/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.3372027524376147
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_14",
+      "subject_trial": "Y2/Trial_14",
+      "avg_pelvis_translation_speed_m_per_s": 1.3356120296538845
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_8",
+      "subject_trial": "OA2/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3346252899467117
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_9",
+      "subject_trial": "OA12/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.3302044139786766
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_7",
+      "subject_trial": "OA10/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.3285725904527457
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_8",
+      "subject_trial": "OA10/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3279572799551367
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_9",
+      "subject_trial": "Y13/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.327177410489826
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_11",
+      "subject_trial": "OA15/Trial_11",
+      "avg_pelvis_translation_speed_m_per_s": 1.3249978058473675
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_7",
+      "subject_trial": "OA7/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.323036368077216
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_6",
+      "subject_trial": "OA14/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3206969286095196
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_6",
+      "subject_trial": "Y20/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3206162333296105
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_10",
+      "subject_trial": "OA23/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.3205185527016097
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_7",
+      "subject_trial": "OA23/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.3202204777174724
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_9",
+      "subject_trial": "Y1/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.319598451724923
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_6",
+      "subject_trial": "OA7/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3193865804029383
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_8",
+      "subject_trial": "OA23/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3186116410287754
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_3",
+      "subject_trial": "Y15/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.317178055508466
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_7",
+      "subject_trial": "OA20/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.316814872228164
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_8",
+      "subject_trial": "OA9/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3167339486574823
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_6",
+      "subject_trial": "OA23/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3156763585700333
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_7",
+      "subject_trial": "Y14/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.3153481493618349
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_8",
+      "subject_trial": "OA13/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3151934909812995
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_8",
+      "subject_trial": "OA18/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3142600863784974
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_8",
+      "subject_trial": "OA7/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3139321880411374
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_8",
+      "subject_trial": "OA5/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3130036171363577
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_10",
+      "subject_trial": "Y13/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.312741038343975
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_10",
+      "subject_trial": "OA13/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.3123610167314865
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_9",
+      "subject_trial": "OA20/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.3110890774691943
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_8",
+      "subject_trial": "Y13/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3098127850830814
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_9",
+      "subject_trial": "OA9/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.3087520378423951
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_6",
+      "subject_trial": "OA9/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.306433915580692
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_6",
+      "subject_trial": "Y14/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.3054118164170283
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_7",
+      "subject_trial": "OA18/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.3046133211156925
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_8",
+      "subject_trial": "Y19/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.3043902834494931
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_8",
+      "subject_trial": "OA14/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.301864891569027
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_9",
+      "subject_trial": "OA23/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.3007193774129708
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_8",
+      "subject_trial": "OA1/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.2996960123416321
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_9",
+      "subject_trial": "Y16/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.299298174437352
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_7",
+      "subject_trial": "Y13/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2968378054458862
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_8",
+      "subject_trial": "OA20/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.2965911187649475
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_9",
+      "subject_trial": "Y14/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2958518299596
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_10",
+      "subject_trial": "Y19/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2952299296557332
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_1",
+      "subject_trial": "OA19/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.2936497872860433
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_5",
+      "subject_trial": "OA24/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.292669709004908
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_4",
+      "subject_trial": "Y15/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.2923989129879574
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_8",
+      "subject_trial": "OA4/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.2912567972154418
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_7",
+      "subject_trial": "Y19/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2899535163112996
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_1",
+      "subject_trial": "OA24/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.2893855971173438
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_7",
+      "subject_trial": "OA13/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2877076640983764
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_10",
+      "subject_trial": "OA10/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2852170582957516
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_6",
+      "subject_trial": "Y19/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.2844285865588807
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_7",
+      "subject_trial": "OA14/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2829122661570305
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_2",
+      "subject_trial": "Y15/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.282892908530348
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_6",
+      "subject_trial": "OA2/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.2821354823822237
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_10",
+      "subject_trial": "Y16/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2818109100837312
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_10",
+      "subject_trial": "OA5/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2779586956009448
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_2",
+      "subject_trial": "Y8/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.2758401938232657
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_10",
+      "subject_trial": "Y14/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2755956637597978
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_4",
+      "subject_trial": "OA24/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.2752015953790201
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_7",
+      "subject_trial": "Y1/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2726692779104145
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_8",
+      "subject_trial": "Y1/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.2724799399737805
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_9",
+      "subject_trial": "Y19/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2721891901653943
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_9",
+      "subject_trial": "OA5/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2717295590865787
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_6",
+      "subject_trial": "OA18/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.2698364235046404
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_10",
+      "subject_trial": "Y1/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2692048538817455
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_6",
+      "subject_trial": "Y1/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.268361321126217
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_7",
+      "subject_trial": "OA8/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2681124632833436
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_9",
+      "subject_trial": "OA14/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2667744135063659
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_3",
+      "subject_trial": "OA24/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.266566825237488
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_7",
+      "subject_trial": "Y7/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.261704814324437
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_1",
+      "subject_trial": "Y15/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.2604197696885
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_1",
+      "subject_trial": "OA11/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.2582911790727458
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_6",
+      "subject_trial": "Y7/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.2576905329282744
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_6",
+      "subject_trial": "OA20/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.2576904137392522
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_8",
+      "subject_trial": "OA8/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.257218147697335
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_10",
+      "subject_trial": "Y7/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.257159780319306
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_6",
+      "subject_trial": "OA1/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.25664805847271
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_10",
+      "subject_trial": "OA1/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2562621891734416
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_10",
+      "subject_trial": "Y20/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2545165295471896
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_7",
+      "subject_trial": "OA9/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2543501259880985
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_7",
+      "subject_trial": "Y16/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2526989271177795
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_2",
+      "subject_trial": "OA19/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.2523231929816951
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_2",
+      "subject_trial": "Y10/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.251856341140378
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_8",
+      "subject_trial": "Y16/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.2498690951241702
+    },
+    {
+      "subject": "OA19",
+      "trial": "Trial_3",
+      "subject_trial": "OA19/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.2494545610415568
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_9",
+      "subject_trial": "OA18/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2479946707272613
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_9",
+      "subject_trial": "OA4/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2476565135185853
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_7",
+      "subject_trial": "OA1/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2468337086622265
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_10",
+      "subject_trial": "OA14/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2459356232144463
+    },
+    {
+      "subject": "OA24",
+      "trial": "Trial_2",
+      "subject_trial": "OA24/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.2447095225179794
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_7",
+      "subject_trial": "OA4/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.244422569756414
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_9",
+      "subject_trial": "OA1/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2425790883985302
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_8",
+      "subject_trial": "Y12/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.241404175644905
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_10",
+      "subject_trial": "OA18/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2407973813069375
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_3",
+      "subject_trial": "Y8/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.2393648447032763
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_8",
+      "subject_trial": "Y7/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.2369311864232853
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_9",
+      "subject_trial": "OA22/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2359117546628344
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_7",
+      "subject_trial": "Y18/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2350467224838269
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_10",
+      "subject_trial": "OA22/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2324568322575016
+    },
+    {
+      "subject": "Y15",
+      "trial": "Trial_5",
+      "subject_trial": "Y15/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.2288663964262143
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_8",
+      "subject_trial": "OA22/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.2259253287879255
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_7",
+      "subject_trial": "Y9/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2238124017553786
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_5",
+      "subject_trial": "Y8/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.2224081513182143
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_6",
+      "subject_trial": "OA4/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.2193181552338892
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_6",
+      "subject_trial": "Y18/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.2179486453403192
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_9",
+      "subject_trial": "Y7/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2164022681008115
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_9",
+      "subject_trial": "Y9/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2161365735426082
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_7",
+      "subject_trial": "OA22/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.21461676303001
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_10",
+      "subject_trial": "Y18/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2135618281802816
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_10",
+      "subject_trial": "Y12/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2129124955489134
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_1",
+      "subject_trial": "Y8/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.2127279362462349
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_7",
+      "subject_trial": "OA15/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.2123589339599974
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_3",
+      "subject_trial": "Y6/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.2105008551330405
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_9",
+      "subject_trial": "OA8/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2088077784737354
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_4",
+      "subject_trial": "Y6/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.2078199274616563
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_9",
+      "subject_trial": "Y12/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.2073329533807418
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_7",
+      "subject_trial": "Y22/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.203117216249193
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_10",
+      "subject_trial": "OA8/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.2021569111518418
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_8",
+      "subject_trial": "Y18/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.2019830650402294
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_6",
+      "subject_trial": "Y9/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.1977394897972926
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_6",
+      "subject_trial": "Y12/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.1965642516295683
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_10",
+      "subject_trial": "OA4/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.196411671858045
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_7",
+      "subject_trial": "Y12/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.1946030967081045
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_8",
+      "subject_trial": "Y9/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.1928414620501189
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_10",
+      "subject_trial": "Y9/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.1924962013049996
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_5",
+      "subject_trial": "Y10/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.1907195265241495
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_10",
+      "subject_trial": "OA25/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.1903132966102425
+    },
+    {
+      "subject": "Y8",
+      "trial": "Trial_4",
+      "subject_trial": "Y8/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.189943033215921
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_6",
+      "subject_trial": "OA8/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.1878990048331195
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_2",
+      "subject_trial": "OA11/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.184384730726857
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_5",
+      "subject_trial": "Y4/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.1782541951913903
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_4",
+      "subject_trial": "Y4/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.1760700585805166
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_4",
+      "subject_trial": "Y10/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.1756852216249296
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_5",
+      "subject_trial": "Y11/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.173196485791071
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_6",
+      "subject_trial": "OA15/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.1728418254147925
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_2",
+      "subject_trial": "Y11/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.1717500501670306
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_1",
+      "subject_trial": "Y17/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.1713356678018398
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_9",
+      "subject_trial": "Y18/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.1708535147616017
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_3",
+      "subject_trial": "Y11/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.1676042281221408
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_5",
+      "subject_trial": "OA12/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.1655224087524392
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_8",
+      "subject_trial": "OA15/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.1623854963712383
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_1",
+      "subject_trial": "Y6/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.1609246991319762
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_1",
+      "subject_trial": "OA12/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.1589431353670705
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_4",
+      "subject_trial": "Y16/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.1585152725412065
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_5",
+      "subject_trial": "Y17/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.158511918423245
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_5",
+      "subject_trial": "Y6/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.157769810308909
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_3",
+      "subject_trial": "Y17/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.1551045215299076
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_4",
+      "subject_trial": "Y11/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.1550399318738642
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_3",
+      "subject_trial": "OA10/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.1512019003254934
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_5",
+      "subject_trial": "OA11/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.1489917916133803
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_3",
+      "subject_trial": "OA9/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.14865023903026
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_8",
+      "subject_trial": "OA25/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.1471691074100734
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_4",
+      "subject_trial": "OA11/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.1466488997282154
+    },
+    {
+      "subject": "OA11",
+      "trial": "Trial_3",
+      "subject_trial": "OA11/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.1433219085901396
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_6",
+      "subject_trial": "OA22/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.1432095387198176
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_3",
+      "subject_trial": "Y10/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.1420037163053731
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_3",
+      "subject_trial": "OA17/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.1416756165741784
+    },
+    {
+      "subject": "Y10",
+      "trial": "Trial_1",
+      "subject_trial": "Y10/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.1392175336983428
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_3",
+      "subject_trial": "Y19/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.1357687654707114
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_1",
+      "subject_trial": "Y21/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.1334505344307761
+    },
+    {
+      "subject": "Y11",
+      "trial": "Trial_1",
+      "subject_trial": "Y11/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.132821289965451
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_9",
+      "subject_trial": "OA25/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.131847884893231
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_7",
+      "subject_trial": "Y2/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.1314166914535502
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_10",
+      "subject_trial": "OA15/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.1310345525276386
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_8",
+      "subject_trial": "Y22/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.1299073001960922
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_4",
+      "subject_trial": "OA9/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.129608090320792
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_2",
+      "subject_trial": "Y5/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.1286189206257387
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_1",
+      "subject_trial": "OA13/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.126387652062773
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_9",
+      "subject_trial": "OA15/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.124642751563837
+    },
+    {
+      "subject": "Y6",
+      "trial": "Trial_2",
+      "subject_trial": "Y6/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.1243811928669478
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_3",
+      "subject_trial": "Y4/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.124307784326092
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_1",
+      "subject_trial": "Y13/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.1240507303053184
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_1",
+      "subject_trial": "Y19/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.1231829018808395
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_9",
+      "subject_trial": "Y22/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.1227577347724413
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_5",
+      "subject_trial": "OA10/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.121222768509247
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_2",
+      "subject_trial": "OA7/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.12120867576048
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_1",
+      "subject_trial": "Y5/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.119684375611631
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_2",
+      "subject_trial": "Y17/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.1192534233555844
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_1",
+      "subject_trial": "Y4/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.116433194840463
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_9",
+      "subject_trial": "Y2/Trial_9",
+      "avg_pelvis_translation_speed_m_per_s": 1.1161836369178935
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_2",
+      "subject_trial": "OA9/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.1154654402185462
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_5",
+      "subject_trial": "Y19/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.109046480112175
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_2",
+      "subject_trial": "Y19/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.1087623351675584
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_8",
+      "subject_trial": "Y2/Trial_8",
+      "avg_pelvis_translation_speed_m_per_s": 1.107925817151571
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_3",
+      "subject_trial": "Y13/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.1067115828834857
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_4",
+      "subject_trial": "OA23/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.1062301851958707
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_10",
+      "subject_trial": "Y2/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.1052514143806615
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_3",
+      "subject_trial": "Y21/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.1049022631764638
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_2",
+      "subject_trial": "OA10/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.104538203542447
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_1",
+      "subject_trial": "OA10/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.10328731600675
+    },
+    {
+      "subject": "Y4",
+      "trial": "Trial_2",
+      "subject_trial": "Y4/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.1031476707101744
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_4",
+      "subject_trial": "Y5/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.1021008348766912
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_10",
+      "subject_trial": "Y22/Trial_10",
+      "avg_pelvis_translation_speed_m_per_s": 1.1016122620353062
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_6",
+      "subject_trial": "OA25/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.1014024823431565
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_3",
+      "subject_trial": "OA13/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0998300930912985
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_5",
+      "subject_trial": "OA23/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.0990439441317548
+    },
+    {
+      "subject": "Y17",
+      "trial": "Trial_4",
+      "subject_trial": "Y17/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0989861484493133
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_3",
+      "subject_trial": "OA23/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0984235624781151
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_4",
+      "subject_trial": "OA17/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.09541836775439
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_5",
+      "subject_trial": "Y16/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.0951293327164495
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_7",
+      "subject_trial": "OA25/Trial_7",
+      "avg_pelvis_translation_speed_m_per_s": 1.0946581523857886
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_6",
+      "subject_trial": "Y22/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.0938673925130085
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_2",
+      "subject_trial": "Y13/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0924454230654934
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_4",
+      "subject_trial": "Y21/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.091913049324368
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_6",
+      "subject_trial": "Y2/Trial_6",
+      "avg_pelvis_translation_speed_m_per_s": 1.091341733201086
+    },
+    {
+      "subject": "Y19",
+      "trial": "Trial_4",
+      "subject_trial": "Y19/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0911771278872915
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_5",
+      "subject_trial": "OA7/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.088963120255863
+    },
+    {
+      "subject": "OA10",
+      "trial": "Trial_4",
+      "subject_trial": "OA10/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0887755245175132
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_5",
+      "subject_trial": "OA9/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.0867768869320316
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_1",
+      "subject_trial": "OA23/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.0853581388963838
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_5",
+      "subject_trial": "Y5/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.0842471796424025
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_4",
+      "subject_trial": "OA12/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0824019383257093
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_4",
+      "subject_trial": "OA5/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0804437183813644
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_3",
+      "subject_trial": "OA12/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0794456138388797
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_2",
+      "subject_trial": "OA13/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0794025144657036
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_3",
+      "subject_trial": "OA20/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0777837481875943
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_1",
+      "subject_trial": "OA1/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.0772869639221534
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_2",
+      "subject_trial": "OA1/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.074391169222118
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_1",
+      "subject_trial": "OA2/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.0740342634944309
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_5",
+      "subject_trial": "OA17/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.0735189931838014
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_2",
+      "subject_trial": "Y21/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0732598502850383
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_1",
+      "subject_trial": "OA20/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.0722397479501764
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_2",
+      "subject_trial": "OA17/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0722263181319756
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_4",
+      "subject_trial": "OA7/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0718096266365866
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_2",
+      "subject_trial": "OA2/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0707628018230968
+    },
+    {
+      "subject": "OA17",
+      "trial": "Trial_1",
+      "subject_trial": "OA17/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.06743765173242
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_5",
+      "subject_trial": "OA13/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.067058709671399
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_5",
+      "subject_trial": "OA5/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.0638015482231324
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_2",
+      "subject_trial": "Y20/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0634420477800681
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_5",
+      "subject_trial": "OA1/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.0586416836948616
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_4",
+      "subject_trial": "Y13/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.056669802041407
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_3",
+      "subject_trial": "OA5/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0563871357963506
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_3",
+      "subject_trial": "OA14/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0562060164948583
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_5",
+      "subject_trial": "Y20/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.054143732625963
+    },
+    {
+      "subject": "OA13",
+      "trial": "Trial_4",
+      "subject_trial": "OA13/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0531584709759985
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_1",
+      "subject_trial": "Y20/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.05306386672266
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_3",
+      "subject_trial": "OA7/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0497383335259032
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_1",
+      "subject_trial": "OA5/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.0481938998944778
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_4",
+      "subject_trial": "Y14/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0440702276948859
+    },
+    {
+      "subject": "Y21",
+      "trial": "Trial_5",
+      "subject_trial": "Y21/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.0423975054595074
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_3",
+      "subject_trial": "Y16/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.04174164325427
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_2",
+      "subject_trial": "Y14/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0397073329333975
+    },
+    {
+      "subject": "Y5",
+      "trial": "Trial_3",
+      "subject_trial": "Y5/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0392742773986234
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_4",
+      "subject_trial": "OA1/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0385994394926104
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_4",
+      "subject_trial": "OA2/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0355837647223616
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_3",
+      "subject_trial": "OA2/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0345739826964875
+    },
+    {
+      "subject": "OA12",
+      "trial": "Trial_2",
+      "subject_trial": "OA12/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0337054710036362
+    },
+    {
+      "subject": "Y13",
+      "trial": "Trial_5",
+      "subject_trial": "Y13/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.0322723005208676
+    },
+    {
+      "subject": "OA23",
+      "trial": "Trial_2",
+      "subject_trial": "OA23/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0322593587688573
+    },
+    {
+      "subject": "OA1",
+      "trial": "Trial_3",
+      "subject_trial": "OA1/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0322373201316508
+    },
+    {
+      "subject": "OA9",
+      "trial": "Trial_1",
+      "subject_trial": "OA9/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.0318373586218132
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_4",
+      "subject_trial": "Y20/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0257613635692728
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_3",
+      "subject_trial": "Y14/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.025339453573815
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_3",
+      "subject_trial": "OA18/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0222131041819609
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_5",
+      "subject_trial": "Y1/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.0218196004015458
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_1",
+      "subject_trial": "Y14/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.016788848396137
+    },
+    {
+      "subject": "Y14",
+      "trial": "Trial_5",
+      "subject_trial": "Y14/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.015013276651251
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_4",
+      "subject_trial": "Y18/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.0143554272781745
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_5",
+      "subject_trial": "Y12/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.0142033357303517
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_2",
+      "subject_trial": "Y7/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0099593124653061
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_4",
+      "subject_trial": "OA4/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 1.006131191980834
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_3",
+      "subject_trial": "OA8/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 1.0058552691433875
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_2",
+      "subject_trial": "OA20/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0047499098055164
+    },
+    {
+      "subject": "OA5",
+      "trial": "Trial_2",
+      "subject_trial": "OA5/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0041422669224211
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_1",
+      "subject_trial": "Y18/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.003397194173109
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_2",
+      "subject_trial": "Y2/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 1.0030908655463702
+    },
+    {
+      "subject": "OA2",
+      "trial": "Trial_5",
+      "subject_trial": "OA2/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 1.002652847392324
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_1",
+      "subject_trial": "OA18/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 1.0019664032529625
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_2",
+      "subject_trial": "Y16/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.999558183000007
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_2",
+      "subject_trial": "OA18/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.9941163983949811
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_4",
+      "subject_trial": "OA20/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.9932192000869591
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_1",
+      "subject_trial": "Y1/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.9912979567545747
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_3",
+      "subject_trial": "Y1/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.989317883111998
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_1",
+      "subject_trial": "OA4/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.9879537215991585
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_1",
+      "subject_trial": "Y12/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.9842162547118954
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_3",
+      "subject_trial": "Y18/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.9840450620115814
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_5",
+      "subject_trial": "Y7/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9838893824640862
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_4",
+      "subject_trial": "Y1/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.9817659085664333
+    },
+    {
+      "subject": "OA7",
+      "trial": "Trial_1",
+      "subject_trial": "OA7/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.9808319884192396
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_4",
+      "subject_trial": "Y7/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.9784969618871121
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_2",
+      "subject_trial": "OA14/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.9746514291579587
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_4",
+      "subject_trial": "Y12/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.9728950780005272
+    },
+    {
+      "subject": "OA20",
+      "trial": "Trial_5",
+      "subject_trial": "OA20/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9728147008329884
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_2",
+      "subject_trial": "Y18/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.9723133044334367
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_5",
+      "subject_trial": "Y2/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9717312503121811
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_4",
+      "subject_trial": "OA18/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.9708643481735957
+    },
+    {
+      "subject": "Y20",
+      "trial": "Trial_3",
+      "subject_trial": "Y20/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.9704876124390968
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_2",
+      "subject_trial": "OA4/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.966630996016238
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_3",
+      "subject_trial": "Y7/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.9665516800262978
+    },
+    {
+      "subject": "OA18",
+      "trial": "Trial_5",
+      "subject_trial": "OA18/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9649090912729934
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_1",
+      "subject_trial": "Y22/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.9615413003130611
+    },
+    {
+      "subject": "Y1",
+      "trial": "Trial_2",
+      "subject_trial": "Y1/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.961460525793808
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_2",
+      "subject_trial": "OA22/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.9609066533926155
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_2",
+      "subject_trial": "Y9/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.9589221368035883
+    },
+    {
+      "subject": "Y18",
+      "trial": "Trial_5",
+      "subject_trial": "Y18/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9582913118095812
+    },
+    {
+      "subject": "Y16",
+      "trial": "Trial_1",
+      "subject_trial": "Y16/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.9576427835321399
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_4",
+      "subject_trial": "Y2/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.9499774168849215
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_5",
+      "subject_trial": "OA8/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9499050977562598
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_3",
+      "subject_trial": "Y9/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.9474090618067337
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_3",
+      "subject_trial": "OA4/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.9446437223404415
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_4",
+      "subject_trial": "OA15/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.9413708807587502
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_5",
+      "subject_trial": "OA14/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9402126655288745
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_1",
+      "subject_trial": "OA14/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.9397232622614469
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_4",
+      "subject_trial": "OA22/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.9334909476218926
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_1",
+      "subject_trial": "OA22/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.9327010301353063
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_5",
+      "subject_trial": "OA22/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9316845278695374
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_3",
+      "subject_trial": "Y2/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.9316376730074521
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_5",
+      "subject_trial": "OA15/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9314114331165501
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_2",
+      "subject_trial": "Y22/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.927817967871101
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_3",
+      "subject_trial": "OA15/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.9262871892334725
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_1",
+      "subject_trial": "OA15/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.9259956782747032
+    },
+    {
+      "subject": "OA14",
+      "trial": "Trial_4",
+      "subject_trial": "OA14/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.9246317347206119
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_5",
+      "subject_trial": "Y22/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9246074365545189
+    },
+    {
+      "subject": "OA22",
+      "trial": "Trial_3",
+      "subject_trial": "OA22/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.922996732660548
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_2",
+      "subject_trial": "Y12/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.921469370458259
+    },
+    {
+      "subject": "Y12",
+      "trial": "Trial_3",
+      "subject_trial": "Y12/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.9175766459591735
+    },
+    {
+      "subject": "OA4",
+      "trial": "Trial_5",
+      "subject_trial": "OA4/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9165312620819185
+    },
+    {
+      "subject": "OA15",
+      "trial": "Trial_2",
+      "subject_trial": "OA15/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.9163643399385676
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_2",
+      "subject_trial": "OA25/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.914702006958484
+    },
+    {
+      "subject": "Y7",
+      "trial": "Trial_1",
+      "subject_trial": "Y7/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.913499788416894
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_2",
+      "subject_trial": "OA8/Trial_2",
+      "avg_pelvis_translation_speed_m_per_s": 0.9120389556286846
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_1",
+      "subject_trial": "OA25/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.9117707836863406
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_4",
+      "subject_trial": "Y22/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.9090420835649826
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_4",
+      "subject_trial": "OA8/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.908953314216747
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_5",
+      "subject_trial": "OA25/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.9054556887124025
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_4",
+      "subject_trial": "Y9/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.8978995074615019
+    },
+    {
+      "subject": "OA8",
+      "trial": "Trial_1",
+      "subject_trial": "OA8/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.8978569189626227
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_3",
+      "subject_trial": "OA25/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.8940114466533488
+    },
+    {
+      "subject": "Y2",
+      "trial": "Trial_1",
+      "subject_trial": "Y2/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.87762573486853
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_1",
+      "subject_trial": "Y9/Trial_1",
+      "avg_pelvis_translation_speed_m_per_s": 0.8761654195321229
+    },
+    {
+      "subject": "Y9",
+      "trial": "Trial_5",
+      "subject_trial": "Y9/Trial_5",
+      "avg_pelvis_translation_speed_m_per_s": 0.8729519586701171
+    },
+    {
+      "subject": "OA25",
+      "trial": "Trial_4",
+      "subject_trial": "OA25/Trial_4",
+      "avg_pelvis_translation_speed_m_per_s": 0.8674069879916239
+    },
+    {
+      "subject": "Y22",
+      "trial": "Trial_3",
+      "subject_trial": "Y22/Trial_3",
+      "avg_pelvis_translation_speed_m_per_s": 0.8554662638930275
+    }
+  ],
+  "skipped_trials": [
+    {
+      "subject": "OA1",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA1/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA10",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA10/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA11",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA11/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA12",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA12/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA13",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA13/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA14",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA14/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA15",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA15/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA17",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA17/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA18",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA18/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA19",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA19/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA2",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA2/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA20",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA20/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA22",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA22/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA23",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA23/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA24",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA24/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA25",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA25/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA4",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA4/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA5",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA5/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA7",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA7/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA8",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA8/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "OA9",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/OA9/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y1",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y1/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y10",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y10/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y11",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y11/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y12",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y12/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y13",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y13/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y14",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y14/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y15",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y15/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y16",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y16/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y17",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y17/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y18",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y18/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y19",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y19/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y2",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y2/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y20",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y20/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y21",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y21/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y22",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y22/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y4",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y4/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y5",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y5/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y6",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y6/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y7",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y7/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y8",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y8/Geometry/Motion/Pos.npy"
+    },
+    {
+      "subject": "Y9",
+      "trial": "Geometry",
+      "reason": "missing Datasets_NAS/OldYoungAdultWalking_MJX_Processed/Y9/Geometry/Motion/Pos.npy"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+# =====================================================================
+# Datasets and run artifacts — never committed.
+#
+# The remote is PUBLIC and the datasets carry per-subject clinical
+# metadata (Height_m, Mass_kg, BiologicalSex, ImpairedLeg) for Stroke,
+# Parkinson's, hip-OA and gait-retraining cohorts. Keep them out.
+#
+# The previous version of this file predated several of these
+# directories, so `git add -A` would have staged ~420 GB.
+# =====================================================================
+
+# --- training / inference outputs ---
+outputs/
+output/
+inference_results/
+logs/
+tmp/
+figures/
+RMASBFigures/
+CHPC_HPO_results/
+CHPCRepo/outputs/
+HPOAnalysis/
+AnklePowerAnalysis/
+NoiseAndPowerAnalOfInputData/
+AccuracyByGender&Speed/
+VisAndAnalDataset/
+
+# --- dataset roots ---
+Datasets_Local/
+Datasets_NAS
+NAS_Data
+Data_Full_Cleaned/
+PatientData/
+GeometryWithMus/
+
+# every TrustedDataSet* variant, including the nested-by-experiment build
+TrustedDataSet*/
+
+# curated hand-off copies
+KineticVAEDataset/
+
+# cohort datasets
+Hip_OA/
+Hip_OA_*/
+OldYoungAdultWalking_*/
+OlderYoungerAdultDataset_*/
+OpenCapSubjects_*/
+OpenCapWalkingTrunkSwaySubjects/
+OpenCapValSubjectsForScott/
+OpenCapFootOptStaging/
+OpenCapAveMAEPerformanceVals/
+BadTrialsFromTrustedDataset/
+ProcessAddbiomechnics/
+
+# --- large binary / model assets ---
+*.npy
+*.npz
+*.stl
+*.osim
+*.mot
+*.sto
+*.trc
+*.c3d
+*.pkl
+*.h5
+*.mp4
+*.db
+Thumbs.db
+
+# --- caches and editor state ---
+__pycache__/
+*.py[cod]
+.jax_compilation_cache/
+.ipynb_checkpoints/
+.vscode/
+.codex/
+.claude/settings.local.json
+MUJOCO_LOG.TXT
+nohup.out
+wandb/
+
+# --- subject-level demographics (PUBLIC remote — do not commit) ---
+# Metadata.xlsx sheet 'IncludedDemographics' holds 107 rows of per-subject
+# gender / age / height / weight / BMI / walking speed / group.
+Metadata.xlsx
+*Demographics*
+*demographics*
+
+# --- misc scratch ---
+Untitled
+*.bak
+Z...CodeIamNotReadyToDelete/
+
+# Embedded git repo (HPC mirror) - would become an unresolvable gitlink.
+# Track it in its own repository, not as a nested checkout.
+CHPCRepo/
