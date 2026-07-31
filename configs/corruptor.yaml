@@ -1,0 +1,59 @@
+data:
+  # Paired OpenCapSubjects root. The paired loader uses Motion/Pos.npy as the
+  # OpenCap target signal and trimmed MoCap/Pos.npy as the clean reference,
+  # cropped to the shared Motion/MoCap time overlap.
+  paired_path: Datasets_NAS/AddBiomechanicsDataset_All_npy/OpenCapSubjects
+  mocap_only_path: TrustedDatasetNoisedFromModel
+  output_path: outputs/corruption_model
+  subject_metadata_filename: Patient_MD.json
+
+metadata:
+  height_source: patient_md
+  mass_source: patient_md
+
+representation:
+  sample_rate_hz: 100.0
+  dof_source: patient_md
+  joint_names: []
+  normalize_anthropometrics: false
+
+model:
+  activity: walking
+  use_phase_conditioning: true
+  phase_window_frames: 65
+  use_phase_residual: true
+  phase_residual_sample_scale: 0.1
+  phase_residual_gain_std: .01
+  use_lowrank: true
+  pca_components: 8
+  explained_variance_threshold: 0.925
+  use_ar1: true
+  use_dropout: false
+  use_smoothing: true
+  use_lag: true
+  lag_max_frames: 3
+  smoothing_filter_order: 4
+  smoothing_cutoff_hz_default: 6
+  minimum_variance: 0
+  lowrank_sample_scale: .3
+  lowrank_template_mix: 0.92
+  lowrank_template_gain_std: 0.1
+  lowrank_template_jitter_scale: 0.007
+  noise_sample_scale: 0
+  lag_std_scale: 0
+  smoothing_std_scale: 0
+
+generation:
+  samples_per_trial: 8
+  random_seed: 42
+
+export:
+  mode: processeddata_subdir
+  shard_size: 64
+  # Synthetic exports still write into ProcessedData-style subfolders.
+  output_subdir_name: ProcessedData_1
+
+evaluation:
+  split: loso
+  save_plots: true
+  plots_max_trials: 5

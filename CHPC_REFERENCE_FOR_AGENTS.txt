@@ -1,0 +1,863 @@
+ tttttttt================================================================================
+CHPC REFERENCE FOR LLM AGENTS
+University of Utah Center for High Performance Computing — General Environment
+Portable: copy this file into any repo whose work runs on CHPC.
+================================================================================
+
+ABOUT THIS DOCUMENT
+-------------------
+Self-contained reference for an LLM/coding agent who needs to operate CHPC on
+a user's behalf. Covers (a) the conceptual structure, (b) the specific commands
+that get day-to-day work done, (c) the non-obvious gotchas that bite first-time
+users. Read top to bottom on first contact; thereafter use as a reference.
+
+All examples assume the user's CHPC username is referred to as $USER (which is
+their uNID, e.g., u1234567). Substitute in the commands.
+
+DEFAULT MENTAL MODEL: CHPC is a multi-cluster shared SLURM environment with
+network-attached shared home + per-cluster compute. Treat login nodes as thin
+gateways; do real work in interactive (`salloc`) or batch (`sbatch`) jobs.
+
+================================================================================
+0. TL;DR FLOWCHART
+================================================================================
+
+Q: "Where do I run my computation?"
+   → NOT on a login node. Use `sbatch` for batch, `salloc` for interactive.
+
+Q: "Where do I put files?"
+   → Code: home dir (50 GB quota, shared across all nodes, persistent).
+   → Data + outputs + conda envs (if big): /scratch/general/vast/$USER/
+     (large, fast, shared across all nodes, but auto-purged after 60 days
+     of inactivity).
+
+Q: "Which partition do I submit to?"
+   → If you have a fast deadline + can tolerate occasional preemption:
+     <cluster>-gpu-guest or <cluster>-guest (free, lots of capacity, can be
+     killed when an owner needs the node back).
+   → If you must not be preempted: <cluster>-gpu / <cluster> with your group's
+     account (subject to fair-share, may queue under "Priority").
+
+Q: "Why is my job pending forever?"
+   → Run `squeue --me`. Look at NODELIST(REASON):
+     • (Resources)  = no compatible free node right now; just wait.
+     • (Priority)   = your fair-share is throttling you; consider guest
+                       partition instead.
+     • (Dependency) = waiting on another job to finish.
+     • (JobArrayTaskLimit) = your `%N` cap is enforced (this is normal).
+
+================================================================================
+1. PHYSICAL/LOGICAL STRUCTURE
+================================================================================
+
+CHPC has TWO ENVIRONMENTS (different security postures, different filesystems):
+
+  GENERAL ENVIRONMENT (GE) — what 99% of users want.
+    • SSH with just a campus password (no Duo).
+    • Clusters: notchpeak, lonepeak, granite, kingspeak.
+    • Scratch paths: /scratch/general/vast (flash) and /scratch/general/nfs1.
+    • This document is about GE.
+
+  PROTECTED ENVIRONMENT (PE) — for IRB/HIPAA/restricted data only.
+    • SSH requires Duo MFA.
+    • Different host: redwood (or similar PE-only login nodes).
+    • Different scratch: /scratch/general/pe-nfs1, /scratch/general/pevast.
+    • Not covered in this document. If user mentions Duo prompts on login,
+      they're in PE — escalate / ask.
+
+WITHIN THE GENERAL ENVIRONMENT:
+
+  CLUSTERS (each cluster has its own login + compute nodes + SLURM scheduler):
+    • notchpeak — main general-purpose cluster, many GPU nodes.
+    • lonepeak — CPU-focused; common as a quick login target.
+    • granite — newest cluster; lots of fresh Hopper/Blackwell GPUs (caveat:
+      Blackwell hardware sm_120 won't run CUDA toolkits ≤ 12.0).
+    • kingspeak — older general cluster; smaller GPU pool.
+
+  LOGIN NODES:
+    • Round-robin DNS. `ssh notchpeak.chpc.utah.edu` may land you on
+      notchpeak1 or notchpeak2. Same for the other clusters.
+    • SSHing to one cluster's login node does NOT give you direct shell on
+      another cluster's nodes, but you can submit cross-cluster with `-M`.
+
+  COMPUTE NODES:
+    • Named like notch001..notch500+, grn001..grn080+, kp001..kp300+, lp...
+    • Reached automatically via `salloc` (interactive) or `sbatch` (batch).
+    • You can also `ssh notch271` from a login node if you have an active job
+      on that node (SLURM grants the access).
+
+  SHARED FILESYSTEMS (network-attached, identical view from every node):
+    • $HOME: /uufs/chpc.utah.edu/common/home/$USER/  (50 GB hard quota)
+    • Scratch: /scratch/general/vast/$USER/  and  /scratch/general/nfs1/$USER/
+    • Group space (if PI has purchased): /uufs/chpc.utah.edu/common/home/<group>/
+      (Most groups don't have one by default.)
+
+  LOCAL FILESYSTEMS (per-node, NOT shared):
+    • /scratch/local/$USER/$SLURM_JOB_ID — fast local disk, only valid inside
+      a job; auto-cleaned at job exit.
+    • /tmp — node-local RAM disk, small. DO NOT USE /tmp for files you need
+      to read from another login node; they will not be visible.
+
+================================================================================
+2. ACCESS AND SSH SETUP
+================================================================================
+
+LOGIN (no Duo on GE):
+    ssh $USER@notchpeak.chpc.utah.edu     # main GPU cluster
+    ssh $USER@lonepeak.chpc.utah.edu      # CPU work / quick logins
+    ssh $USER@granite.chpc.utah.edu       # newest cluster
+    ssh $USER@kingspeak.chpc.utah.edu
+
+CHPC DISALLOWS SSH KEY AUTH FOR INBOUND LOGIN. You must use password.
+However, SSH connection multiplexing (ControlMaster) avoids retyping
+the password constantly. Recommended ~/.ssh/config on the user's laptop:
+
+    Host notchpeak granite lonepeak kingspeak
+        HostName %h.chpc.utah.edu
+        User <uNID>
+        ControlMaster auto
+        ControlPath ~/.ssh/cm-%r@%h:%p
+        ControlPersist 8h
+        ServerAliveInterval 60
+
+After this you can `ssh notchpeak` (one short word) instead of the full host.
+
+SSH OUTBOUND from CHPC to GitHub is FINE (different rule than inbound login).
+Just generate a key on CHPC and add to GitHub.com under Settings → SSH keys:
+    ssh-keygen -t ed25519 -C "$USER@chpc-github"
+    cat ~/.ssh/id_ed25519.pub        # paste into github.com
+    ssh -T git@github.com            # verify
+
+================================================================================
+3. STORAGE: WHERE TO PUT WHAT
+================================================================================
+
+HOME ($HOME, ~/, /uufs/chpc.utah.edu/common/home/$USER/):
+    • 50 GB soft quota, 75 GB hard quota.
+    • Backed up by CHPC.
+    • Use for: code, configs, conda envs (if small enough), ssh keys,
+      .bashrc / dotfiles, sbatch scripts.
+    • Don't use for: datasets, model weights, generated outputs.
+
+SCRATCH (/scratch/general/vast/$USER/ — flash, fastest):
+    • Effectively unlimited (TB-scale per user typical).
+    • NOT backed up.
+    • 60-DAY INACTIVITY PURGE: files not accessed in 60 days are deleted.
+      To keep something durable, either copy to home/group, or `touch` it
+      periodically (a weekly cron: `find /scratch/general/vast/$USER -type f
+      -exec touch {} +`).
+    • Shared across all nodes (login and compute alike).
+    • Use for: datasets, model weights, conda envs (if large), outputs of
+      training/HPO/inference runs, anything that grows large.
+    • Symlinks from $HOME to scratch are common ("results lives on scratch
+      but I want to `cd ~/repo/results`"):
+          ln -s /scratch/general/vast/$USER/results ~/repo/results
+
+SCRATCH NFS (/scratch/general/nfs1/$USER/ — spinning disk, slower, larger):
+    • Same usage as vast; pick vast unless data > available vast quota.
+
+GROUP/PROJECT SPACE (if the PI has purchased):
+    • Path is something like /uufs/chpc.utah.edu/common/home/<group>/ or
+      /uufs/chpc.utah.edu/common/{groups,projects,space}/<group>/.
+    • Check with: `ls -ld /uufs/chpc.utah.edu/common/home/<groupname>*`.
+    • Backed up if the PI bought the backup option (extra cost).
+    • Use for shared lab data that should survive longer than scratch's 60d.
+
+LOCAL TEMP (/scratch/local/$USER/$SLURM_JOB_ID, inside a job):
+    • Fast local NVMe/SSD, lives only for the duration of the job.
+    • Job prolog/epilog creates/destroys it.
+    • Set TMPDIR=/scratch/local/$USER/$SLURM_JOB_ID inside scripts if a tool
+      makes heavy use of /tmp (matplotlib, ffmpeg cache, etc.).
+
+DO NOT use /tmp for files that need to be visible across nodes or sessions
+— /tmp is per-node RAM disk and tiny.
+
+CHECKING USAGE:
+    mychpc storage          # summary
+    df -h $HOME             # home quota status
+    du -sh $HOME/*          # what's big in home
+    du -sh /scratch/general/vast/$USER/*
+
+================================================================================
+4. LOGIN NODES — THE GOLDEN RULE
+================================================================================
+
+ARBITER IS WATCHING.
+CHPC runs a per-login-node CPU/memory monitor called Arbiter. If you run
+expensive work on a login node (compiling, training, even VS Code Remote-SSH
+server processes), Arbiter emails you, then progressively throttles, then
+eventually kills your processes. Don't do it.
+
+ON A LOGIN NODE IT IS FINE TO:
+    • Edit files with vim/nano (lightweight).
+    • Run `ssh`, `scp`, `git pull/push`, small `wget`/`curl`.
+    • Use SLURM commands (`sbatch`, `squeue`, `scancel`, `sacct`, `sinfo`).
+    • Submit jobs.
+    • Quick inspection: `ls`, `cat`, small `grep`.
+
+ON A LOGIN NODE IT IS NOT OK TO:
+    • Run training/inference/HPO/optimization.
+    • Compile large code (gcc/cargo/python -m pip install -e . of a big repo).
+    • Run jupyter/streamlit/long-running servers.
+    • Run a VS Code Remote-SSH server pointed AT the login node (it counts as
+      CPU work). If the user wants in-IDE coding on the cluster, the path is
+      VS Code Remote-SSH tunneled to a *compute* node (separate guide on
+      CHPC's website).
+
+WHEN UNSURE, USE AN INTERACTIVE COMPUTE NODE via `salloc`.
+
+================================================================================
+5. SLURM 101 — JOB SUBMISSION ESSENTIALS
+================================================================================
+
+SUBMITTING AN INTERACTIVE JOB (gives a shell on a compute node):
+
+    salloc -M notchpeak \
+        --partition=notchpeak-gpu --qos=notchpeak-gpu --account=notchpeak-gpu \
+        --gres=gpu:1 --nodes=1 --ntasks=4 --mem=32G --time=2:00:00
+
+    # When granted, your prompt changes to e.g. notch271. exit to release.
+
+The `-M <cluster>` flag picks which cluster's scheduler to talk to. If you
+SSH'd to notchpeak you can omit -M; if you SSH'd to lonepeak and want to
+submit to notchpeak, -M is required.
+
+SUBMITTING A BATCH JOB (returns immediately, runs in background):
+
+    sbatch myjob.sbatch
+    # Output:  Submitted batch job 12345678 on cluster notchpeak
+
+Inside myjob.sbatch (the only required first line is `#!/bin/bash`):
+
+    #!/bin/bash
+    #SBATCH --job-name=myrun
+    #SBATCH -M notchpeak
+    #SBATCH --partition=notchpeak-gpu
+    #SBATCH --qos=notchpeak-gpu
+    #SBATCH --account=notchpeak-gpu
+    #SBATCH --gres=gpu:1
+    #SBATCH --nodes=1
+    #SBATCH --ntasks=4
+    #SBATCH --mem=32G
+    #SBATCH --time=1:00:00
+    #SBATCH --output=logs/%x_%j.out
+    #SBATCH --error=logs/%x_%j.err
+
+    source ~/miniforge3/bin/activate myenv
+    cd /scratch/general/vast/$USER/myproject
+    python train.py --epochs 100
+
+KEY DIRECTIVES:
+    --time=HH:MM:SS         max wall-clock (jobs killed at limit)
+    --mem=32G               memory request
+    --ntasks=4              CPU count
+    --gres=gpu:1            request 1 GPU of any type
+    --gres=gpu:a100:1       request 1 A100 specifically (constrains which
+                            nodes you'll land on)
+    --array=0-99            job array of 100 tasks indexed 0..99
+    --array=0-99%20         same, max 20 concurrent
+    --dependency=afterany:<JID>   start after job JID finishes (any state)
+    --constraint=feature    require a node feature (less common; use gres
+                            for GPUs)
+    --begin=14:30:00        submit now, but do not start before 2:30 PM
+                            according to SLURM's scheduler clock
+
+OUTPUT/ERROR FILENAME TOKENS:
+    %x = job name
+    %j = job ID
+    %A = array job ID, %a = array task ID
+    %N = node name
+
+THE PARTITION/QOS/ACCOUNT TRIPLET MUST MATCH.
+Each row of `mychpc batch` gives a triplet — never mix across rows. Common
+triplets (substitute group name for "uhlrich"):
+
+    # General notchpeak GPU (subject to fair-share)
+    --partition=notchpeak-gpu --qos=notchpeak-gpu --account=notchpeak-gpu
+
+    # Preemptable guest version (lots of capacity, no fair-share impact)
+    --partition=notchpeak-gpu-guest --qos=notchpeak-gpu-guest \
+        --account=owner-gpu-guest
+
+    # Owner-restricted partition (your group has a paid share)
+    --partition=<group>-gpu --qos=<group>-gpu --account=<group>
+
+    # Granite cluster (newest, lots of Blackwell — check compatibility!)
+    --partition=granite-gpu-guest --qos=granite-gpu-guest --account=<group>
+
+    # Kingspeak (separate cluster, separate fair-share)
+    --partition=kingspeak-gpu --qos=kingspeak-gpu --account=kingspeak-gpu
+
+OWNER vs GUEST mental model:
+    owner partitions (yourgroup-gpu)        = fast start, never preempted,
+                                              but limited to your group's
+                                              hardware.
+    general partitions (notchpeak-gpu)       = open to everyone, subject to
+                                              fair-share throttling.
+    guest partitions (notchpeak-gpu-guest)  = use OTHER groups' idle hardware,
+                                              can be preempted if owner
+                                              reclaims the node. Best for
+                                              short tasks (< 1 hr) where
+                                              re-running on preemption is OK.
+    freecycle partitions                    = similar to guest, preemptable.
+
+SUBMITTING MANY SBATCH FILES SAFELY:
+    Always put a semicolon before `done` if writing the loop on one line:
+
+        for i in 00 01 02; do sbatch run_${i}.sbatch; done
+
+    Without that semicolon, `done` can be treated as an argument to `sbatch`
+    instead of ending the loop. The safer multi-line form is:
+
+        for i in 00 01 02 03 04 05 06 07 08 09; do
+          echo "Submitting run_hpo_random_chunk_${i}.sbatch"
+          sbatch run_hpo_random_chunk_${i}.sbatch
+        done
+
+    Confirm what actually submitted with:
+
+        squeue -M granite,notchpeak --me -o "%i %j %t %M %l %R %b %P"
+
+    If only some jobs submitted, submit only the missing chunks. Avoid rerunning
+    the full loop blindly unless duplicate jobs are acceptable.
+
+DELAYED STARTS:
+    `#SBATCH --begin=14:30:00` is useful when data is still uploading. Jobs
+    appear in `squeue` with reason `(BeginTime)` until the start time. This is
+    normal and means the job is queued but intentionally held.
+
+USE UNIQUE OUTPUT ROOTS FOR MANY HPO JOBS:
+    If launching multiple independent HPO chunks, give each sbatch script its
+    own output root, not just a unique experiment name:
+
+        --output_root /scratch/general/vast/$USER/outputs/HPO/chunk_00
+        --search_name chunk_00_${SLURM_JOB_ID}
+
+    This prevents accidental overwrites and makes result collection simpler.
+
+================================================================================
+6. JOB ARRAYS — THE KEY TO PARALLEL HPO / GRID-SEARCH WORK
+================================================================================
+
+A job array submits N near-identical tasks, each with a unique
+$SLURM_ARRAY_TASK_ID, via a single sbatch command.
+
+    #SBATCH --array=0-999%50
+
+    python my_script.py --run-index "$SLURM_ARRAY_TASK_ID"
+
+CONCURRENCY CAP (%N): the `%50` above means "up to 50 array tasks running
+simultaneously". The rest queue. Without `%`, SLURM tries to run them all
+in parallel — uses your fair-share quickly.
+
+QOS LIMIT: notchpeak-gpu has a hard cap of 1000 submitted jobs per user.
+Hitting it gives:
+    sbatch: error: QOSMaxSubmitJobPerUserLimit
+Workaround: submit in chunks chained with --dependency=afterany.
+
+CHECKING ARRAY STATE:
+    # Bare squeue collapses array tasks into ranges
+    squeue -M notchpeak --me
+    # 12345678_[5-999]  ← pending tasks
+    # 12345678_4 R                       notch271
+
+    # Per-task accounting view (includes finished tasks)
+    sacct -M notchpeak -j 12345678 --format=JobID,State,Elapsed,ExitCode -X
+    sacct -M notchpeak -j 12345678 --format=State -X -n | sort | uniq -c
+
+RESUMING A PARTIAL ARRAY:
+If 200 of 1000 tasks finished and the rest got cancelled/preempted,
+resubmit indices 200-999:
+    sbatch --array=200-999%30 myjob.sbatch
+The underlying script is responsible for being idempotent (skip if output
+already exists) or for accepting duplicate work cleanly.
+
+CANCELLING ALL OR PART:
+    scancel -M notchpeak 12345678         # cancel entire array
+    scancel -M notchpeak 12345678_50      # cancel just task 50
+    scancel -M notchpeak --me             # cancel ALL your jobs on cluster
+
+================================================================================
+7. MONITORING AND DIAGNOSTICS
+================================================================================
+
+QUEUE STATE:
+    squeue -M <cluster> --me                              # your jobs
+    squeue -M granite,notchpeak --me -o "%i %j %t %M %l %R %b %P"
+        # useful when jobs are spread across clusters
+    squeue -M <cluster> -p <partition> -o "%i %u %t %M %R %b" | head
+        # "%t" state, "%M" elapsed, "%R" reason if PD, "%b" tres_per_node
+    squeue -M <cluster> --me -h -o "%t" | sort | uniq -c  # state breakdown
+
+COMMON PENDING REASONS:
+    (BeginTime) = job was submitted with --begin and is intentionally held.
+    (Priority)  = eligible, but waiting behind higher-priority work.
+    (Resources) = priority is OK, but no compatible node/GPU is free.
+    (ReqNodeNotAvail, May be reserved for other job) = requested node/GPU class
+                  is temporarily unavailable or reserved.
+
+NODE INVENTORY (what GPUs exist where, and current state):
+    sinfo -M <cluster> -p <partition> -N -o "%20N %10t %30G %50E" -h | sort -u
+        # STATE column:  idle / mix / alloc / drain / down / drng
+        # GRES column shows GPU type:count
+
+ACCOUNTING (post-mortem, includes finished jobs):
+    sacct -M <cluster> -j <jobid>                         # one job's tasks
+    sacct -M <cluster> --starttime=now-24hours --format=JobID,JobName,State
+    sacct -M <cluster> -j <jobid> --format=State -X -n | sort | uniq -c
+
+WHO ELSE IS ON A NODE (helps estimate wait time):
+    squeue -M <cluster> -w <node> -o "%i %u %t %M %l %R %b" | head
+
+CHECKING YOUR QOS LIMITS:
+    sacctmgr show qos <qos-name> format=name,maxsubmitjobsperuser,maxjobsperuser,maxwall -P
+
+PARTITION OVERVIEW + WHAT YOU CAN USE:
+    mychpc batch                          # all (partition, qos, account)
+                                          # triplets available to you
+    mychpc batch <partition-name>         # details on one partition
+
+INSIDE A RUNNING JOB:
+    nvidia-smi                            # GPU snapshot
+    nvidia-smi --query-gpu=name,utilization.gpu,memory.used --format=csv
+    hostname                              # which compute node you're on
+    echo $SLURM_JOB_ID $SLURM_ARRAY_TASK_ID
+
+IF `nvidia-smi` SHOWS NO RUNNING PROCESSES:
+    First confirm the training job is actually running, not just an interactive
+    allocation or a delayed/pending batch job:
+
+        squeue -M <cluster> --me -o "%i %j %t %M %l %R %b"
+
+    If the batch job is not listed as R, inspect logs and accounting:
+
+        ls -lt logs | head
+        tail -n 80 logs/*.err
+        sacct -M <cluster> --starttime=now-2hours \
+          --format=JobID,JobName,State,Elapsed,ExitCode
+
+    A very common failure is an sbatch script still containing a placeholder
+    environment name, e.g. `CHANGE_ME_ENV`, which produces:
+        EnvironmentNameNotFound: Could not find conda environment: CHANGE_ME_ENV
+
+LOGS ARE YOUR FIRST POST-SUBMISSION CHECK:
+    After `sbatch`, immediately check:
+
+        squeue -M <cluster> --me
+        ls -lt logs | head
+        tail -n 80 logs/<jobname>_<jobid>.err
+
+    A job can be submitted successfully but exit in seconds due to environment,
+    path, dataset, or import errors.
+
+EMAIL NOTIFICATIONS (add to sbatch):
+    #SBATCH --mail-type=END,FAIL
+    #SBATCH --mail-user=you@example.com
+
+================================================================================
+8. GPUs — TYPES AND COMPATIBILITY
+================================================================================
+
+CHPC has a heterogeneous GPU fleet. The exact list changes; verify with:
+    sinfo -M notchpeak -p notchpeak-gpu-guest -o "%N %G" -h | sort -u
+    sinfo -M granite -p granite-gpu-guest -o "%N %G" -h | sort -u
+
+COMPUTE CAPABILITIES YOU'LL ENCOUNTER (relevant for CUDA toolkit choice):
+
+    sm_50 / sm_52   M60                          (CUDA 8+; mostly retired)
+    sm_61           P40, P100, GTX 1080          (CUDA 8+)
+    sm_70           V100, Titan V                (CUDA 9+)
+    sm_75           T4, RTX 2080 Ti, RTX 6000    (CUDA 10+)
+    sm_80           A100 (40/80 GB), A800        (CUDA 11+)
+    sm_86           RTX 3090, RTX A6000, A5500   (CUDA 11.1+)
+    sm_89           L40, L40S, RTX 6000 Ada,
+                    RTX 4090, RTX 4500 Ada       (CUDA 11.8+)
+    sm_90           H100, H200, H100NVL,
+                    H200NVL                      (CUDA 12.0+)
+    sm_120          RTX PRO 6000/4000 Blackwell  (CUDA 12.8+ required)
+
+COMMON COMPATIBILITY TRAP:
+A PyTorch built for cu118 contains compiled kernels for sm_50..sm_90.
+Running it on sm_120 (Blackwell) fails with:
+    CUDA error: no kernel image is available for execution on the device
+    NVIDIA RTX PRO 6000 Blackwell with CUDA capability sm_120 is not
+    compatible with the current PyTorch installation. The current PyTorch
+    install supports CUDA capabilities sm_50 sm_60 sm_70 sm_75 sm_80 sm_86
+    sm_89 sm_90.
+Driver version is NECESSARY but NOT SUFFICIENT — the PyTorch wheel itself
+must contain matching kernels.
+
+FIX FOR cu118 + Blackwell: pin the gres type to something older:
+    --gres=gpu:a100:1   # or  l40, 3090, v100, 2080ti, etc.
+Or upgrade to torch ≥ 2.7 + cu128 (much more work; cascades into mmcv,
+detectron2, etc. rebuilds).
+
+CHOOSING A GPU CLASS:
+    Compute-heavy training:    A100, H100, L40S — fastest.
+    Inference / smaller models: 3090, A6000, L40 — plenty.
+    CPU-bound optimization with brief GPU bursts: any GPU class is roughly
+                                                  equivalent; pick by
+                                                  availability.
+    Memory-hungry: A100 80GB, A6000 (48GB), L40 (48GB), H200 (141GB).
+
+WHEN TO PIN GPU TYPE WITH --gres=gpu:<type>:1 vs --gres=gpu:1:
+    Pin if you depend on specific architecture (e.g., need sm_80+ for
+    FlashAttention, or need to avoid Blackwell for old CUDA).
+    Otherwise leave it as `gpu:1` — opens up more nodes → faster start.
+
+================================================================================
+9. PYTHON ENVIRONMENT MANAGEMENT
+================================================================================
+
+CHPC's site-installed modules (`module avail python`) exist but are stale
+relative to modern ML work. Strongly prefer your own Miniforge/Miniconda.
+
+INSTALL MINIFORGE (run from an interactive compute node ideally, but home
+is fine because installation is mostly I/O):
+
+    cd ~
+    wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+    bash Miniforge3-Linux-x86_64.sh -b -p ~/miniforge3
+    source ~/miniforge3/bin/activate
+
+ENV LOCATION DECISIONS:
+    Small env (< 5 GB): in home is fine.
+    Large env (cu118+pytorch+OpenSim+mmcv+...:  ~20 GB): consider scratch
+        but BEWARE: scratch's 60-day purge will delete your env if you
+        don't use it. Home with quota dance is often safer for long-lived
+        envs.
+
+SCRATCH-BASED MINIFORGE/CONDA PATTERN:
+    If home is nearly full, install Miniforge and envs on scratch:
+
+        bash Miniforge3-Linux-x86_64.sh -b -p /scratch/general/vast/$USER/miniforge3
+        source /scratch/general/vast/$USER/miniforge3/bin/activate
+        conda create -p /scratch/general/vast/$USER/conda/envs/myenv python=3.10
+
+    In sbatch scripts, activate by full prefix:
+
+        source /scratch/general/vast/$USER/miniforge3/bin/activate \
+          /scratch/general/vast/$USER/conda/envs/myenv
+
+    If `conda: command not found`, conda is not initialized in that shell.
+    Source Miniforge first:
+
+        source /scratch/general/vast/$USER/miniforge3/bin/activate
+        conda info --envs
+
+    `conda info --envs` may show prefix-only envs without a short name. If so,
+    sbatch should activate the full prefix, not a guessed name like the repo
+    folder.
+
+ENV TARGET-NODE COMPATIBILITY:
+The env is built ONCE on whichever compute node you used. Conda hardcodes
+some library paths; usually portable, but if you install CUDA-specific
+extensions (e.g., flash-attn compiled for sm_80), they may break on other
+architectures. Re-install per-arch if so.
+
+IN YOUR SBATCH SCRIPT, ACTIVATE LIKE THIS:
+    source ~/miniforge3/bin/activate <envname>
+    # do NOT use `conda activate` directly — sometimes flaky in non-login
+    # shells. `source <prefix>/bin/activate <envname>` is more reliable.
+
+    For prefix envs on scratch:
+        source /scratch/general/vast/$USER/miniforge3/bin/activate \
+          /scratch/general/vast/$USER/conda/envs/<envname>
+
+NEVER PIP-INSTALL FROM A LOGIN NODE for any package that compiles (anything
+with `-e .` on a C++/CUDA project, or anything in pyproject.toml that triggers
+ninja/nvcc). Use a compute node via salloc.
+
+================================================================================
+10. TYPICAL WORKFLOW: ARMORED ONE-CYCLE
+================================================================================
+
+PHASE A — SETUP (one-time):
+  1. SSH in, set up ~/.ssh/config (ControlMaster) on laptop.
+  2. Generate ed25519 key on CHPC, add to GitHub.
+  3. Clone repo into $HOME (small repos) or /scratch/.../repos/ (large).
+  4. Install Miniforge, create env.
+  5. Upload datasets/weights via scp into /scratch/general/vast/$USER/.
+
+SCRATCH-FIRST REPO/DATASET LAYOUT:
+    When home is nearly full, keep both code and data on scratch:
+
+        mkdir -p /scratch/general/vast/$USER/repos
+        mkdir -p /scratch/general/vast/$USER/datasets
+        cd /scratch/general/vast/$USER/repos
+        git clone git@github.com:<owner>/<repo>.git <repo-dir>
+
+    From the laptop, copy datasets with rsync. Always verify the local source
+    path exists first; rsync will create an empty destination if the source path
+    is wrong:
+
+        ls -ld /local/path/TrustedDataSet...
+        rsync -avh --progress /local/path/TrustedDataSet.../ \
+          $USER@notchpeak.chpc.utah.edu:/scratch/general/vast/$USER/datasets/TrustedDataSet.../
+
+    The trailing slash on the source means "copy the contents into the target
+    folder." Without it, rsync copies the folder itself under the target.
+
+GITHUB CLONE FAILURES:
+    `ERROR: Repository not found` usually means one of:
+      • repo owner/name typo,
+      • repo is private and the CHPC SSH key has not been added to GitHub,
+      • you are using the wrong GitHub account.
+    Verify with:
+        ssh -T git@github.com
+        git ls-remote git@github.com:<owner>/<repo>.git
+
+PHASE B — DEVELOP (laptop, then sync):
+  1. Edit code locally in IDE.
+  2. Test locally if possible.
+  3. git push.
+  4. On CHPC: cd repo && git pull --ff-only.
+
+PHASE C — RUN:
+  1. Edit sbatch script (resources, array, partition, time limit).
+  2. sbatch jobscript.sbatch.
+  3. squeue --me to confirm submission.
+  4. Optional: write live state to disk (use tee + a path in $HOME or
+     scratch, never /tmp on the compute node) so you can monitor across
+     SSH sessions.
+
+PHASE D — MONITOR:
+  1. squeue --me                   # is it running?
+  2. sacct -j <jid> --format=...   # final accounting + any failures
+  3. ssh notch<NNN> nvidia-smi     # peek at GPU state while job runs
+  4. ls -lat results/              # are output files actually appearing?
+
+PHASE E — POST-MORTEM / TEARDOWN:
+  1. Pull results back to laptop with scp/rsync if needed.
+  2. scancel anything still running that's no longer useful.
+  3. If you'll be away > 60 days, copy scratch outputs to home/group/box.
+
+================================================================================
+11. NON-OBVIOUS GOTCHAS (THE STUFF THAT WILL BITE)
+================================================================================
+
+A. /tmp IS PER-NODE.
+   `tar czf /tmp/file.tar.gz ...` on one login node won't be visible on
+   another login node — you'll get "No such file or directory" on scp.
+   Always tar/scp to/from $HOME (or scratch). Same applies to log files.
+
+B. tar's `-C` flag changes directory BEFORE extracting. So:
+       tar xzf foo.tar.gz -C /scratch/.../dir
+   extracts into /scratch/.../dir/ — but the tar's internal paths are
+   relative to where it was created. If the tarball contains
+   `Data/Selim_LiDAR/Walk2_Cam1/...` and you want it under
+   /scratch/.../bar/, you'd extract with -C /scratch/.../bar and end up
+   with /scratch/.../bar/Data/Selim_LiDAR/Walk2_Cam1/...
+
+C. SLURM ARRAY TASK ID INSIDE A PIPE.
+   `python script.py --idx $SLURM_ARRAY_TASK_ID | tee log.out` — the env
+   var is expanded by the SHELL before python runs. OK in sbatch scripts.
+   But avoid `&&` and `;` chains that fork into multiple processes
+   competing for the same SLURM resources.
+
+D. PATH RESOLUTION IN PYTHON SCRIPTS.
+   `python scripts/foo.py` puts `scripts/` (not repo root) on sys.path.
+   If scripts/foo.py imports a sibling-of-scripts module, you get
+   `ModuleNotFoundError`. Fix:
+       PYTHONPATH=. python scripts/foo.py
+   Or, cleaner, run via:
+       python -m scripts.foo
+   (needs __init__.py).
+
+E. CONDA ACTIVATE IN NON-LOGIN SHELLS.
+   In sbatch scripts, `conda activate envname` sometimes fails silently
+   because the conda init hook isn't sourced. Always use:
+       source ~/miniforge3/bin/activate envname
+   This is the reliable pattern.
+
+F. ARBITER WILL EMAIL YOU.
+   If you accidentally start a long-running process on a login node, you'll
+   get warning emails after a few minutes. Move the work to a compute node
+   immediately. Persistent offenses can result in login restrictions.
+
+G. PARTITION-QOS-ACCOUNT IS ATOMIC.
+   You can't mix-and-match. If `mychpc batch` shows:
+       --partition=foo --qos=foo --account=foo
+   that's ONE valid combo. Substituting partition=bar with qos=foo
+   account=foo will fail with "Invalid qos specification" or
+   "Job violates accounting/QOS policy".
+
+H. FAIR-SHARE FATIGUE.
+   Heavy usage of a general partition (e.g., notchpeak-gpu) over a few
+   days drops your fair-share score, and new jobs queue with reason
+   (Priority). Solution: switch to a *-guest partition (different account
+   pool, separate fair-share). Effect resets over ~3 days of inactivity.
+
+H2. MULTI-ACCOUNT ACCESS CAN STILL SHARE A CLUSTER.
+   A group-specific partition may live under a cluster with a different name.
+   Example pattern:
+       #SBATCH -M granite
+       #SBATCH --partition=rai-gpu-grn
+       #SBATCH --qos=rai-gpu-grn
+       #SBATCH --account=rai
+   Do not set `-M rai` unless `rai` is actually a SLURM cluster. Use the
+   cluster shown by the login/sinfo/squeue commands (often granite/notchpeak).
+
+I. JOB OUTPUT FILES ONLY WRITE AT INTERVALS.
+   stdout/stderr captured via `--output=foo.out` is buffered. If you want
+   real-time visibility, run python with `-u`:
+       python -u script.py
+   Or `stdbuf -oL python script.py`. Otherwise output may arrive in chunks.
+
+J. SCRATCH AUTO-PURGE IS REAL.
+   Files not READ for 60 days are auto-deleted. `touch` updates the
+   access timestamp. Schedule a weekly touch-walk if needed:
+       find /scratch/general/vast/$USER -type f -exec touch -a {} +
+
+K. GIT PULL ON CHPC CAN CONFLICT.
+   If you've made small edits to sbatch scripts on CHPC (very common) and
+   then `git pull`, you'll get a merge conflict. Either:
+       git stash; git pull; git stash pop
+   Or commit the CHPC edits first (if they're worth keeping).
+
+L. PRE-LAUNCH SANITY CHECK FOR SBATCH:
+   Before submitting, `head -25 jobscript.sbatch` to visually confirm
+   --partition, --qos, --account, --gres, --time, --array values are
+   what you expect. The failure mode of a typo is "submitted then
+   instantly rejected with a cryptic accounting message."
+
+M. `sbatch` DOES NOT USE AN INTERACTIVE ALLOCATION YOU ALREADY HAVE.
+   An interactive `salloc` GPU and a later `sbatch` submission are separate
+   jobs. The sbatch script requests its own resources from whatever
+   partition/qos/account it specifies. If you want to use the interactive node,
+   run the command directly inside that interactive shell instead.
+
+N. REQUESTING MANY GPUS CAN MAKE WAIT TIME MUCH WORSE.
+   A single job requesting 6 GPUs may wait much longer than six independent
+   jobs requesting 1 GPU each. For embarrassingly parallel HPO, fixed/random
+   chunks of 1 GPU per sbatch are often easier for SLURM to place than one
+   large multi-GPU job. Use unique output roots and merge results afterward.
+
+O. OLD GPUS CAN BE "AVAILABLE" BUT NOT A GOOD CHOICE.
+   A partition can show high idle percentage while the available hardware is
+   old (for example Titan X-class GPUs with low node memory). For modern JAX or
+   PyTorch, prefer A100/A800/A40/A6000/L40/L40S/H100/H200/3090 when available.
+
+P. PLACEHOLDERS IN SBATCH SCRIPTS ARE REAL FAILURES.
+   Replace placeholder env names, dataset paths, and output roots before
+   submitting. A common mistake is using the repo name as the conda env name
+   when `conda info --envs` shows the real env is a full prefix path.
+
+================================================================================
+12. QUICK COMMAND CHEATSHEET
+================================================================================
+
+# Login
+ssh notchpeak                                       # (with ~/.ssh/config)
+ssh $USER@notchpeak.chpc.utah.edu                   # otherwise
+
+# Storage check
+mychpc storage
+df -h $HOME
+du -sh $HOME/* /scratch/general/vast/$USER/* 2>/dev/null
+
+# What can I submit to?
+mychpc batch | grep GPU                             # GPU rows only
+mychpc batch <partition>                            # one partition's details
+
+# What hardware exists / what's free?
+sinfo -M notchpeak -p notchpeak-gpu-guest -N -o "%20N %10t %30G %50E" -h | sort -u
+
+# Interactive GPU shell
+salloc -M notchpeak \
+    --partition=notchpeak-gpu-guest --qos=notchpeak-gpu-guest \
+    --account=owner-gpu-guest --gres=gpu:1 \
+    --nodes=1 --ntasks=4 --mem=32G --time=2:00:00
+
+# Submit a batch job / array
+sbatch myjob.sbatch
+sbatch --array=0-99%20 myjob.sbatch                 # override array on CLI
+
+# Queue / status
+squeue -M notchpeak --me
+squeue -M notchpeak --me -h -o "%t" | sort | uniq -c
+
+# Cancel
+scancel -M notchpeak <jobid>                        # one job
+scancel -M notchpeak <jobid>_<taskid>               # one array task
+scancel -M notchpeak --me                           # all my jobs
+
+# Accounting / postmortem
+sacct -M notchpeak --starttime=now-24hours --format=JobID,JobName,State,Elapsed,ExitCode -X
+sacct -M notchpeak -j <jobid> --format=State -X -n | sort | uniq -c
+
+# Inside a running job
+nvidia-smi
+hostname
+echo $SLURM_JOB_ID $SLURM_ARRAY_TASK_ID
+
+# QOS limits
+sacctmgr show qos notchpeak-gpu format=name,maxsubmitjobsperuser,maxjobsperuser,maxwall -P
+
+# Cross-node file shipping
+scp $USER@notchpeak.chpc.utah.edu:~/path/to/file ./
+scp ./localfile $USER@notchpeak.chpc.utah.edu:~/
+
+================================================================================
+13. WHEN TO USE WHICH PARTITION (DECISION TABLE)
+================================================================================
+
+  WORKLOAD                                              RECOMMENDED PARTITION
+  -----------------------------------------------------  ----------------------
+  Quick interactive debug (< 30 min)                     notchpeak-shared-short
+                                                         OR a *-guest GPU q
+  GPU training, can tolerate occasional preemption       notchpeak-gpu-guest
+                                                         OR granite-gpu-guest
+                                                         (filter Blackwell!)
+  GPU training, MUST NOT be preempted                    notchpeak-gpu
+                                                         (subject to fair-share)
+  Massive parallel job array (HPO, grid search)          notchpeak-gpu-guest
+                                                         with short --time per
+                                                         task, %30+ concurrent
+  Cutting-edge GPU (A100 80G, L40S, H100)                granite-gpu-guest
+                                                         OR <group>-gpu if
+                                                         your PI owns one
+  CPU-only data prep / preprocessing                      notchpeak-shared-short
+                                                         OR kingspeak (free)
+  Massive file uploads from outside                       notchpeak-dtn (data
+                                                         transfer node — built
+                                                         for it)
+
+================================================================================
+14. IF AN AGENT IS STUCK — QUICK DIAGNOSTIC SCRIPT
+================================================================================
+
+Run this on CHPC and paste output back to the user/agent for triage:
+
+    echo "=== identity ==="
+    whoami; hostname; pwd
+    echo "=== quotas ==="
+    mychpc storage
+    df -h $HOME
+    echo "=== current jobs ==="
+    for c in notchpeak lonepeak granite kingspeak; do
+      echo "--- $c ---"
+      squeue -M $c --me 2>/dev/null
+    done
+    echo "=== conda ==="
+    which conda && conda --version
+    ls ~/miniforge3/envs 2>/dev/null
+    echo "=== GPU view from this node ==="
+    nvidia-smi --query-gpu=name,compute_cap,memory.total --format=csv 2>/dev/null \
+        || echo "(no GPU here — login node or non-GPU node)"
+
+================================================================================
+15. ESCALATION
+================================================================================
+
+CHPC HELP: helpdesk@chpc.utah.edu
+ARBITER VIOLATION EMAIL: address the root cause first (kill the offending
+    process and move work to a compute node), then reply to the email
+    explaining what happened. They're generally reasonable about
+    accidents the first time.
+SCHEDULER WEIRDNESS that doesn't match this doc: confirm with `mychpc batch`
+    and the official CHPC docs at chpc.utah.edu/documentation/.
+
+================================================================================
+END OF DOCUMENT
+================================================================================
