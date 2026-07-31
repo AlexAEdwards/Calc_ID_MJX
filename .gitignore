@@ -94,3 +94,9 @@ Z...CodeIamNotReadyToDelete/
 # Embedded git repo (HPC mirror) - would become an unresolvable gitlink.
 # Track it in its own repository, not as a nested checkout.
 CHPCRepo/
+
+# Stage 1 layout (REFACTOR_PLAN.md): data and artifacts moved out of the root.
+# Compatibility symlinks remain at the old paths; both are ignored.
+datasets/
+artifacts/
+repo_root_layout_manifest.json
