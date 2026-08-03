@@ -3,7 +3,8 @@
 > Purpose: single-file map of this repo so an LLM can orient without scanning everything.
 > Many source files are huge (train.py ~5.8k lines, infer.py ~7.8k, loso_from_checkpoint.py
 > ~4.9k, data_loader.py ~2k). Use the line-number hints below to jump instead of reading whole files.
-> Repo root: `Calc_ID_MJX/`. Sibling CHPC mirror + agent guide: `CHPCRepo/`, `CHPC_REFERENCE_FOR_AGENTS.txt`.
+> Repo root: `Calc_ID_MJX/`. CHPC agent guide: `CHPC_REFERENCE_FOR_AGENTS.txt`.
+> (`CHPCRepo/` was removed in Stage 2 - it lives in its own repo, AlexAEdwards/CHPC_MJX.)
 
 ---
 
@@ -33,7 +34,8 @@ TrustedDataSetNoised12Distributed_*   Primary training datasets (variants: EdgeH
 OpenCapSubjects_Filt/, OlderYoungerAdultDataset_*   Additional/eval cohorts
 outputs/              Training runs, HPO sweeps, checkpoints (best_model.pkl)
 inference_results/    Inference + LOSO outputs, metrics, plots
-CHPCRepo/             Mirror of code for the CHPC cluster;  CHPC_HPO_results/, HPOAnalysis/
+artifacts/CHPC_HPO_results/, HPOAnalysis/   CHPC sweep outputs
+                      (CHPC code itself: separate repo AlexAEdwards/CHPC_MJX)
 figures/, RMASBFigures/, AnklePowerAnalysis/, AccuracyByGender&Speed/   Analysis + paper figures
 GeometryWithMus/, myoconverter/   Musculoskeletal model geometry / OpenSim->MJX conversion
 BadTrialsFromTrustedDataset/      Quarantined bad trials
@@ -267,4 +269,5 @@ OpenCapSubjects_Filt/
 - **prediction_margin_frames**: only frames [margin : window-margin) are supervised/evaluated.
 - **GT source flags**: OpenSim ID vs MJX ID vs recalculated; `_OSfilt` vs default kinematics filtering.
 - Big files: prefer grep + the line hints above over full reads. `__pycache__/`, `.jax_compilation_cache/`
-  are generated. `Z...CodeIamNotReadyToDelete/` is dead code.
+  are generated. (`Z...CodeIamNotReadyToDelete/` removed in Stage 2; its source was
+  rescued to `scripts/legacy_forward_sim/` and `scripts/legacy_scott_data/`.)
