@@ -20,3 +20,10 @@ py-modules = ["paths", "ProcessData"]
 [tool.setuptools.packages.find]
 include = ["TransformerFinal*"]
 namespaces = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = [
+  "slow: needs the staged data fixture or a GPU",
+]

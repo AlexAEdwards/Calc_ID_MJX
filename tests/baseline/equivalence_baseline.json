@@ -1,0 +1,302 @@
+{
+  "fixture": "/home/mobl/Documents/Classwork/BioSimClass/ClonedRepo/Calc_ID_MJX/artifacts/test_fixture",
+  "layers": {
+    "aggregate": {
+      "mae_bwh": "0.3744586459153219",
+      "mean_channel_r": "0.9012614452133041",
+      "n_trials": 5498,
+      "per_channel_mae": {
+        "ankle_flexion_l": "0.43688039727570993",
+        "ankle_flexion_r": "0.45243790472242656",
+        "hip_adduction_l": "0.4983809935126717",
+        "hip_adduction_r": "0.42412105688295865",
+        "hip_flexion_l": "0.613155814292825",
+        "hip_flexion_r": "0.5145293992478852",
+        "hip_rotation_l": "0.16164636832559195",
+        "hip_rotation_r": "0.12576429095701813",
+        "knee_adduction_l": "0.33910348892019876",
+        "knee_adduction_r": "0.26438286724137533",
+        "knee_flexion_l": "0.5271588964102651",
+        "knee_flexion_r": "0.4569958283262681",
+        "subtalar_l": "0.23818849598993827",
+        "subtalar_r": "0.18967524070937486"
+      },
+      "per_experiment_mae": {
+        "GaitRetraining": "0.4240347778192906",
+        "Hip_OA": "0.39730912779387445",
+        "Numeric": "0.38306071394935576",
+        "OA_Y": "0.4504744371607596",
+        "OpenCapVal": "0.31909309506984235",
+        "PD": "0.38628263534143126",
+        "S_GAH": "0.3519176217555241",
+        "Stroke": "0.44176408621214225"
+      },
+      "rmse_bwh": "0.5884614965242484"
+    },
+    "discovery": {
+      "n_trials": 8,
+      "trials": [
+        {
+          "experiment": "GaitRetraining",
+          "length": 217,
+          "subject": "GaitRetraining_Subject103",
+          "trial": "Trial_1"
+        },
+        {
+          "experiment": "Hip_OA",
+          "length": 121,
+          "subject": "HEA121_Marche",
+          "trial": "Trial_1"
+        },
+        {
+          "experiment": "Numeric",
+          "length": 1991,
+          "subject": "02",
+          "trial": "Trial_11"
+        },
+        {
+          "experiment": "OA_Y",
+          "length": 201,
+          "subject": "OA1",
+          "trial": "Trial_1"
+        },
+        {
+          "experiment": "OpenCapVal",
+          "length": 124,
+          "subject": "subject10",
+          "trial": "Trial_1"
+        },
+        {
+          "experiment": "PD",
+          "length": 113,
+          "subject": "PD_SUB01_off",
+          "trial": "Trial_15"
+        },
+        {
+          "experiment": "S_GAH",
+          "length": 5732,
+          "subject": "S_GAH_1",
+          "trial": "Trial_4"
+        },
+        {
+          "experiment": "Stroke",
+          "length": 146,
+          "subject": "SUBJ01",
+          "trial": "Trial_2"
+        }
+      ]
+    },
+    "loader": {
+      "infer": {
+        "GaitRetraining/GaitRetraining_Subject103/Trial_1": {
+          "input": "606e73e3de47818798a24c00591d2df7b002c07e97aba3f4f09bda20a94b2f83",
+          "input_dim": 374,
+          "static_context": "64923961efb08cd2159b2a9fb2b5be2ef38715a57a7ed7c8d7ac92a2bc4fa6aa",
+          "supervision_mask": "32841cfbf8c65c81812ec5efe9be832746fd2ee7cac3b4bc14ee63742102f5f1",
+          "windows": 11
+        },
+        "Hip_OA/HEA121_Marche/Trial_1": {
+          "input": "d469cb640451f4e85b2a7652595e24bece487250d65ec7f98cdf5f96a72d6084",
+          "input_dim": 374,
+          "static_context": "d31a16d3406552a404f6a7f2f8a2cdf13928250b2ce67dcf34adb7ad33129cbe",
+          "supervision_mask": "ce4e72cd6ecd4f51f10265ce441575d988489f3b23a0ffb1242d5e4a5095a87d",
+          "windows": 5
+        },
+        "Numeric/02/Trial_11": {
+          "input": "f05d13f5ec9b6688b1b17c1ff57ea8e57f83e5a8ed3028afa94d586a78541699",
+          "input_dim": 374,
+          "static_context": "0bffbe0a64c0588a70c10c0b91195f410eeb97d5d3181c80a6dd80bedce8f877",
+          "supervision_mask": "32841cfbf8c65c81812ec5efe9be832746fd2ee7cac3b4bc14ee63742102f5f1",
+          "windows": 122
+        },
+        "OA_Y/OA1/Trial_1": {
+          "input": "5bdb3127ba2f8f65a2d186db1bc44f19d5b56121394b7eaa2d2a2804de3e2b53",
+          "input_dim": 374,
+          "static_context": "4e9415dd9408bc191b8f6274be62168ab33bb358f46f69f634ab742774605dab",
+          "supervision_mask": "32841cfbf8c65c81812ec5efe9be832746fd2ee7cac3b4bc14ee63742102f5f1",
+          "windows": 10
+        },
+        "OpenCapVal/subject10/Trial_1": {
+          "input": "f56efeebc76cf4b5550a0d12385ccb7c46595ba695dc6192ade705135ab88998",
+          "input_dim": 374,
+          "static_context": "749e395470f6b31f3c6d93dfb7ecf14a0d04f8bbfbda5d31a0a630183b416dc3",
+          "supervision_mask": "ce4e72cd6ecd4f51f10265ce441575d988489f3b23a0ffb1242d5e4a5095a87d",
+          "windows": 5
+        },
+        "PD/PD_SUB01_off/Trial_15": {
+          "input": "68df4fb5362bd5a1974e73279c8b626fdac2205bf1d9c064bf0702b50878754f",
+          "input_dim": 374,
+          "static_context": "456f640689be4c2d140f9576ab93c6858a422a3690695c189660b79d41278be3",
+          "supervision_mask": "5fe2fe62b7b2a18fd03e96f1275ed16832a37999f33bb14bc7ae784ee69a461b",
+          "windows": 4
+        },
+        "S_GAH/S_GAH_1/Trial_4": {
+          "input": "3225f20fdc599d280603a7fbef1a8afaa7cde6866317a357ed646b7e6c1c2411",
+          "input_dim": 374,
+          "static_context": "63331e1395a6fc6962fc3d39b0af8a6181f468079ee6ef1c78d26006dc0e8a1b",
+          "supervision_mask": "32841cfbf8c65c81812ec5efe9be832746fd2ee7cac3b4bc14ee63742102f5f1",
+          "windows": 355
+        },
+        "Stroke/SUBJ01/Trial_2": {
+          "input": "c3a180ab282940f499a48db2231e7ba3ab9cc9466c4d2ced2a3a1842e2c5b2a4",
+          "input_dim": 374,
+          "static_context": "b5f5a266164cb3ecfaed1a866672d5d78fd4292c47fbe7474ad7d8b1277386dc",
+          "supervision_mask": "31b5b576445f8194b4eacd6c31255b83f32d919518b22df799721946ba8fb2b8",
+          "windows": 6
+        }
+      },
+      "train": {
+        "GaitRetraining/GaitRetraining_Subject103/Trial_1": {
+          "input": "1db0ae4fb36c045a31b4977012903326cd397bcc74b0079f0ea7b41ebcd09a33",
+          "input_dim": 374,
+          "static_context": "64923961efb08cd2159b2a9fb2b5be2ef38715a57a7ed7c8d7ac92a2bc4fa6aa",
+          "supervision_mask": "32841cfbf8c65c81812ec5efe9be832746fd2ee7cac3b4bc14ee63742102f5f1",
+          "windows": 8
+        },
+        "Hip_OA/HEA121_Marche/Trial_1": {
+          "input": "31fe693911ce8bb395c65477d3cbc5ea030576fee3871b3dcb3645c06a5eecee",
+          "input_dim": 374,
+          "static_context": "54ba58c7f9c9ace9c4654497e2a5533e9a2dff321df0f3147df22d36aeb5b022",
+          "supervision_mask": "68b533262dda295aeb6d95a996906ae18ec4d9c8e916e5f3280de667534ff16e",
+          "windows": 2
+        },
+        "Numeric/02/Trial_11": {
+          "input": "267b1de1b8f136b5b047ea541e69d4ae1b766d7da9e2dba176de023f6dbd60c2",
+          "input_dim": 374,
+          "static_context": "0bffbe0a64c0588a70c10c0b91195f410eeb97d5d3181c80a6dd80bedce8f877",
+          "supervision_mask": "32841cfbf8c65c81812ec5efe9be832746fd2ee7cac3b4bc14ee63742102f5f1",
+          "windows": 119
+        },
+        "OA_Y/OA1/Trial_1": {
+          "input": "b6bf72d151e94acb4860e2b6507bcbb83be493ff1513d6161baf0a6c1c0a964d",
+          "input_dim": 374,
+          "static_context": "f01470eb19f5d52a5f1e68b998ea66512ce03ca5fa95e5b17e00682ac58ba675",
+          "supervision_mask": "3843faaae02a0cecda29b9f5eb8b38edc949ece6f7cfa061596cf4f6c4878e7f",
+          "windows": 7
+        },
+        "OpenCapVal/subject10/Trial_1": {
+          "input": "549f75751ea72a297c865de471be19d3d1c52de3ddc61eedc0f372c2aaf70adf",
+          "input_dim": 374,
+          "static_context": "605e947caa7b384720ce63794df45d6c3761d839236d6613c133b8eda06d6de3",
+          "supervision_mask": "68b533262dda295aeb6d95a996906ae18ec4d9c8e916e5f3280de667534ff16e",
+          "windows": 2
+        },
+        "PD/PD_SUB01_off/Trial_15": {
+          "input": "a5a43a49253dccb35fe0793dd28d12189f1053a3fb18a4a86582e728a0425fa5",
+          "input_dim": 374,
+          "static_context": "d6b15b8e7a73e4e131bcc0bfa62a355b0722df8cf0ddc2873835c0f3b6bef696",
+          "supervision_mask": "68b533262dda295aeb6d95a996906ae18ec4d9c8e916e5f3280de667534ff16e",
+          "windows": 2
+        },
+        "S_GAH/S_GAH_1/Trial_4": {
+          "input": "46bc44b28861f53bd71f0b1fc77cef7f50cea55b6bc1288742f732a836989e30",
+          "input_dim": 374,
+          "static_context": "63331e1395a6fc6962fc3d39b0af8a6181f468079ee6ef1c78d26006dc0e8a1b",
+          "supervision_mask": "32841cfbf8c65c81812ec5efe9be832746fd2ee7cac3b4bc14ee63742102f5f1",
+          "windows": 353
+        },
+        "Stroke/SUBJ01/Trial_2": {
+          "input": "274f553da5204a2f00a69e4a34463316b70c9be5c103c7034ff5fbf4103aed97",
+          "input_dim": 374,
+          "static_context": "47774cd82cf91be1561201029f421d35f38c58db2e90e8acb664227e3e296c53",
+          "supervision_mask": "5fe2fe62b7b2a18fd03e96f1275ed16832a37999f33bb14bc7ae784ee69a461b",
+          "windows": 4
+        }
+      }
+    },
+    "metrics": {
+      "per_channel_mae": {
+        "ankle_flexion_l": 1.138080020202,
+        "ankle_flexion_r": 1.110042235064,
+        "hip_adduction_l": 1.029532806862,
+        "hip_adduction_r": 1.329835903811,
+        "hip_flexion_l": 1.190914212283,
+        "hip_flexion_r": 1.232540540994,
+        "hip_rotation_l": 1.105282057991,
+        "hip_rotation_r": 1.284122748613,
+        "knee_adduction_l": 1.099816313712,
+        "knee_adduction_r": 0.90917864597,
+        "knee_flexion_l": 1.130876181301,
+        "knee_flexion_r": 0.951516371437,
+        "subtalar_l": 1.107542315637,
+        "subtalar_r": 1.095551151902
+      },
+      "pooling": "a2c86645ed7e5ae147519405b46a2d78b927eba45b0f7b42a687687a675b7691"
+    },
+    "targets": {
+      "GaitRetraining/GaitRetraining_Subject103/Trial_1": {
+        "finite": true,
+        "hash": "cda7f4705598fa745decb44886298450b76fdc34963540b6ad92737a757a675e",
+        "shape": [
+          8,
+          70,
+          14
+        ]
+      },
+      "Hip_OA/HEA121_Marche/Trial_1": {
+        "finite": true,
+        "hash": "ff625efc0b0586b5a71524c54c9a387c4ae05b8fa10e654ef6dec9c99c470d68",
+        "shape": [
+          2,
+          70,
+          14
+        ]
+      },
+      "Numeric/02/Trial_11": {
+        "finite": true,
+        "hash": "ecf167a4eeacf64aded09e68aa0819bdb318c9fe39c02cca5f1abfd11997699e",
+        "shape": [
+          8,
+          70,
+          14
+        ]
+      },
+      "OA_Y/OA1/Trial_1": {
+        "finite": true,
+        "hash": "e97fe022f0bdaf630e1f2e4e4f347a05433e566334b5515333fa72ee16a83a3c",
+        "shape": [
+          7,
+          70,
+          14
+        ]
+      },
+      "OpenCapVal/subject10/Trial_1": {
+        "finite": true,
+        "hash": "19d9a2aa9cf0ea989128af85778e2747963eccdbb4cec330509bdcfee7a493e9",
+        "shape": [
+          2,
+          70,
+          14
+        ]
+      },
+      "PD/PD_SUB01_off/Trial_15": {
+        "finite": true,
+        "hash": "3a317ecb989745b60a0cb16695446d6c50acee21b2f110072061b6db2095970b",
+        "shape": [
+          2,
+          70,
+          14
+        ]
+      },
+      "S_GAH/S_GAH_1/Trial_4": {
+        "finite": true,
+        "hash": "7624f3d4a3aa0214852cd780d716616a5747432e6aa4731605a9bf106dd27cbf",
+        "shape": [
+          8,
+          70,
+          14
+        ]
+      },
+      "Stroke/SUBJ01/Trial_2": {
+        "finite": true,
+        "hash": "c4327933182c6d7038587cea49bf659a7765a29f27293ff3f51106d22fda2f50",
+        "shape": [
+          4,
+          70,
+          14
+        ]
+      }
+    }
+  },
+  "recorded": "2026-08-03T10:08:40"
+}
