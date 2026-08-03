@@ -13,6 +13,7 @@ passes an explicit value, usually cfg["FILTER_CUTOFF_HZ"].
 from __future__ import annotations
 
 import numpy as np
+from scipy.interpolate import make_smoothing_spline
 from scipy.signal import butter, filtfilt
 
 
