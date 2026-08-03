@@ -336,6 +336,38 @@ def _diff(path: str, a: Any, b: Any, out: List[str]) -> None:
         out.append(f"  ~ {path}: {sa[:44]} -> {sb[:44]}")
 
 
+#: Layer -> modules the layer cannot run without.
+_LAYER_REQUIREMENTS = {
+    "processdata_roundtrip": ("jax", "mujoco"),
+    "processdata": ("jax", "mujoco"),
+    "loader": ("jax",),
+    "targets": ("jax",),
+    "metrics": ("jax",),
+    "loss": ("jax",),
+}
+
+
+def _require_runtime(layers: List[str]) -> None:
+    """Abort if the interpreter cannot run the requested layers.
+
+    Without this, running under the wrong interpreter is indistinguishable from a
+    refactor that broke the code: ProcessData subprocesses exit non-zero on
+    `import jax`, the layer records {"error": ...} for every subject, and the
+    report reads as real output differences. Fail loudly and name the fix instead.
+    """
+    import importlib.util
+    needed = {m for l in layers for m in _LAYER_REQUIREMENTS.get(l, ())}
+    missing = sorted(m for m in needed if importlib.util.find_spec(m) is None)
+    if missing:
+        raise SystemExit(
+            f"Cannot run layers {layers} with {sys.executable}:\n"
+            f"  missing module(s): {', '.join(missing)}\n"
+            "  These layers execute the real pipeline, so they need the full\n"
+            "  JAX/MuJoCo environment (see full_env.yml). Re-run with that\n"
+            "  interpreter - a wrong env here reports as false output diffs."
+        )
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -351,6 +383,7 @@ def main() -> None:
         raise SystemExit(f"Unknown layer(s) {unknown}. Known: {sorted(LAYER_FNS)}")
     if not FIXTURE.exists():
         raise SystemExit(f"No fixture at {FIXTURE}. Run tools/stage_test_fixture.py --apply first.")
+    _require_runtime(layers)
 
     current = {}
     for name in layers:
