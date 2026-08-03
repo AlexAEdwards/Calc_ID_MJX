@@ -407,6 +407,24 @@ from processing.filtering import (  # noqa: E402,F401
     gcv_derivatives,
 )
 
+# --- Extracted to processing/trial_io.py in Stage 6; re-exported unchanged.
+from processing.trial_io import (  # noqa: E402,F401
+    _copy_outputs_with_suffix,
+    _has_noised_prediction_bundle,
+    _has_noised_source_inputs,
+    _missing_noised_bundle_files,
+    _with_file_suffix,
+)
+
+# --- Extracted to processing/artifact_names.py in Stage 6; re-exported unchanged.
+from processing.artifact_names import (  # noqa: E402,F401
+    NOISED_AUX_FILES_TO_COPY,
+    NOISED_FILE_SUFFIX,
+    NOISED_REQUIRED_BUNDLE_FILENAMES,
+    NOISED_STRICT_VALIDATION_FILENAMES,
+    TRIMMING_TRACE_FILENAME,
+)
+
 # --- Extracted to processing/geometry.py in Stage 6; re-exported unchanged.
 from processing.geometry import (  # noqa: E402,F401
     _add_ankle_height_to_ground_aligned_y,
@@ -776,9 +794,7 @@ def compute_patient_size(xml_path: Path) -> np.ndarray:
 
 
 PIPELINE_SKIP_DIR_NAMES = {"Untrimmed", "UntrimmedRaw"}
-NOISED_FILE_SUFFIX = "_noised"
 OC_MOCAP_RAW_TIMEBASE_DIRNAME = "MoCap_RawTimebase"
-TRIMMING_TRACE_FILENAME = "Trimming_Traceability.json"
 PIPELINE_DERIVED_FILENAMES = {
     "COP_CalcFrame.npy",
     "COP_CalcFrame_GroundAligned.npy",
@@ -797,68 +813,6 @@ PIPELINE_DERIVED_FILENAMES = {
     "Trial_Processing_Information.json",
     TRIMMING_TRACE_FILENAME,
 }
-NOISED_AUX_FILES_TO_COPY = (
-    "pos_inputs.npy",
-    "vel_inputs.npy",
-    "acc_inputs.npy",
-    "pelvis_rot_matrix.npy",
-    "pos_mjx.npy",
-    "qvel_mjx.npy",
-    "qacc_mjx.npy",
-    "COP_Cleaned_Relative.npy",
-    "forwardVel.npy",
-    "ankle_heights.npy",
-    "ankle_pos_r.npy",
-    "ankle_pos_l.npy",
-    "toes_pos_r.npy",
-    "toes_pos_l.npy",
-    "COM_r.npy",
-    "COM_l.npy",
-    "COM_Acc_Global.npy",
-    "qfrc_inverse.npy",
-    "Jacobian.npy",
-    "COP_CalcFrame.npy",
-    "COP_CalcFrame_GroundAligned.npy",
-    "COP_CalcFrame_GroundAligned_GRFNorm.npy",
-    "COP_CalcFrame_GroundAligned_YplusAnkleHeight.npy",
-    "COP_CalcFrame_GroundAligned_BackToWorld.npy",
-    "COP_Cleaned_Relative_RecoveredFromGroundAligned.npy",
-    "KneeToCOP_Vectors.npy",
-    "knee_pos_r.npy",
-    "knee_pos_l.npy",
-    "WorldToGroundAlignedCalcnRotation.npy",
-    "CalcnToFloor_AngleDeg.npy",
-    "FootProgressionAngle.npy",
-    "Foot_ProgressionAngle.npy",
-    "tosPosition.npy",
-    "Trial_Processing_Information.json",
-    TRIMMING_TRACE_FILENAME,
-)
-NOISED_REQUIRED_BUNDLE_FILENAMES = (
-    TRIMMING_TRACE_FILENAME,
-    "pos_inputs.npy",
-    "vel_inputs.npy",
-    "acc_inputs.npy",
-    "pelvis_rot_matrix.npy",
-    "pos_mjx.npy",
-    "qvel_mjx.npy",
-    "qacc_mjx.npy",
-    "WorldToGroundAlignedCalcnRotation.npy",
-    "Jacobian.npy",
-    "ankle_heights.npy",
-    "COM_r.npy",
-    "COM_l.npy",
-    "COM_Acc_Global.npy",
-    "forwardVel.npy",
-    "Foot_ProgressionAngle.npy",
-    "CalcnToFloor_AngleDeg.npy",
-)
-NOISED_STRICT_VALIDATION_FILENAMES = NOISED_REQUIRED_BUNDLE_FILENAMES + (
-    "qfrc_inverse.npy",
-    "COP_Cleaned_Relative.npy",
-    "COP_CalcFrame_GroundAligned.npy",
-    "COP_CalcFrame_GroundAligned_GRFNorm.npy",
-)
 MISSSTEP_ANALYSIS_REQUIRED_FILES = ("GRF_Cleaned.npy", "Mass_kg.npy", "contactBoolean.npy")
 COP_OUTLIER_FILENAME = "COP_CalcFrame_GroundAligned.npy"
 HEIGHT_FILENAME = "Height_m.npy"
@@ -868,46 +822,6 @@ COP_OUTLIER_CHANNEL_BOUNDS = {
     2: (-0.020, 0.025),  # Rz
     5: (-0.025, 0.020),  # Lz
 }
-
-
-def _with_file_suffix(filename: str, suffix: str = NOISED_FILE_SUFFIX) -> str:
-    path = Path(filename)
-    if path.suffix:
-        return f"{path.stem}{suffix}{path.suffix}"
-    return f"{filename}{suffix}"
-
-
-def _missing_noised_bundle_files(
-    proc_dir: Path,
-    filenames: tuple[str, ...] = NOISED_REQUIRED_BUNDLE_FILENAMES,
-) -> list[str]:
-    return [name for name in filenames if not (proc_dir / _with_file_suffix(name)).exists()]
-
-
-def _has_noised_prediction_bundle(proc_dir: Path) -> bool:
-    return len(_missing_noised_bundle_files(proc_dir)) == 0
-
-
-def _has_noised_source_inputs(trial_path: Path) -> bool:
-    motion_dir = trial_path / "Motion" / "Motion_Pelvis_Adjusted"
-    if not motion_dir.exists():
-        motion_dir = trial_path / "Motion"
-    required = ("Pos_noised.npy", "Vel_noised.npy", "Accel_noised.npy")
-    return all((motion_dir / name).exists() for name in required)
-
-
-def _copy_outputs_with_suffix(src_dir: Path, dst_dir: Path, filenames: tuple[str, ...], suffix: str) -> None:
-    for name in filenames:
-        src = src_dir / name
-        if not src.exists():
-            continue
-        dst = dst_dir / _with_file_suffix(name, suffix)
-        if src.is_dir():
-            if dst.exists():
-                shutil.rmtree(dst)
-            shutil.copytree(src, dst)
-        else:
-            shutil.copy2(src, dst)
 
 
 def _load_json_dict(path: Path) -> dict:
