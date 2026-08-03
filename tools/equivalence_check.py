@@ -14,6 +14,7 @@ Layers, cheapest first:
 ``loader``      TrialDataLoader batches: SHA-256 of input / static / masks
 ``targets``     build_direct_torque_targets output hashes
 ``metrics``     the masked metric helpers on fixed synthetic arrays
+``loss``        compute_total_loss on real batches with a seeded prediction
 ``aggregate``   LOEO aggregation over an existing sweep - exact metric values
 
 Tolerances are fixed by the plan and are not arguments: arrays must be
@@ -44,7 +45,7 @@ from paths import artifact  # noqa: E402
 
 FIXTURE = artifact("test_fixture")
 BASELINE = REPO_ROOT / "tests" / "baseline" / "equivalence_baseline.json"
-DEFAULT_LAYERS = ("discovery", "loader", "targets", "metrics", "aggregate")
+DEFAULT_LAYERS = ("discovery", "loader", "targets", "metrics", "loss", "aggregate")
 
 
 def _h(*arrays) -> str:
@@ -158,6 +159,54 @@ def layer_metrics() -> Dict[str, Any]:
     }
 
 
+def layer_loss() -> Dict[str, Any]:
+    """Exercise compute_total_loss on real fixture batches with a fixed prediction.
+
+    This is the only layer that reaches the training objective, so it is what
+    makes moving compute_total_loss (616 LOC, 11 transitive deps) a verifiable
+    change rather than a hopeful one. Uses a seeded prediction array and real
+    normalizers so the result is deterministic but exercises the real code path.
+    """
+    import numpy as np
+    import jax.numpy as jnp
+    from TransformerFinal.data_loader import TrialDataLoader
+    from TransformerFinal.train import (
+        Normalizer, compute_normalizers_from_loader, compute_total_loss, normalize_batch,
+    )
+    from core.layers import STANDARD_OUTPUT_DIM
+
+    out: Dict[str, Any] = {}
+    for t in _fixture_trials()[:4]:                      # 4 trials keeps this ~seconds
+        key = f"{t.get('experiment','')}/{t['subject']}/{t['trial']}"
+        cfg = _loader_cfg(batch_size=4, edge_mode="legacy", edge_trim_frames=0)
+        dl = TrialDataLoader([t], **cfg)
+        raw = next(iter(dl), None)
+        if raw is None:
+            out[key] = None
+            continue
+        try:
+            norms = compute_normalizers_from_loader(TrialDataLoader([t], **cfg), max_batches=1)
+            batch = normalize_batch(raw, norms)
+            n, seq = np.asarray(batch["input"]).shape[:2]
+            pred = jnp.asarray(
+                np.random.default_rng(0).standard_normal((n, seq, STANDARD_OUTPUT_DIM)) * 0.1
+            )
+            loss, metrics = compute_total_loss(
+                pred, batch, norms,
+                {"cop": 1.0, "grf": 1.0, "moments": 1.0, "contact": 1.0},
+                False, False, True, False,
+            )
+            out[key] = {
+                "loss": repr(round(float(loss), 10)),
+                "metrics": {k: repr(round(float(np.asarray(v)), 10))
+                            for k, v in sorted(metrics.items())
+                            if np.asarray(v).size == 1},
+            }
+        except Exception as e:                            # record, do not mask
+            out[key] = {"error": f"{type(e).__name__}: {str(e)[:120]}"}
+    return out
+
+
 def layer_aggregate(sweep: Path) -> Dict[str, Any]:
     acc = sweep / "accuracy" / "loeo_accuracy.json"
     if not acc.exists():
@@ -200,6 +249,7 @@ LAYER_FNS = {
     "loader": lambda a: layer_loader(),
     "targets": lambda a: layer_targets(),
     "metrics": lambda a: layer_metrics(),
+    "loss": lambda a: layer_loss(),
     "aggregate": lambda a: layer_aggregate(Path(a.sweep)),
     "processdata": lambda a: layer_processdata(),
 }

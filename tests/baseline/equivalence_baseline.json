@@ -204,6 +204,120 @@
         }
       }
     },
+    "loss": {
+      "GaitRetraining/GaitRetraining_Subject103/Trial_1": {
+        "loss": "1.6899106503",
+        "metrics": {
+          "contact_loss": "1.2120473385",
+          "cop_loss": "0.0516124927",
+          "grf_correction_loss": "0.2340445817",
+          "grf_loss": "0.0651807114",
+          "jacobian_input_reg_loss": "0.0",
+          "jacobian_loss": "0.0",
+          "moments_loss": "0.0664795712",
+          "output_reg_loss": "0.0",
+          "qfrc_inverse_input_reg_loss": "0.0",
+          "qfrc_inverse_loss": "0.0",
+          "rotation_input_reg_loss": "0.0",
+          "rotation_loss": "0.0",
+          "torque_cop_effect_loss": "0.0",
+          "torque_cop_grad_rms": "0.0",
+          "torque_grf_effect_loss": "0.0",
+          "torque_grf_grad_rms": "0.0",
+          "torque_knee_adduction_cop_grad_rms": "0.0",
+          "torque_knee_adduction_grf_grad_rms": "0.0",
+          "torque_knee_adduction_loss": "0.0003664203",
+          "torque_knee_adduction_to_torque_cop_grad_ratio": "0.0",
+          "torque_knee_adduction_to_torque_grf_grad_ratio": "0.0",
+          "torque_loss": "0.0605459772",
+          "total_loss": "1.6899106503"
+        }
+      },
+      "Hip_OA/HEA121_Marche/Trial_1": {
+        "loss": "1.872774601",
+        "metrics": {
+          "contact_loss": "1.2154611349",
+          "cop_loss": "0.0560115688",
+          "grf_correction_loss": "0.3897310197",
+          "grf_loss": "0.0446865074",
+          "jacobian_input_reg_loss": "0.0",
+          "jacobian_loss": "0.0",
+          "moments_loss": "0.1241254285",
+          "output_reg_loss": "0.0",
+          "qfrc_inverse_input_reg_loss": "0.0",
+          "qfrc_inverse_loss": "0.0",
+          "rotation_input_reg_loss": "0.0",
+          "rotation_loss": "0.0",
+          "torque_cop_effect_loss": "0.0",
+          "torque_cop_grad_rms": "0.0",
+          "torque_grf_effect_loss": "0.0",
+          "torque_grf_grad_rms": "0.0",
+          "torque_knee_adduction_cop_grad_rms": "0.0",
+          "torque_knee_adduction_grf_grad_rms": "0.0",
+          "torque_knee_adduction_loss": "3.83805e-05",
+          "torque_knee_adduction_to_torque_cop_grad_ratio": "0.0",
+          "torque_knee_adduction_to_torque_grf_grad_ratio": "0.0",
+          "torque_loss": "0.0427589677",
+          "total_loss": "1.872774601"
+        }
+      },
+      "Numeric/02/Trial_11": {
+        "loss": "2.3080968857",
+        "metrics": {
+          "contact_loss": "1.2778708935",
+          "cop_loss": "0.0686580613",
+          "grf_correction_loss": "0.8352292776",
+          "grf_loss": "0.0467100516",
+          "jacobian_input_reg_loss": "0.0",
+          "jacobian_loss": "0.0",
+          "moments_loss": "0.001248631",
+          "output_reg_loss": "0.0",
+          "qfrc_inverse_input_reg_loss": "0.0",
+          "qfrc_inverse_loss": "0.0",
+          "rotation_input_reg_loss": "0.0",
+          "rotation_loss": "0.0",
+          "torque_cop_effect_loss": "0.0",
+          "torque_cop_grad_rms": "0.0",
+          "torque_grf_effect_loss": "0.0",
+          "torque_grf_grad_rms": "0.0",
+          "torque_knee_adduction_cop_grad_rms": "0.0",
+          "torque_knee_adduction_grf_grad_rms": "0.0",
+          "torque_knee_adduction_loss": "0.0003483812",
+          "torque_knee_adduction_to_torque_cop_grad_ratio": "0.0",
+          "torque_knee_adduction_to_torque_grf_grad_ratio": "0.0",
+          "torque_loss": "0.0783798993",
+          "total_loss": "2.3080968857"
+        }
+      },
+      "OA_Y/OA1/Trial_1": {
+        "loss": "1.7579606771",
+        "metrics": {
+          "contact_loss": "1.2567127943",
+          "cop_loss": "0.078709282",
+          "grf_correction_loss": "0.2805815935",
+          "grf_loss": "0.0515750945",
+          "jacobian_input_reg_loss": "0.0",
+          "jacobian_loss": "0.0",
+          "moments_loss": "0.0337048993",
+          "output_reg_loss": "0.0",
+          "qfrc_inverse_input_reg_loss": "0.0",
+          "qfrc_inverse_loss": "0.0",
+          "rotation_input_reg_loss": "0.0",
+          "rotation_loss": "0.0",
+          "torque_cop_effect_loss": "0.0",
+          "torque_cop_grad_rms": "0.0",
+          "torque_grf_effect_loss": "0.0",
+          "torque_grf_grad_rms": "0.0",
+          "torque_knee_adduction_cop_grad_rms": "0.0",
+          "torque_knee_adduction_grf_grad_rms": "0.0",
+          "torque_knee_adduction_loss": "0.000160033",
+          "torque_knee_adduction_to_torque_cop_grad_ratio": "0.0",
+          "torque_knee_adduction_to_torque_grf_grad_ratio": "0.0",
+          "torque_loss": "0.0566770174",
+          "total_loss": "1.7579606771"
+        }
+      }
+    },
     "metrics": {
       "per_channel_mae": {
         "ankle_flexion_l": 1.138080020202,
@@ -298,5 +412,5 @@
       }
     }
   },
-  "recorded": "2026-08-03T10:08:40"
+  "recorded": "2026-08-03T11:11:19"
 }

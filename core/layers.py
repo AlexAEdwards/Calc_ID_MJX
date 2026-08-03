@@ -10,13 +10,11 @@ import jax
 import jax.numpy as jnp
 from flax import linen as nn
 
+from core.constants import (
+    CONTACT_SLICE, COP_SLICE, GRF_SLICE, MOMENTS_SLICE, STANDARD_OUTPUT_DIM,
+)
 
-# Module-level constants this code depends on, copied verbatim from train.py.
-CONTACT_SLICE = slice(12, 14)
-COP_SLICE = slice(0, 4)
-GRF_SLICE = slice(4, 10)
-MOMENTS_SLICE = slice(10, 12)
-STANDARD_OUTPUT_DIM = 14
+
 
 
 class SinusoidalPosEmb(nn.Module):
