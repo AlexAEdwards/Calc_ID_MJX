@@ -407,6 +407,13 @@ from processing.filtering import (  # noqa: E402,F401
     gcv_derivatives,
 )
 
+# --- Extracted to processing/resampling.py in Stage 6; re-exported unchanged.
+from processing.resampling import (  # noqa: E402,F401
+    _interpolate_101,
+    _interpolate_to_len,
+    resample_dataframes_to_uniform_timestep,
+)
+
 # --- Extracted to processing/cop.py in Stage 6; re-exported unchanged.
 from processing.cop import (  # noqa: E402,F401
     _multiply_cop_by_bodyweight_normalized_grf_magnitude,
@@ -611,42 +618,6 @@ def align_myosuite_pelvis(data: np.ndarray,
     al_COP = _rot_6col(COP) if COP is not None else None
 
     return aligned_data, al_vel, al_accel, al_GRF, al_GRM, al_COP
-
-
-def resample_dataframes_to_uniform_timestep(kin_time:    np.ndarray,
-                                             force_time:  np.ndarray,
-                                             pos:         np.ndarray,
-                                             vel:         np.ndarray,
-                                             accel:       np.ndarray,
-                                             grf:         np.ndarray,
-                                             grm:         np.ndarray,
-                                             cop:         np.ndarray,
-                                             dt:          float = 0.01
-                                             ) -> tuple:
-    """Resample all signals to a uniform 100 Hz grid."""
-    t_start = max(kin_time[0],   force_time[0])
-    t_end   = min(kin_time[-1],  force_time[-1])
-    t_new   = np.arange(t_start, t_end, dt)
-
-    def _interp(t_src, data):
-        if data.ndim == 1:
-            return interp1d(t_src, data, kind="linear",
-                            fill_value="extrapolate", bounds_error=False)(t_new)
-        out = np.empty((len(t_new), data.shape[1]))
-        for c in range(data.shape[1]):
-            out[:, c] = interp1d(t_src, data[:, c], kind="linear",
-                                 fill_value="extrapolate", bounds_error=False)(t_new)
-        return out
-
-    return (
-        t_new,
-        _interp(kin_time,   pos),
-        _interp(kin_time,   vel),
-        _interp(kin_time,   accel),
-        _interp(force_time, grf),
-        _interp(force_time, grm),
-        _interp(force_time, cop),
-    )
 
 
 def _joint_id(model, joint_name: str) -> int:
@@ -3492,30 +3463,6 @@ def setup_and_precompute_jacobians(mj_model, qpos_matrix: np.ndarray):
 # ═══════════════════════════════════════════════════════════════
 #                 DEVIATION-LEARNING HELPERS
 # ═══════════════════════════════════════════════════════════════
-
-def _interpolate_to_len(data, target_len: int) -> np.ndarray:
-    """Linearly interpolate data (T, C) or (T,) to target_len frames."""
-    if data.ndim == 1:
-        data = data.reshape(-1, 1)
-    x_orig = np.linspace(0, 100, data.shape[0])
-    x_new  = np.linspace(0, 100, target_len)
-    out    = np.zeros((target_len, data.shape[1]))
-    for c in range(data.shape[1]):
-        out[:, c] = np.interp(x_new, x_orig, data[:, c])
-    return out
-
-
-def _interpolate_101(data: np.ndarray) -> np.ndarray:
-    """Interpolate (T, C) data to exactly 101 points (0–100 % of stance)."""
-    if data.shape[0] < 2:
-        return np.zeros((101, data.shape[1]))
-    x_orig = np.linspace(0, 100, data.shape[0])
-    x_new  = np.linspace(0, 100, 101)
-    out    = np.zeros((101, data.shape[1]))
-    for c in range(data.shape[1]):
-        out[:, c] = np.interp(x_new, x_orig, data[:, c])
-    return out
-
 
 def _extract_trial_stance_metrics(
     grf_data:    np.ndarray,   # (T, 6) MuJoCo coords
