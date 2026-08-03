@@ -42,8 +42,6 @@ from typing import Any, Dict, Iterable, List, Mapping, Sequence
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-if str(SCRIPT_DIR) not in sys.path:
-    sys.path.insert(0, str(SCRIPT_DIR))
 
 from direct_torque_utils import DIRECT_TORQUE_NAMES  # noqa: E402
 from experiment_groups import (  # noqa: E402

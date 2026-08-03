@@ -34,8 +34,6 @@ from tqdm import tqdm
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-if str(SCRIPT_DIR) not in sys.path:
-    sys.path.insert(0, str(SCRIPT_DIR))
 
 from data_loader import TrialDataLoader  # noqa: E402
 from direct_torque_utils import (  # noqa: E402

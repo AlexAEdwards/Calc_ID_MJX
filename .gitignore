@@ -100,3 +100,6 @@ CHPCRepo/
 datasets/
 artifacts/
 repo_root_layout_manifest.json
+
+# Editable-install metadata
+*.egg-info/

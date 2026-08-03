@@ -36,7 +36,6 @@ import numpy as np
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
 sys.path.insert(0, str(SCRIPT_DIR))
-sys.path.insert(0, str(REPO_ROOT / "TransformerFinal"))
 
 from batch_opensim_inverse_dynamics import (  # noqa: E402
     _OPENSIM_TO_MJX_IDX,

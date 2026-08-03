@@ -29,8 +29,18 @@ import pandas as pd
 from scipy.interpolate import interp1d
 
 # ---------------------------------------------------------------------------
-DATASET = Path("/home/mobl/mnt/mobl-nas/MOBL_shared/Datasets/"
-               "OldYoungAdultWalking_MJX_Processed_NoTrim_NoFilt_OSIDFilt")
+# Resolved through paths.py rather than hardcoded, so this runs on any machine.
+# Override with CALCID_DATASETS, or point --dataset at another location.
+import os
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from paths import dataset as _dataset  # noqa: E402
+
+DATASET = Path(
+    os.environ.get("CALCID_OSIDFILT_DATASET")
+    or _dataset("OldYoungAdultWalking_MJX_Processed_NoTrim_NoFilt_OSIDFilt")
+)
 
 # Pos.npy column index → OpenSim coordinate name in the _id.mot
 POS_COL_TO_OSIM = {

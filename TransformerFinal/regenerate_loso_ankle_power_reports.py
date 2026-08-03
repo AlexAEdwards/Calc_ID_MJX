@@ -11,8 +11,6 @@ from pathlib import Path
 import numpy as np
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-if str(SCRIPT_DIR) not in sys.path:
-    sys.path.insert(0, str(SCRIPT_DIR))
 
 from loso_inference_compare import write_ankle_power_stance_report  # noqa: E402
 

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calc-id-mjx"
+version = "0.1.0"
+description = "Predict ground reaction dynamics from gait kinematics, verified with MuJoCo/MJX inverse dynamics"
+requires-python = ">=3.10"
+# Runtime deps are pinned in full_env.yml / requirements_env.txt; this package is
+# installed editable purely to make the existing layout importable, so it does not
+# re-declare them and cannot fight the conda environment.
+dependencies = []
+
+[tool.setuptools]
+# Flat-layout repo: only these are importable packages/modules. Everything else at
+# the root is data, artifacts or standalone scripts.
+py-modules = ["paths", "ProcessData"]
+
+[tool.setuptools.packages.find]
+include = ["TransformerFinal*"]
+namespaces = false

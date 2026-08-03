@@ -40,9 +40,8 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(REPO_ROOT / "TransformerFinal"))
 
-from experiment_groups import LAYOUT_MANIFEST_NAME  # noqa: E402
+from TransformerFinal.experiment_groups import LAYOUT_MANIFEST_NAME  # noqa: E402
 
 DEFAULT_SOURCE = REPO_ROOT / "OpenCapWalkingTrunkSwaySubjects"
 EXPERIMENT_NAME = "OpenCapVal"

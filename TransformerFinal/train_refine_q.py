@@ -61,7 +61,6 @@ import optax
 # ---------------------------------------------------------------------------
 # Import shared windowing utilities from data_loader.py (same directory).
 # ---------------------------------------------------------------------------
-sys.path.insert(0, str(Path(__file__).parent))
 from data_loader import (
     build_window_start_indices,
     NOISED_FILE_SUFFIX,

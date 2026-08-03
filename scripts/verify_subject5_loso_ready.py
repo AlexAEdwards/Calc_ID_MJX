@@ -7,10 +7,9 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / "TransformerFinal"))
 
-from data_loader import TrialDataLoader, load_single_trial  # noqa: E402
-from train import discover_all_trials  # noqa: E402
+from TransformerFinal.data_loader import TrialDataLoader, load_single_trial  # noqa: E402
+from TransformerFinal.train import discover_all_trials  # noqa: E402
 
 ROOT = REPO / "OpenCapSubjects_Filt"
 SUBJECT = ROOT / "subject5"

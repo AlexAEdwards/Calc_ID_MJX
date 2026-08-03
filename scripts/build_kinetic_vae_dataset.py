@@ -31,7 +31,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(REPO_ROOT / "TransformerFinal"))
 
 DEFAULT_SOURCE = REPO_ROOT / "TrustedDataSet_ByExperiment"
 DEFAULT_ACCURACY = REPO_ROOT / "outputs" / "DirectTorque_LOEO_edge70" / "accuracy"
@@ -484,7 +483,7 @@ def main() -> None:
     if not dst.is_absolute():
         dst = REPO_ROOT / dst
 
-    from experiment_groups import list_experiment_dirs
+    from TransformerFinal.experiment_groups import list_experiment_dirs
     exps = [p.name for p in list_experiment_dirs(src)]
     want = [e.strip() for e in args.experiments.split(",") if e.strip()]
     if want:
