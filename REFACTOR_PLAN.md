@@ -297,10 +297,56 @@ rather than hoped to be.
 4. Add a cheap CI job: import-everything + the GPU-free tests. Nothing that needs a
    dataset or a GPU.
 
+5. **`tools/equivalence_check.py`** — the load-bearing piece. A single command
+   that re-runs a fixed set of real trials through the pipeline and diffs every
+   produced array against a recorded baseline, exiting non-zero on any
+   difference. Stages 5–7 each end by running it.
+
 **Verification:** the golden tests pass on today's unmodified code. That is the
 whole point — they must be green *before* anything moves.
 
 **Risk:** None (additive). **Effort:** ~1–2 days.
+
+### The equivalence contract for Stages 5–7
+
+Every stage from here on is a **pure reorganisation**: the code must produce
+bit-identical output, and that is checked mechanically rather than argued.
+
+**Baseline.** Before Stage 5 begins, record a baseline from the current code:
+
+* `ProcessData.py` outputs for a fixed set of real trials — every `.npy` in
+  `ProcessedData/`, stored as SHA-256 per file.
+* One short training run (fixed `--seed`, 2 epochs) — `best_model.pkl` metrics
+  and the full `history.json`.
+* One inference pass — `direct_torque_pred_*.npy`, both masks, `metrics.json`.
+* The LOEO aggregation over the existing sweep — `loeo_accuracy.json`.
+
+**Tolerances, stated up front so they cannot be quietly loosened:**
+
+| Output | Required agreement |
+|---|---|
+| `ProcessData` `.npy` outputs | **byte-identical** (SHA-256) |
+| Inference predictions | **byte-identical** — same checkpoint, same input, no RNG |
+| Aggregated metrics (MAE, RMSE, R²) | **exact to all printed digits** |
+| Training loss/metric history | `atol=0` on a fixed seed; any drift is a bug, not noise |
+| Wall-clock, file layout, log text | free to change |
+
+Anything that cannot be made bit-identical is **not** a reorganisation and does
+not belong in Stages 5–7. It is a behaviour change and needs its own decision,
+its own commit, and a recorded before/after — exactly how the edge-frame change
+was handled.
+
+**Per-commit discipline.** Stage 6 in particular moves one function cluster per
+commit, and `tools/equivalence_check.py` runs after each. A commit that cannot
+show a clean equivalence report is reverted rather than debugged forward, so the
+tree is never left in a state where it is unclear whether output changed.
+
+**Why this matters here specifically.** `ProcessData.py` is the preprocessing
+spine for every dataset in `datasets/`. A silent change to a filter cutoff or a
+column order would not raise an error — it would quietly poison every dataset
+regenerated afterwards, and would only surface as unexplained model accuracy
+drift weeks later. The equivalence check is what makes that failure mode
+impossible rather than unlikely.
 
 ---
 
@@ -400,23 +446,32 @@ here silently poison every downstream dataset.
 
 ## Summary
 
-| Stage | Outcome | Risk | Effort |
-|---|---|---|---|
-| 0 | Code in git; every later stage revertible | Low | 1 d |
-| 1 | Root goes 64 entries → ~15; data/code separated | Low-med | 0.5 d |
-| 2 | ~80 duplicate files / ~40k LOC deleted | Low | 1 d |
-| 3 | Installable package; no `sys.path` hacks | Low | 1 d |
-| 4 | Golden + unit tests, cheap CI | None | 1–2 d |
-| 5 | `core/` + `evaluation/` extracted behind shims | Medium | 2–3 d |
-| 6 | `ProcessData.py` → `processing/` package | Med-high | 2–3 d |
-| 7 | Entry points, scripts, docs organised | Low | 1–2 d |
+| Stage | Outcome | Risk | Effort | Status |
+|---|---|---|---|---|
+| 0 | Code in git; every later stage revertible | Low | 1 d | **done** — 3 commits, pushed |
+| 1 | Data/code separated | Low-med | 0.5 d | **done** — 642 GB into `datasets/` + `artifacts/` in 0.064 s |
+| 2 | Duplicate trees deleted | Low | 1 d | **done** — −62 files, −59,915 LOC (−33 %) |
+| 3 | Installable package; no `sys.path` hacks; symlinks retired | Low | 1 d | **done** — hacks 32→3, 52 paths migrated, root 64→41 |
+| 4 | Golden + unit tests, equivalence harness, cheap CI | None | 1–2 d | next |
+| 5 | `core/` + `evaluation/` extracted behind shims | Medium | 2–3 d | blocked on 4 |
+| 6 | `ProcessData.py` → `processing/` package | Med-high | 2–3 d | blocked on 4 |
+| 7 | Entry points, scripts, docs organised | Low | 1–2 d | |
 
-Roughly 10–14 working days end to end. Stages 0–3 (~3.5 days) deliver most of the
-"understandable and manageable" benefit on their own and are all low-risk; they are
-worth doing even if 4–7 never happen.
+Roughly 10–14 working days end to end. Stages 0–3 are complete and delivered most
+of the "understandable and manageable" benefit: the code is in version control,
+data and code are separated, there is one copy of every module, and imports work
+from any directory. Measured result: **237 → 175 Python files, 179,877 → 119,962
+LOC, root 64 → 41 entries**, with the LOEO metric (MAE 0.3745) verified unchanged
+at every step.
+
+Stages 4–7 are a different kind of work: they make the *code* comprehensible
+rather than the *repo* navigable, and 5–6 are the only genuinely risky items in
+the plan. They are governed by the equivalence contract in Stage 4.
 
 **Stop-the-line rule:** do not start Stage 5 or 6 until Stage 4's golden tests are
-green on unmodified code.
+green on unmodified code, and do not land any commit in Stages 5–7 whose
+`tools/equivalence_check.py` run is not clean. Stages 5–7 are reorganisations:
+if output changed, the commit is wrong.
 
 ---
 
