@@ -40,3 +40,21 @@ def test_env_override(monkeypatch, tmp_path):
     finally:
         monkeypatch.delenv("CALCID_DATASETS", raising=False)
         importlib.reload(paths)
+
+
+def test_resolve_does_not_depend_on_what_exists_on_disk():
+    """A fresh clone has no datasets/ or artifacts/ yet; resolution must not care.
+
+    This is a regression test: resolve() originally probed the filesystem, so on a
+    fresh checkout it silently mapped 'outputs/run' back to the repo root and
+    would have written results to the wrong place.
+    """
+    for name in ("outputs", "inference_results", "logs"):
+        assert paths.resolve(f"{name}/nonexistent-xyz").parent.parent == paths.ARTIFACTS_ROOT
+    for name in ("TrustedDataSet_ByExperiment", "KineticVAEDataset", "Hip_OA"):
+        assert paths.resolve(f"{name}/nonexistent-xyz").parent.parent == paths.DATASETS_ROOT
+
+
+def test_resolve_leaves_source_dirs_alone():
+    for name in ("scripts", "TransformerFinal", "core", "tests"):
+        assert paths.resolve(f"{name}/x.py") == paths.REPO_ROOT / name / "x.py"

@@ -49,13 +49,33 @@ def artifact(*parts: str | os.PathLike) -> Path:
     return ARTIFACTS_ROOT.joinpath(*map(str, parts))
 
 
-def resolve(path: str | os.PathLike) -> Path:
-    """Best-effort resolution of a legacy repo-root-relative path.
+#: Run artifacts moved under ``artifacts/`` by Stage 1, by exact name.
+_ARTIFACT_NAMES = frozenset({
+    "outputs", "output", "inference_results", "logs", "tmp",
+    "RMASBFigures", "CHPC_HPO_results", "OpenCapAveMAEPerformanceVals",
+    ".jax_compilation_cache", "__pycache__", "test_fixture",
+})
 
-    Accepts either a new-style path or one written against the pre-Stage-1
-    layout (``outputs/foo``, ``Hip_OA/bar``) and returns the real location.
-    Absolute paths are returned unchanged. Handy when migrating a caller
-    incrementally rather than all at once.
+#: Datasets moved under ``datasets/``. Prefixes because the cohort directories
+#: are versioned by suffix (``TrustedDataSetNoised12Distributed_EdgeHold_...``).
+_DATASET_PREFIXES = (
+    "TrustedDataSet", "KineticVAEDataset", "Datasets_Local", "Hip_OA",
+    "OlderYoungerAdultDataset", "OldYoungAdultWalking", "OpenCap",
+    "BadTrialsFromTrustedDataset", "Data_Full_Cleaned",
+)
+
+
+def resolve(path: str | os.PathLike) -> Path:
+    """Resolve a path written against the pre-Stage-1 layout.
+
+    ``outputs/foo`` -> ``<artifacts>/outputs/foo``, ``Hip_OA/x`` ->
+    ``<datasets>/Hip_OA/x``. Absolute paths and already-new-style paths pass
+    through untouched.
+
+    Classification is by **name**, never by what happens to exist on disk: a
+    fresh clone has no ``datasets/`` or ``artifacts/`` directory yet, and an
+    existence check would silently resolve ``outputs/run`` back to the repo root
+    and write results to the wrong place.
     """
     p = Path(path)
     if p.is_absolute():
@@ -63,10 +83,10 @@ def resolve(path: str | os.PathLike) -> Path:
     head, *rest = p.parts
     if head in {"datasets", "artifacts"}:
         return REPO_ROOT.joinpath(*p.parts)
-    for root in (DATASETS_ROOT, ARTIFACTS_ROOT):
-        candidate = root.joinpath(head, *rest)
-        if candidate.exists() or root.joinpath(head).exists():
-            return candidate
+    if head in _ARTIFACT_NAMES:
+        return ARTIFACTS_ROOT.joinpath(head, *rest)
+    if head.startswith(_DATASET_PREFIXES):
+        return DATASETS_ROOT.joinpath(head, *rest)
     return REPO_ROOT.joinpath(*p.parts)
 
 
