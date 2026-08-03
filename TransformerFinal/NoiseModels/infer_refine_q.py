@@ -26,7 +26,6 @@ try:
         sanitize_sample_id,
         save_prediction_bundle,
     )
-    from .wandb_utils import configure_runtime_env
 except ImportError:
     from refine_q_shared import (
         RefineQRecord,
@@ -43,7 +42,14 @@ except ImportError:
         sanitize_sample_id,
         save_prediction_bundle,
     )
+
+try:
     from wandb_utils import configure_runtime_env
+except ModuleNotFoundError:
+    # Same no-op fallback infer.py uses; wandb_utils is an optional
+    # experiment-tracking helper that is not part of this repository.
+    def configure_runtime_env():
+        return {}
 
 
 RUNTIME_ENV_APPLIED = configure_runtime_env()

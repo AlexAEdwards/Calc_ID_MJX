@@ -33,7 +33,36 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from wandb_utils import WandbLogger, configure_runtime_env
+try:
+    from wandb_utils import WandbLogger, configure_runtime_env
+except ModuleNotFoundError:
+    # Same no-op fallback train.py and infer.py already use. wandb_utils is an
+    # optional experiment-tracking helper that is not part of this repository,
+    # so importing it unguarded made this the only training entry point that
+    # could not start without it.
+    class WandbLogger:  # type: ignore[override]
+        """No-op fallback when wandb_utils is unavailable."""
+
+        def __init__(self, *args, **kwargs):
+            self.is_active = False
+
+        def log(self, *args, **kwargs):
+            return None
+
+        def log_artifact(self, *args, **kwargs):
+            return None
+
+        def save_file(self, *args, **kwargs):
+            return None
+
+        def set_summary(self, *args, **kwargs):
+            return None
+
+        def finish(self, *args, **kwargs):
+            return None
+
+    def configure_runtime_env():
+        return {}
 
 RUNTIME_ENV_APPLIED = configure_runtime_env()
 
@@ -43,7 +72,12 @@ from flax import linen as nn
 from flax.training import train_state
 import optax
 
-from data_loader import (
+# Through the package, not flat: data_loader lives one directory up, so a flat
+# import only resolves when TransformerFinal/ happens to be on sys.path. Nothing
+# puts it there - train_single_model_mod_q.py launches this file by path without
+# setting PYTHONPATH - so the flat form failed outright. Stage 3 made the layout
+# installable (pip install -e .), which makes the package path the reliable one.
+from TransformerFinal.data_loader import (
     build_window_start_indices,
     build_window_supervision_mask,
     select_pos_input_columns,

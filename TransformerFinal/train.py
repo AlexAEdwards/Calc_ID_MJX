@@ -2710,7 +2710,7 @@ def main():
         help=(
             "Left-stance knee adduction moment loss setting. In first_step_ratio mode, "
             "0.1 means set the absolute KAM multiplier so the first-step scaled KAM "
-            "loss is 10% of the first-step scaled normal torque loss. In absolute mode, "
+            "loss is 10%% of the first-step scaled normal torque loss. In absolute mode, "
             "this is used directly as the absolute loss multiplier."
         ),
     )
