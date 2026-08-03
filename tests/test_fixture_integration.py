@@ -2,6 +2,9 @@
 import numpy as np
 import pytest
 
+# Every test here loads real data through the jax-backed loader.
+pytest.importorskip("jax", reason="fixture tests require jax")
+
 
 def test_fixture_spans_all_three_mjx_widths(fixture_trials):
     widths = set()

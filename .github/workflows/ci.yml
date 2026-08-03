@@ -30,8 +30,10 @@ jobs:
           python -c "import TransformerFinal.experiment_groups as e; print(len(e.EXPERIMENT_NAMES), 'cohorts')"
           python -c "import TransformerFinal.direct_torque_utils as d; print(d.DIRECT_TORQUE_OUTPUT_DIM, 'channels')"
 
-      - name: Pure-logic tests
-        run: pytest tests/ -q -k "experiment_groups or direct_torque_utils or paths"
+      # jax-dependent modules skip themselves via importorskip, so the whole
+      # suite is safe to run here - no -k filter to drift out of date.
+      - name: Tests (jax-dependent ones self-skip)
+        run: pytest tests/ -q
 
       # Every .py must at least parse - catches a bad mechanical rewrite fast.
       - name: Syntax sweep

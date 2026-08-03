@@ -2,7 +2,11 @@
 import numpy as np
 import pytest
 
-from TransformerFinal.data_loader import (
+# data_loader imports jax at module scope. Skip rather than error where jax is
+# absent (CI runs without it), so `pytest -k` collection cannot abort the run.
+pytest.importorskip("jax", reason="TransformerFinal.data_loader requires jax")
+
+from TransformerFinal.data_loader import (  # noqa: E402
     build_full_window_supervision_mask,
     build_window_start_indices,
     build_window_supervision_mask,
