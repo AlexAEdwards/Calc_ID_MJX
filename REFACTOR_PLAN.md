@@ -341,6 +341,36 @@ commit, and `tools/equivalence_check.py` runs after each. A commit that cannot
 show a clean equivalence report is reverted rather than debugged forward, so the
 tree is never left in a state where it is unclear whether output changed.
 
+### ProcessData determinism — measured 2026-08-03
+
+Before Stage 6 could be planned honestly, `ProcessData.py` had to be shown
+reproducible. It is:
+
+* Re-running it twice on identical input produced **74/74 byte-identical**
+  `.npy` files. There is no RNG in the module, and no thread-order sensitivity
+  in the output.
+* Therefore Stage 6's verification is viable: regenerate a fixture subject with
+  the code *before* a commit and *after* it, and compare by SHA-256.
+
+**The protocol is before/after on the same input — not "reproduce the stored
+dataset".** Regenerating a stored trial does *not* reproduce it, for a reason
+that is not a defect: several cohorts were post-processed after `ProcessData`
+ran. `Hip_OA/HEA121_Marche/Trial_1` records
+`core_trim_pretrim_n_frames: 394` and `manual_visual_trim_applied: true`, but its
+`Motion/` on disk is the already-trimmed 121-frame version, so a fresh run
+re-derives floor height from 9 toe troughs instead of 7 and every downstream
+geometry array shifts. Feeding post-processed input back through the pipeline is
+simply not the same computation.
+
+Two consequences worth recording separately from the refactor:
+
+1. Stage 6 must regenerate **before and after** within the same session, from the
+   same inputs, and compare those two — never against the shipped dataset.
+2. The shipped datasets are not reproducible from `Motion/` alone. Reproducing
+   them needs the raw pre-trim motion plus the post-processing scripts in the
+   right order. That is a provenance gap, not a refactor task, but it is worth
+   knowing before anyone tries to regenerate a cohort from scratch.
+
 **Why this matters here specifically.** `ProcessData.py` is the preprocessing
 spine for every dataset in `datasets/`. A silent change to a filter cutoff or a
 column order would not raise an error — it would quietly poison every dataset
