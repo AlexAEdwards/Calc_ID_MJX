@@ -439,6 +439,33 @@ it can be split freely. Its functions already cluster cleanly by phase:
 **Actions:** move one cluster per commit, running the Stage-4 golden test after
 each. Keep `ProcessData.py` as a thin entry point that imports and dispatches.
 
+### Status 2026-08-03 — done
+
+Six clusters moved, one commit each, `processdata_roundtrip` run and clean after
+every one. `ProcessData.py` 8,156 → 7,319 lines; `processing/` is 1,118 LOC
+across `filtering`, `contact`, `cop`, `geometry`, `resampling`, `trial_io` and
+`artifact_names`.
+
+Two things this stage taught, both worth keeping:
+
+1. **One cluster per commit is not bureaucracy.** A first attempt moved five
+   clusters at once, the gate reported 148 differences, and there was no way to
+   attribute them. Reverted and redone one at a time: all six passed.
+2. **The equivalence gate cannot see unexercised code.** `gcv_derivatives` was
+   extracted referencing an unimported `make_smoothing_spline` and the gate
+   stayed green, because it is the opt-in OpenSim-filtering path and the fixture
+   never calls it. `tests/test_extracted_modules_resolve.py` now closes that hole
+   statically for every module in `processing/` and `core/`. Any future
+   extraction is covered by *both* checks, and only the pair is sufficient.
+
+`equivalence_check.py` also now refuses to run pipeline layers under an
+interpreter lacking jax/mujoco - the wrong env made every ProcessData subprocess
+fail and rendered as output differences indistinguishable from a real break.
+
+The remaining ~120 definitions in `ProcessData.py` (model indexing, trimming,
+provenance, CLI orchestration) are the less separable half; splitting them is
+optional and can follow the same protocol whenever it is wanted.
+
 **Verification:** byte-for-byte identical `.npy` outputs on the golden trials after
 every single commit. Non-negotiable — this is the preprocessing spine, and errors
 here silently poison every downstream dataset.
@@ -482,10 +509,10 @@ here silently poison every downstream dataset.
 | 1 | Data/code separated | Low-med | 0.5 d | **done** — 642 GB into `datasets/` + `artifacts/` in 0.064 s |
 | 2 | Duplicate trees deleted | Low | 1 d | **done** — −62 files, −59,915 LOC (−33 %) |
 | 3 | Installable package; no `sys.path` hacks; symlinks retired | Low | 1 d | **done** — hacks 32→3, 52 paths migrated, root 64→41 |
-| 4 | Golden + unit tests, equivalence harness, cheap CI | None | 1–2 d | next |
-| 5 | `core/` + `evaluation/` extracted behind shims | Medium | 2–3 d | blocked on 4 |
-| 6 | `ProcessData.py` → `processing/` package | Med-high | 2–3 d | blocked on 4 |
-| 7 | Entry points, scripts, docs organised | Low | 1–2 d | |
+| 4 | Golden + unit tests, equivalence harness, cheap CI | None | 1–2 d | **done** — 199 MB fixture, 8 layers, 80 tests, CI green |
+| 5 | `core/` + `evaluation/` extracted behind shims | Medium | 2–3 d | **done** — 18 symbols into `core/` (1,273 LOC), gate clean |
+| 6 | `ProcessData.py` → `processing/` package | Med-high | 2–3 d | **done** — 8,156 → 7,319 lines, 7 modules, gate clean per commit |
+| 7 | Entry points, scripts, docs organised | Low | 1–2 d | not started — awaiting approval |
 
 Roughly 10–14 working days end to end. Stages 0–3 are complete and delivered most
 of the "understandable and manageable" benefit: the code is in version control,
