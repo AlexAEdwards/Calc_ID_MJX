@@ -123,11 +123,13 @@ BadTrialsFromTrustedDataset/      Quarantined bad trials
 Separate, smaller model that predicts cleaned joint angles from noisy kinematics
 (`q_prime = pos_noised + delta_q`). Feeds cleaner inputs into the main model.
 - **train_refine_q.py** / **train_single_refine_q.py** — train the Q-residual refiner.
-- **infer_mod_q.py** — inference for the mod_q checkpoint family (fixed schema:
+- **infer_mod_q.py** — RETIRED (Stage 6): could not import from either of its two
+  locations; `infer.py` is now a standalone entry point with no library consumers.
+  Formerly: inference for the mod_q checkpoint family (fixed schema:
   COP4+GRF6+GRM2+Contact2 + clean pos16+vel19+acc19).
 - **NoiseModels/** — corruption/noise modeling used to generate `_noised` data:
   - `corruption_model/` package (config, io, models, preprocess, residuals, evaluation, scripts).
-  - `train_mod_q.py`, `infer_mod_q.py`, `infer_refine_q.py`, `mod_q_shared.py`,
+  - `train_mod_q.py`, `infer_refine_q.py`, `mod_q_shared.py`,
     `refine_q_shared.py`, `runtime_model_utils.py`, `make_patch.py`.
 
 ### Misc in TransformerFinal/

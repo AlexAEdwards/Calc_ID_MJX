@@ -1,14 +1,16 @@
-"""Inference script for COP/GRF/Moments prediction model.
+"""Inference and reporting for COP/GRF/moment checkpoints.
 
-Workflow:
-1. Load trial via data_loader (includes physiological normalization: COP/h, GRF/m, Moments/m).
-2. Augmented input features are Z-score normalized.
-3. Model predicts the standard 14 outputs (COP:4 as [Rx,Rz,Lx,Lz], GRF:6, Moments:2, Contact:2).
-4. Predictions are unnormalized back to physical units (Newtons, Nm) for physics comparison.
-5. Physics consistency is checked via Jacobian-based torque calculation using
-   the preprocessed Jacobian, rotation, and qfrc_inverse files.
+This is an entry point, not a library. Its only importer was infer_mod_q.py,
+which was retired in REFACTOR_PLAN.md Stage 6 - it had been unable to import
+from either of its two locations for some time. Nothing imports from this
+module now, so the ~24 helpers it used to export (the _masked_* family, the
+create_*_plot functions, the stance-phase reports) are private to it again.
+They are all still used internally; none became dead.
+
+Consequently this file is deliberately NOT part of the Stage 5 core/
+extraction: extracting a shared core for a module with no consumers would be
+motion without value.
 """
-
 import os
 try:
     from wandb_utils import configure_runtime_env
