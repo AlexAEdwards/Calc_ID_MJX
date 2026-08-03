@@ -857,25 +857,30 @@ def discover_all_trials(
 # Normalization
 # =============================================================================
 
-class Normalizer:
-    def __init__(self, data: np.ndarray = None, eps: float = 1e-8, name: str = "unknown"):
-        if data is not None:
-            self.mean = np.mean(data, axis=0, keepdims=True)
-            self.std = np.std(data, axis=0, keepdims=True)
-            # Check for near-zero std and warn
-            below_eps = self.std < eps
-            if np.any(below_eps):
-                bad_indices = np.where(below_eps.flatten())[0]
-                bad_stds = self.std.flatten()[bad_indices]
-                print(f"   ⚠️  Normalizer '{name}': {len(bad_indices)} dim(s) have std < {eps}. "
-                      f"Indices: {bad_indices.tolist()}, Stds: {bad_stds.tolist()}. Clamping to {eps}.", flush=True)
-            self.std = np.where(self.std < eps, eps, self.std)
-    
-    def normalize(self, x):
-        return (x - self.mean) / self.std
-    
-    def unnormalize(self, x):
-        return x * self.std + self.mean
+
+# ---------------------------------------------------------------------------
+# Extracted to core/ in REFACTOR_PLAN.md Stage 5 and re-exported here, so every
+# `from train import X` keeps working. Migrating those call sites to import
+# from core/ directly is a separate, later change.
+# ---------------------------------------------------------------------------
+from core.normalization import (  # noqa: E402,F401
+    Normalizer,
+    normalize_batch,
+)
+from core.layers import (  # noqa: E402,F401
+    KinematicsToCOPGRFMoments,
+    SinusoidalPosEmb,
+    TransformerBlock,
+)
+from core.physics import (  # noqa: E402,F401
+    compute_full_external_moments,
+    compute_tau_grf_from_predictions,
+    decode_cop_signal_to_length,
+)
+from core.training import (  # noqa: E402,F401
+    create_train_state,
+)
+
 
 
 def compute_normalizers_from_loader(data_loader: TrialDataLoader, max_batches: int = 100,
@@ -1028,43 +1033,6 @@ def compute_normalizers_from_loader(data_loader: TrialDataLoader, max_batches: i
     print(f"   ✅ Normalizers ready (from {input_flat.shape[0]} data points)", flush=True)
     return normalizers
 
-def normalize_batch(batch: Dict, normalizers: Dict) -> Dict:
-    """Apply normalization to a batch."""
-    normalized = {}
-    for key, val in batch.items():
-        if key == "input" and "input" in normalizers:
-            normalized[key] = normalizers["input"].normalize(val)
-
-        elif key == "static_context" and "static" in normalizers:
-            normalized[key] = normalizers["static"].normalize(val)
-
-        # Z-score outputs
-        elif key == "cop" and "cop" in normalizers:
-            normalized[key] = normalizers["cop"].normalize(val)
-        elif key == "grf" and "grf" in normalizers:
-            normalized[key] = normalizers["grf"].normalize(val)
-        elif key == "moments" and "moments" in normalizers:
-            normalized[key] = normalizers["moments"].normalize(val)
-
-    # Z-score reconstruction curves too; they stay available for diagnostics.
-        elif key == "cop_recon" and "cop" in normalizers:
-            normalized[key] = normalizers["cop"].normalize(val)
-        elif key == "grf_recon" and "grf" in normalizers:
-            normalized[key] = normalizers["grf"].normalize(val)
-        elif key in ["moment_recon", "moments_recon"] and "moments" in normalizers:
-            normalized[key] = normalizers["moments"].normalize(val)
-
-        # Leave torque in Nm (raw)
-        elif key == "qfrc_grf_contribution":
-            normalized[key] = val
-        elif key == "jacobian_gt" and "jacobian" in normalizers:
-            normalized[key] = normalizers["jacobian"].normalize(val)
-
-        else:
-            # pass through jacp, jacr, ankle_heights, contactBoolean, body_ids, height, mass, etc.
-            normalized[key] = val
-
-    return normalized
 
 
 def _extract_frame_mask(mask: Optional[np.ndarray], seq_len: int) -> np.ndarray:
@@ -1534,50 +1502,6 @@ def _decode_residual_prediction(
     return input_value + residual_pred_z * std
 
 
-def decode_cop_signal_to_length(
-    cop_signal: Any,
-    grf_ratio: Any,
-    height_m: Any,
-    *,
-    use_grf_norm_cop: bool = False,
-    contact_probability: Any = None,
-    contact_threshold: float = 0.5,
-    xp=jnp,
-    eps: float = 1e-6,
-) -> Any:
-    """
-    Convert the model COP signal to length units.
-
-    Default COP signal is COP/height. With UseGRFNormCOP it is
-    (COP/height) * (|GRF|/BW), so decode by dividing by each foot's
-    bodyweight-normalized GRF magnitude before multiplying by height.
-    """
-    cop_arr = xp.asarray(cop_signal)
-    h = xp.asarray(height_m, dtype=cop_arr.dtype)
-    if not use_grf_norm_cop:
-        return cop_arr * h
-
-    grf_arr = xp.asarray(grf_ratio, dtype=cop_arr.dtype)
-    eps_arr = xp.asarray(eps, dtype=cop_arr.dtype)
-    mag_r_sq = xp.sum(xp.square(grf_arr[..., 0:3]), axis=-1, keepdims=True)
-    mag_l_sq = xp.sum(xp.square(grf_arr[..., 3:6]), axis=-1, keepdims=True)
-    mag_r = xp.sqrt(xp.maximum(mag_r_sq, eps_arr * eps_arr))
-    mag_l = xp.sqrt(xp.maximum(mag_l_sq, eps_arr * eps_arr))
-    decoded = xp.concatenate([
-        cop_arr[..., 0:2] * h / mag_r,
-        cop_arr[..., 2:4] * h / mag_l,
-    ], axis=-1)
-    if contact_probability is None:
-        return decoded
-
-    contact = xp.asarray(contact_probability, dtype=cop_arr.dtype)
-    threshold = xp.asarray(contact_threshold, dtype=cop_arr.dtype)
-    mask_r = (contact[..., 0:1] >= threshold).astype(cop_arr.dtype)
-    mask_l = (contact[..., 1:2] >= threshold).astype(cop_arr.dtype)
-    return xp.concatenate([
-        decoded[..., 0:2] * mask_r,
-        decoded[..., 2:4] * mask_l,
-    ], axis=-1)
 
 
 def _full_id_target_from_batch(
@@ -1710,199 +1634,16 @@ def select_torque_jacobians(
 # Model Architecture 
 # =============================================================================
 
-class SinusoidalPosEmb(nn.Module):
-    dim: int
-    
-    @nn.compact
-    def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
-        seq_len = x.shape[1]
-        position = jnp.arange(seq_len)
-        half_dim = self.dim // 2
-        emb = jnp.log(10000.0) / (half_dim - 1)
-        emb = jnp.exp(jnp.arange(half_dim) * -emb)
-        emb = position[:, None] * emb[None, :]
-        emb = jnp.concatenate([jnp.sin(emb), jnp.cos(emb)], axis=-1)
-        return x + emb[None, :, :]
 
 
-class TransformerBlock(nn.Module):
-    d_model: int
-    num_heads: int
-    ff_dim: int
-    dropout_rate: float = 0.1
-    
-    @nn.compact
-    def __call__(self, x: jnp.ndarray, train: bool = True,
-                 film_gamma: jnp.ndarray = None, film_beta: jnp.ndarray = None) -> jnp.ndarray:
-        # Optional FiLM subject conditioning: modulate the normalized features with
-        # per-layer (gamma, beta) derived from the static token. Uses (1 + gamma) so it
-        # is near-identity at init. When film_gamma is None the block is unchanged.
-        def _film(h):
-            if film_gamma is None:
-                return h
-            return h * (1.0 + film_gamma[:, None, :]) + film_beta[:, None, :]
-
-        residual = x
-        x = nn.LayerNorm()(x)
-        x = _film(x)
-        attn_out = nn.MultiHeadDotProductAttention(
-            num_heads=self.num_heads,
-            qkv_features=self.d_model,
-            dropout_rate=self.dropout_rate,
-        )(x, x, deterministic=not train)
-        x = residual + attn_out
-
-        residual = x
-        x = nn.LayerNorm()(x)
-        x = _film(x)
-        ff_out = nn.Dense(self.ff_dim)(x)
-        ff_out = nn.gelu(ff_out)
-        ff_out = nn.Dropout(rate=self.dropout_rate, deterministic=not train)(ff_out)
-        ff_out = nn.Dense(self.d_model)(ff_out)
-        ff_out = nn.Dropout(rate=self.dropout_rate, deterministic=not train)(ff_out)
-        x = residual + ff_out
-
-        return x
 
 
-class KinematicsToCOPGRFMoments(nn.Module):
-    """Transformer-based model for gait dynamics prediction.
-    
-    Inputs:
-        - Temporal feature vector (constructed in data_loader.py)
-          Includes kinematics, reconstructed COP/GRF/GRM, and optional flattened Jacobians.
-          NOTE: contactBoolean is NO LONGER an input; the model predicts it as output.
-        - Static token:
-          [height, mass, gender, PatientSize(4), forwardVel]
-    
-    Outputs:
-        - COP (4): [rx, rz, lx, lz] in ground-aligned calc frame - Unit: m/h  (contact-masked)
-        - GRF (6): [rx, ry, rz, lx, ly, lz] - Unit: N/m*9.806                 (contact-masked)
-        - Moments (2): [rz, lz] - Unit: Nm/m*h*9.806
-        - ContactBoolean (2): [right, left] - soft sigmoid, hard-thresholded for masking
-    """
-    input_dim: int = 54
-    static_dim: int = 8 # height, mass, gender, PatientSize(4), forwardVel
-    output_dim: int = STANDARD_OUTPUT_DIM
-    d_model: int = 256
-    num_heads: int = 4
-    num_layers: int = 4
-    ff_dim: int = 1024
-    dropout_rate: float = 0.1
-    use_film: bool = False  # Plan 7: per-layer FiLM subject conditioning (default off)
-
-    @nn.compact
-    def __call__(self, x: jnp.ndarray, static_context: jnp.ndarray, train: bool = True) -> jnp.ndarray:
-        # 1. Project temporal inputs directly into the transformer width.
-        x = nn.Dense(self.d_model)(x)
-        x = nn.LayerNorm()(x)
-        x = nn.gelu(x)
-
-        # Positional Encoding
-        x = SinusoidalPosEmb(dim=self.d_model)(x)
-
-        # 2. Static Branch: MLP Layer
-        s = nn.Dense(self.d_model)(static_context)
-        s = nn.gelu(s)
-        s = nn.LayerNorm()(s)
-
-        # 2b. Optional FiLM conditioning params (per layer, gamma+beta of width d_model).
-        film_params = None
-        if self.use_film:
-            film_params = nn.Dense(self.num_layers * 2 * self.d_model, name="film_mlp")(s)
-            film_params = film_params.reshape(s.shape[0], self.num_layers, 2, self.d_model)
-
-        # 3. Prepend Static Token
-        s = jnp.expand_dims(s, axis=1)
-        x = jnp.concatenate([s, x], axis=1)  # (batch, seq_len + 1, d_model)
-
-        for _layer_idx in range(self.num_layers):
-            film_gamma = film_params[:, _layer_idx, 0, :] if film_params is not None else None
-            film_beta = film_params[:, _layer_idx, 1, :] if film_params is not None else None
-            x = TransformerBlock(
-                d_model=self.d_model,
-                num_heads=self.num_heads,
-                ff_dim=self.ff_dim,
-                dropout_rate=self.dropout_rate,
-            )(x, train=train, film_gamma=film_gamma, film_beta=film_beta)
-
-        # 4. Remove Static Token
-        x = x[:, 1:, :]
-        x = nn.LayerNorm()(x)
-
-        # 5. Predict the standard 14 outputs from the shared backbone.
-        raw_out = nn.Dense(self.output_dim)(x)  # (batch, seq, 14)
-
-        # 6. Predict contact probabilities (sigmoid)
-        contact_logits = raw_out[..., CONTACT_SLICE]          # (batch, seq, 2) — right, left
-        contact_prob   = nn.sigmoid(contact_logits)   # soft, used for BCE loss
-
-        cop_raw = raw_out[..., COP_SLICE]    # [rx, rz, lx, lz]
-        grf_raw = raw_out[..., GRF_SLICE]   # [rx, ry, rz, lx, ly, lz]
-        mom_raw = raw_out[..., MOMENTS_SLICE]  # [rz, lz]
-
-        # 8. Concatenate final raw (normalized) output: COP(4) + GRF(6) + Moments(2) + ContactProb(2)
-        #    Contact hard-masking is now applied in physical space within compute_total_loss
-        out = jnp.concatenate([cop_raw, grf_raw, mom_raw, contact_prob], axis=-1)
-        return out
 
 
 # =============================================================================
 # Physics: Compute τ_grf from predictions using Jacobian
 # =============================================================================
 
-def compute_full_external_moments(
-    cop_pred_unnorm: jnp.ndarray,  # (batch, seq, 4) [rx, rz, lx, lz] in ground-aligned calc frame
-    grf_pred_unnorm: jnp.ndarray,  # (batch, seq, 6)
-    free_moments_pred_unnorm: jnp.ndarray,  # (batch, seq, 2) [rz, lz]
-    ankle_heights: jnp.ndarray,  # (batch, seq, 2) [right, left]
-    rot_w_to_ga: jnp.ndarray,  # (batch, seq, 2, 3, 3) world->ground-aligned calc rotation
-) -> jnp.ndarray:
-    """
-    Compute full external moment about each foot origin using COP, GRF, and free moments.
-    """
-    # Predicted COP channels are [X, Z] in the ground-aligned calc frame.
-    # Build 3D ground-aligned vectors by inserting ankle height as Y.
-    cop_r_ga = jnp.concatenate(
-        [cop_pred_unnorm[..., 0:1], -ankle_heights[..., 0:1], cop_pred_unnorm[..., 1:2]],
-        axis=-1
-    )
-    cop_l_ga = jnp.concatenate(
-        [cop_pred_unnorm[..., 2:3], -ankle_heights[..., 1:2], cop_pred_unnorm[..., 3:4]],
-        axis=-1
-    )
-
-    # Rotate ground-aligned COP vectors back to world:
-    # R_ga->w = (R_w->ga)^T
-    rot_w_to_ga_r = rot_w_to_ga[:, :, 0]  # (batch, seq, 3, 3)
-    rot_w_to_ga_l = rot_w_to_ga[:, :, 1]
-    rot_ga_to_w_r = jnp.swapaxes(rot_w_to_ga_r, -1, -2)
-    rot_ga_to_w_l = jnp.swapaxes(rot_w_to_ga_l, -1, -2)
-    cop_r = jnp.einsum("bsij,bsj->bsi", rot_ga_to_w_r, cop_r_ga)
-    cop_l = jnp.einsum("bsij,bsj->bsi", rot_ga_to_w_l, cop_l_ga)
-
-    grf_r = grf_pred_unnorm[..., :3]
-    grf_l = grf_pred_unnorm[..., 3:6]
-    
-    # Reconstruct 3D moments from 1D predictions (assume Mx=My=0)
-    mz_r = free_moments_pred_unnorm[..., 0:1]
-    mz_l = free_moments_pred_unnorm[..., 1:2]
-    
-    mom_r = jnp.concatenate([jnp.zeros_like(mz_r), jnp.zeros_like(mz_r), mz_r], axis=-1)
-    mom_l = jnp.concatenate([jnp.zeros_like(mz_l), jnp.zeros_like(mz_l), mz_l], axis=-1)
-
-    # Cross product: r x F
-    # r is the vector from the point of force application (COP) to the moment reference point.
-    # Usually M_total = M_free + (r x F)
-    # Here r is COP relative to ankle, expressed in world coordinates.
-    
-    m_r_induced = jnp.cross(cop_r, grf_r)
-    m_l_induced = jnp.cross(cop_l, grf_l)
-    
-    m_r_total = m_r_induced + mom_r
-    m_l_total = m_l_induced + mom_l
-    
-    return jnp.concatenate([m_r_total, m_l_total], axis=-1)
 
 
 def compute_predicted_knee_to_cop_vectors(
@@ -1945,51 +1686,6 @@ def compute_predicted_knee_to_cop_vectors(
     return jnp.concatenate([vec_r, vec_l], axis=-1)
 
 
-def compute_tau_grf_from_predictions(
-    grf_pred: jnp.ndarray,  # (batch, seq, 6) [right_xyz, left_xyz]
-    moments_pred: jnp.ndarray,  # (batch, seq, 6) - full moments computed from COP/GRF/free moment
-    jacp: jnp.ndarray,  # (batch, seq, 2, 3, 39)
-    jacr: jnp.ndarray,  # (batch, seq, 2, 3, 39)
-) -> jnp.ndarray:
-    """
-    Compute τ_grf = Jp^T @ GRF + Jr^T @ M for each timestep.
-    
-    Args:
-        grf_pred: Predicted GRF [right_xyz, left_xyz]
-        moments_pred: Full external moments [right_xyz, left_xyz]
-        jacp: Position Jacobian (batch, seq, 2 bodies, 3 spatial, 39 dofs)
-        jacr: Rotation Jacobian
-    
-    Returns:
-        tau_grf: Joint torques from GRF (batch, seq, 39)
-    """
-    # Split into right/left
-    grf_r = grf_pred[..., :3]  # (batch, seq, 3)
-    grf_l = grf_pred[..., 3:]  # (batch, seq, 3)
-    moment_r = moments_pred[..., :3]  # (batch, seq, 3)
-    moment_l = moments_pred[..., 3:]  # (batch, seq, 3)
-    
-    # Jp^T @ F: need to einsum over spatial dimension
-    # jacp shape: (batch, seq, 2, 3, 39)
-    # force shape: (batch, seq, 3)
-    
-    # For right foot (body 0? Check BatchDataProcessing): 
-    # In BatchDataProcessing: External_Force = External_Force.at[calcn_l_id, ...].set(...)
-    # jacobian_data['jacp'] has shape (T, 2, 3, nv). 
-    # Usually index 0 is right, index 1 is left based on how it was saved?
-    # Let's check BatchDataProcessing.py saving order.
-    # "jacobian_data['jacp'] = np.stack([jacp_r, jacp_l], axis=1)" -> So 0 is Right, 1 is Left.
-    
-    tau_p_r = jnp.einsum('bsij,bsi->bsj', jacp[:, :, 0], grf_r)  # (batch, seq, 39)
-    tau_p_l = jnp.einsum('bsij,bsi->bsj', jacp[:, :, 1], grf_l)  # (batch, seq, 39)
-    
-    # Jr^T @ M
-    tau_r_r = jnp.einsum('bsij,bsi->bsj', jacr[:, :, 0], moment_r)  # (batch, seq, 39)
-    tau_r_l = jnp.einsum('bsij,bsi->bsj', jacr[:, :, 1], moment_l)  # (batch, seq, 39)
-    
-    tau_grf = tau_p_r + tau_p_l + tau_r_r + tau_r_l
-    
-    return tau_grf
 
 
 # =============================================================================
@@ -2638,45 +2334,6 @@ def compute_total_loss(
 # Training Functions
 # =============================================================================
 
-def create_train_state(rng, model, input_shape, static_shape, learning_rate=1e-4, weight_decay=0.01,
-                       total_steps=None, warmup_frac=0.03, end_lr_frac=0.05, use_lr_schedule=True):
-    """Build the initial train state.
-
-    When ``use_lr_schedule`` is True and ``total_steps`` is known, the optimizer LR
-    follows a warmup -> cosine-decay schedule (peak = ``learning_rate``), which is the
-    standard recipe for stable transformer training. Set ``use_lr_schedule=False`` (or
-    leave ``total_steps`` unset) to fall back to the original constant learning rate.
-
-    Returns ``(state, lr_fn)`` where ``lr_fn(step)`` yields the LR at a given global
-    step (a constant function when the schedule is disabled) for logging.
-    """
-    dummy_input = jnp.ones(input_shape)
-    dummy_static = jnp.ones(static_shape)
-    params = model.init(rng, dummy_input, dummy_static, train=False)["params"]
-
-    if use_lr_schedule and total_steps is not None and int(total_steps) > 1:
-        total_steps = int(total_steps)
-        warmup_steps = max(1, int(warmup_frac * total_steps))
-        # optax's decay_steps is the total horizon (warmup + cosine); the cosine phase
-        # spans decay_steps - warmup_steps and ends exactly at end_value.
-        lr_fn = optax.warmup_cosine_decay_schedule(
-            init_value=learning_rate * 0.01,
-            peak_value=learning_rate,
-            warmup_steps=warmup_steps,
-            decay_steps=total_steps,
-            end_value=learning_rate * end_lr_frac,
-        )
-        lr_arg = lr_fn
-    else:
-        lr_arg = learning_rate
-        lr_fn = (lambda _step, _lr=learning_rate: _lr)
-
-    tx = optax.chain(
-        optax.clip_by_global_norm(1.0),
-        optax.adamw(lr_arg, weight_decay=weight_decay),
-    )
-    state = train_state.TrainState.create(apply_fn=model.apply, params=params, tx=tx)
-    return state, lr_fn
 
 
 def make_train_step(normalizers: Dict, use_contact_weighting: bool, magOnOff: bool, contactOnOff: bool, only_supervise_stance: bool, contact_weight_multiplier: float, magWeight: float, total_epochs: int, dof_weights_dict: Dict = None, cop_mask: bool = True, use_grf_norm_cop: bool = False, use_gt_jacob_and_rot: bool = False, compute_effect_diagnostics: bool = False, robust_loss: str = "mse", huber_delta: float = 1.0, contact_mask_source: str = "gt", contact_mix_max_alpha: float = 0.5, use_full_id_gt_for_torque: bool = False):
