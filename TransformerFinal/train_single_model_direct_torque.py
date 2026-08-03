@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from paths import artifact, dataset  # noqa: E402
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -20,8 +21,8 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 # train_directTorque.py supervises only the 14 direct torque outputs.
 CONFIG = {
     # Paths / run identity
-    "data_dir": str(PROJECT_ROOT / "TrustedDataSetNoised12Distributed_EdgeHold_AllPatients"),
-    "base_output_dir": str(PROJECT_ROOT / "outputs"),
+    "data_dir": str(dataset("TrustedDataSetNoised12Distributed_EdgeHold_AllPatients")),
+    "base_output_dir": str(artifact("outputs")),
     "experiment_name": "DirectTorque_ReprocessedDataset_July8th",
 
     # Model architecture

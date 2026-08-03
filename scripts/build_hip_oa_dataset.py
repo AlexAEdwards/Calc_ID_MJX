@@ -64,6 +64,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from paths import artifact, dataset  # noqa: E402
 
 VERSION = "1.0.0"
 TRIAL_RE = re.compile(r"^trial(\d+)$")
@@ -744,7 +745,7 @@ def _compact(meta: dict) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--source-root", type=Path, default=Path("Datasets_Local/Bertaux_withForces"))
+    parser.add_argument("--source-root", type=Path, default=Path(str(dataset("Datasets_Local", "Bertaux_withForces"))))
     parser.add_argument("--output-root", type=Path, default=Path("Hip_OA"))
     parser.add_argument("--prefixes", nargs="+", default=["HOA", "HEA"])
     parser.add_argument("--only", nargs="*", default=[], help="explicit session names")

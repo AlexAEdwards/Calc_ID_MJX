@@ -50,9 +50,10 @@ sys.path.insert(0, str(MYOCONVERTER_ROOT))
 _preload_opensim_bundled_ezc3d()
 
 from myoconverter.O2MPipeline import O2MPipeline  # noqa: E402
+from paths import artifact, dataset  # noqa: E402
 
 
-DEFAULT_DATASET_ROOT = REPO_ROOT / "OpenCapWalkingTrunkSwaySubjects"
+DEFAULT_DATASET_ROOT = dataset("OpenCapWalkingTrunkSwaySubjects")
 DEFAULT_GEOMETRY_FOLDER = REPO_ROOT / "GeometryWithMus"
 DEFAULT_TEMP_ROOT = MYOCONVERTER_ROOT / "temp_opencap_walking_trunksway_models"
 

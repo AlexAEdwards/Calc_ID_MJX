@@ -11,6 +11,7 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.spatial.transform import Rotation as R
+from paths import artifact, dataset  # noqa: E402
 
 
 INFO_FILENAME = "Trial_Processing_Information.json"
@@ -283,7 +284,7 @@ def main() -> int:
     parser.add_argument(
         "--report",
         type=Path,
-        default=Path("outputs/trimmed_raw_grf_generation_report.json"),
+        default=Path(str(artifact("outputs", "trimmed_raw_grf_generation_report.json"))),
         help="JSON report path.",
     )
     parser.add_argument(

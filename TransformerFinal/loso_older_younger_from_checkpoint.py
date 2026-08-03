@@ -27,6 +27,7 @@ from loso_dataset_utils import (  # noqa: E402
     build_loso_folds, discover_trusted_trials, make_trusted_loader, parse_subject_list,
     validate_noised_inputs, validate_opensim_id_targets,
 )
+from paths import artifact, dataset  # noqa: E402
 
 
 def _parse_optional_bool_arg(value: object) -> bool:
@@ -44,7 +45,7 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--data_dir", required=True, help="Root containing Y*/OA*/Trial_*/ProcessedData.")
     p.add_argument("--checkpoint", help="Pretrained best_model.pkl; optional for discovery-only dry runs.")
-    p.add_argument("--output_dir", default=str(PROJECT_ROOT / "outputs" / "loso_older_younger"))
+    p.add_argument("--output_dir", default=str(artifact("outputs") / "loso_older_younger"))
     p.add_argument("--include_subjects", nargs="*", default=[])
     p.add_argument("--exclude_subjects", nargs="*", default=[])
     p.add_argument("--held_out_subjects", nargs="*", default=[])

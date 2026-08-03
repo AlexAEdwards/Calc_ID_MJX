@@ -4,6 +4,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
+from paths import artifact, dataset  # noqa: E402
 
 
 # =============================================================================
@@ -46,7 +47,7 @@ CONFIG = {
 }
 
 # 3) Output configuration
-BASE_OUTPUT_DIR = str(PROJECT_ROOT / "outputs" / "refine_q_single_run")
+BASE_OUTPUT_DIR = str(artifact("outputs") / "refine_q_single_run")
 EXPERIMENT_NAME = "RefineQ_VerySmallModel"
 
 

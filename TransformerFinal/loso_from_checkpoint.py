@@ -51,6 +51,7 @@ import train as train_module
 import infer as infer_module
 from data_loader import TrialDataLoader, load_single_trial, subject_group_id
 import loso_adapters
+from paths import artifact, dataset  # noqa: E402
 try:
     from direct_torque_utils import DIRECT_TORQUE_NAMES, is_direct_torque_hparams
     from train_directTorque import (
@@ -78,10 +79,10 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 
 LOSO_CONFIG: Dict[str, Any] = {
     # Required: point this at the trained checkpoint you want to fine-tune/evaluate with LOSO.
-    "checkpoint": str(PROJECT_ROOT / "outputs" / "TrustedDataSetNoised12Distributed" / "Sweeps" / "HPO_April24" / "local_hpo_20260424_232420" / "runs" / "April24_Sweep_trial_0049_dm256_nl7_lr0.000312653_dr0.326502_9827ea69" / "best_model.pkl"),
+    "checkpoint": str(artifact("outputs") / "TrustedDataSetNoised12Distributed" / "Sweeps" / "HPO_April24" / "local_hpo_20260424_232420" / "runs" / "April24_Sweep_trial_0049_dm256_nl7_lr0.000312653_dr0.326502_9827ea69" / "best_model.pkl"),
     # Optional paths
     "data_dir": None,    # Defaults to the OpenCapSubjects dataset used previously
-    "output_dir": str(PROJECT_ROOT / "inference_results" / "Top_April24_Sweep_Trial49_KAM_OS_GTV2"),
+    "output_dir": str(artifact("inference_results") / "Top_April24_Sweep_Trial49_KAM_OS_GTV2"),
     # Fine-tuning basics
     "epochs": 2,
     "learning_rate": 5e-5,
@@ -933,7 +934,7 @@ def _resolve_loso_data_dir(arg_data_dir: Optional[str]) -> Path:
     """
     if arg_data_dir:
         return Path(arg_data_dir).resolve()
-    trunk_sway = PROJECT_ROOT / "OpenCapWalkingTrunkSwaySubjects"
+    trunk_sway = dataset("OpenCapWalkingTrunkSwaySubjects")
     if trunk_sway.exists():
         return trunk_sway.resolve()
     filtered = PROJECT_ROOT / "OpenCapSubjects_Filt"
@@ -6234,7 +6235,7 @@ def _run_fold(
         )
     trunk_sway_effect_eval = None
     if bool(fold_config.get("evaluate_on_ts", False)):
-        data_dir = Path(str(fold.get("dataset_root", config.get("data_dir", PROJECT_ROOT / "OpenCapWalkingTrunkSwaySubjects"))))
+        data_dir = Path(str(fold.get("dataset_root", config.get("data_dir", dataset("OpenCapWalkingTrunkSwaySubjects")))))
         trunk_sway_effect_eval = _run_trunk_sway_effect_evaluation(
             fold,
             fold_dir=fold_dir,

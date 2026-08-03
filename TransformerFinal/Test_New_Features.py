@@ -41,10 +41,11 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from paths import artifact, dataset  # noqa: E402
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-OUTPUTS_DIR = PROJECT_ROOT / "outputs"
+OUTPUTS_DIR = artifact("outputs")
 
 # Factor order is fixed: A, B, C, D, E.
 FACTORS = ["lr_schedule", "huber", "honest_norm", "contact_mixed", "film"]

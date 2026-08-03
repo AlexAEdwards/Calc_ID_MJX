@@ -42,6 +42,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
+from paths import artifact, dataset  # noqa: E402
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
@@ -400,7 +401,7 @@ def main() -> None:
     terms = _term_list(args.include_processed_cop_attribution)
 
     data_dir = Path(args.data_dir).resolve() if args.data_dir else (PROJECT_ROOT / "OpenCapSubjects_Filt")
-    out_dir = Path(args.output_dir).resolve() if args.output_dir else (PROJECT_ROOT / "inference_results" / "KinematicTorqueAttribution")
+    out_dir = Path(args.output_dir).resolve() if args.output_dir else (artifact("inference_results") / "KinematicTorqueAttribution")
     out_dir.mkdir(parents=True, exist_ok=True)
     exclude = {s.strip() for s in args.exclude_subjects.replace(",", " ").split() if s.strip()}
 

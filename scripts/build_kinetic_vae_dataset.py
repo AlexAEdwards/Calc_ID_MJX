@@ -29,11 +29,12 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+from paths import artifact, dataset, resolve as paths_resolve  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-DEFAULT_SOURCE = REPO_ROOT / "TrustedDataSet_ByExperiment"
-DEFAULT_ACCURACY = REPO_ROOT / "outputs" / "DirectTorque_LOEO_edge70" / "accuracy"
+DEFAULT_SOURCE = dataset("TrustedDataSet_ByExperiment")
+DEFAULT_ACCURACY = artifact("outputs") / "DirectTorque_LOEO_edge70" / "accuracy"
 
 # --------------------------------------------------------------------------
 # DOF conventions - derived, never hand-typed, so they cannot drift from
@@ -476,12 +477,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    src = Path(args.source)
-    if not src.is_absolute():
-        src = REPO_ROOT / src
-    dst = Path(args.dest)
-    if not dst.is_absolute():
-        dst = REPO_ROOT / dst
+    src = paths_resolve(args.source)
+    dst = paths_resolve(args.dest)
 
     from TransformerFinal.experiment_groups import list_experiment_dirs
     exps = [p.name for p in list_experiment_dirs(src)]

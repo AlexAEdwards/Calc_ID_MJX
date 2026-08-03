@@ -88,6 +88,7 @@ from data_loader import (
     unnormalize_qfrc_inverse_by_bw_height,
     validate_prediction_margin,
 )
+from paths import artifact, dataset  # noqa: E402
 
 # Hardcoded minimum trial length (in frames)
 MIN_TRIAL_LENGTH = 30
@@ -3695,7 +3696,7 @@ def main():
         default=None,
         help="Feed-forward dimension. Defaults to 4 * d_model when omitted.",
     )
-    parser.add_argument("--output_dir", type=str, default="outputs/v5")
+    parser.add_argument("--output_dir", type=str, default=str(artifact("outputs", "v5")))
     parser.add_argument(
         "--save_model_epochs",
         type=_parse_save_model_epochs_arg,

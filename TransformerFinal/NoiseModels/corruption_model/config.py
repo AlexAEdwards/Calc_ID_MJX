@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from paths import artifact, dataset  # noqa: E402
 
 try:
     import yaml
@@ -14,7 +15,7 @@ except Exception:  # pragma: no cover
 class DataConfig:
     paired_path: str = "Datasets_NAS/AddBiomechanicsDataset_All_npy/OpenCapSubjects"
     mocap_only_path: str = "TrustedDatasetNoisedFromModel"
-    output_path: str = "outputs/corruption_model"
+    output_path: str = str(artifact("outputs", "corruption_model"))
     subject_metadata_filename: str = "Patient_MD.json"
 
 

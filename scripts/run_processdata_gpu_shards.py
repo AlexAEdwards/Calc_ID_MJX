@@ -19,6 +19,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import IO, Any
+from paths import artifact, dataset  # noqa: E402
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -60,7 +61,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--log-dir",
         type=Path,
-        default=REPO_ROOT / "output" / "processdata_gpu_shards",
+        default=artifact("output") / "processdata_gpu_shards",
     )
     parser.add_argument(
         "--dry-run",

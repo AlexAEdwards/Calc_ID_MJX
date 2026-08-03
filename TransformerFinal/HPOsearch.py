@@ -29,13 +29,14 @@ import yaml
 from scipy.stats import norm
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import ConstantKernel, Matern, WhiteKernel
+from paths import artifact, dataset  # noqa: E402
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 DEFAULT_SWEEP_FILE = SCRIPT_DIR / "HPOApril24.yaml"
 SUMMARY_DIR_NAME = "condensed_results"
-DEFAULT_OUTPUT_ROOT = PROJECT_ROOT / "outputs" / "local_hpo_searches"
+DEFAULT_OUTPUT_ROOT = artifact("outputs") / "local_hpo_searches"
 DEFAULT_EXP_NAME = "LocalHPOSearch"
 
 # Trials/subjects excluded from every HPO trial (forwarded to train.py via

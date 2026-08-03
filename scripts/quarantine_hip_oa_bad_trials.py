@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from paths import artifact, dataset  # noqa: E402
 
 
 SCHEMA_VERSION = "1.0"
@@ -85,7 +86,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--report-dir",
         type=Path,
-        default=Path("output/hip_oa_quarantine"),
+        default=Path(str(artifact("output", "hip_oa_quarantine"))),
         help="Dry-run and applied manifests are written here.",
     )
     return parser.parse_args()

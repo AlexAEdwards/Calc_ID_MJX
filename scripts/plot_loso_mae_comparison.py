@@ -14,18 +14,19 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+from paths import artifact, dataset  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 DEFAULT_OPENCAP_RUN = (
     REPO_ROOT
-    / "inference_results/Loso_AvgHPO_MJXGT_OriginalWeightsModel_ExcludeSub5"
+    / str(artifact("inference_results", "Loso_AvgHPO_MJXGT_OriginalWeightsModel_ExcludeSub5"))
 )
 DEFAULT_MOCAP_RUN = (
     REPO_ROOT
-    / "inference_results/Loso_HPO16h_final_trial0103_ep10_lr3e5_Sub5Excluded_MOCAPFINETUNED_MJXGT"
+    / str(artifact("inference_results", "Loso_HPO16h_final_trial0103_ep10_lr3e5_Sub5Excluded_MOCAPFINETUNED_MJXGT"))
 )
-DEFAULT_OUT_DIR = REPO_ROOT / "inference_results/loso_mae_comparison"
+DEFAULT_OUT_DIR = REPO_ROOT / str(artifact("inference_results", "loso_mae_comparison"))
 
 # Internal key -> display label (anatomical order)
 DOF_ORDER: List[Tuple[str, str]] = [

@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from paths import artifact, dataset  # noqa: E402
 
 
 REPORT_NAME = "hip_oa_readiness_outlier_report.json"
@@ -324,7 +325,7 @@ def main() -> int:
     parser.add_argument(
         "--destination",
         type=Path,
-        default=Path("TrustedDataSet_ByExperiment/Hip_OA"),
+        default=Path(str(dataset("TrustedDataSet_ByExperiment", "Hip_OA"))),
     )
     parser.add_argument(
         "--quarantine",
@@ -334,7 +335,7 @@ def main() -> int:
     parser.add_argument(
         "--report-dir",
         type=Path,
-        default=Path("output/hip_oa_promotion"),
+        default=Path(str(artifact("output", "hip_oa_promotion"))),
     )
     parser.add_argument("--contact-threshold-n", type=float, default=15.0)
     parser.add_argument("--remove-fraction", type=float, default=0.05)
@@ -489,7 +490,7 @@ def main() -> int:
         "created_at": datetime.now().isoformat(timespec="seconds"),
         "experiment": "Hip_OA",
         "dataset": str(destination),
-        "layout": "TrustedDataSet_ByExperiment/<Experiment>/<Subject>/Trial_*",
+        "layout": str(dataset("TrustedDataSet_ByExperiment", "<Experiment>", "<Subject>", "Trial_*")),
         "subject_count": final_report["subject_count_after_filter"],
         "trial_count": final_report["trial_count_after_filter"],
         "source_dataset_before_move": str(source),

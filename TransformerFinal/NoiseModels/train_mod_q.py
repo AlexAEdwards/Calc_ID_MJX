@@ -50,6 +50,7 @@ from data_loader import (
     validate_prediction_margin,
 )
 from runtime_model_utils import RUNTIME_XML_NAME, modq_runtime_structure_key, resolve_modq_runtime_xml
+from paths import artifact, dataset  # noqa: E402
 
 try:  # Optional shared helper, if it lands later.
     from mod_q_shared import (  # type: ignore
@@ -4004,7 +4005,7 @@ def _save_checkpoint(
 def _make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Train the mod_q transformer")
     parser.add_argument("--data_dir", type=str, required=True)
-    parser.add_argument("--output_dir", type=str, default="outputs/mod_q")
+    parser.add_argument("--output_dir", type=str, default=str(artifact("outputs", "mod_q")))
     parser.add_argument("--exp_name", type=str, default="mod_q")
     parser.add_argument("--epochs", type=int, default=100)
     parser.add_argument("--warmup_epochs", type=int, default=0)

@@ -58,6 +58,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 import numpy as np
+from paths import artifact, dataset  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Path bootstrapping so we can import sibling packages without a setup.py.
@@ -85,7 +86,7 @@ for _path in (NOISE_MODELS_DIR, REPO_ROOT, TRANSFORMER_DIR):
 COMBINED_LOSO_CONFIG: Dict[str, Any] = {
     # Dataset / output paths
     "data_dir": "Datasets_NAS/AddBiomechanicsDataset_All_npy/OpenCapSubjects_NoTrim_NoFilt",
-    "output_dir": "outputs/loso_combined",
+    "output_dir": str(artifact("outputs", "loso_combined")),
     "refine_q_base_checkpoint": None,  # Optional pre-trained .pkl checkpoint to fine-tune from.
     "transformer_checkpoint": "outpus/OlderAdultModel_128Window_UnFiltered_UnTrimmed/best_model.pkl",    # REQUIRED at runtime — pre-trained transformer .pkl checkpoint.
 
@@ -714,7 +715,7 @@ def _resolve_refine_q_effective_config(
         "jacobian_loss_weight": 0.0,
         "rotation_loss_weight": 0.0,
         "use_train_dataset_normalizers": False,
-        "trusted_normalizer_data_dir": "outputs/TrustedDataSetNoised12Distributed/Noised12Distributed_LetsDoThis",
+        "trusted_normalizer_data_dir": str(artifact("outputs", "TrustedDataSetNoised12Distributed", "Noised12Distributed_LetsDoThis")),
         "trusted_normalizer_num_windows": 1000,
         "trusted_normalizer_sample_seed": None,
         # When True: Stage-1 refine-q yields one batch per epoch (all sliding windows

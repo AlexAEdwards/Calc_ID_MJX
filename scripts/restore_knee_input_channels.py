@@ -32,13 +32,14 @@ from pathlib import Path
 from typing import Iterable
 
 import numpy as np
+from paths import artifact, dataset  # noqa: E402
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOTS = (
-    PROJECT_ROOT / "TrustedDataSetNoised12Distributed_EdgeHold_AllPatients",
-    PROJECT_ROOT / "TrustedDataSet_ByExperiment",
-    PROJECT_ROOT / "OpenCapWalkingTrunkSwaySubjects",
+    dataset("TrustedDataSetNoised12Distributed_EdgeHold_AllPatients"),
+    dataset("TrustedDataSet_ByExperiment"),
+    dataset("OpenCapWalkingTrunkSwaySubjects"),
 )
 
 POS_COLUMNS = (
@@ -509,7 +510,7 @@ def main() -> int:
     parser.add_argument(
         "--report",
         type=Path,
-        default=PROJECT_ROOT / "tmp" / "restore_knee_input_channels_report.json",
+        default=artifact("tmp") / "restore_knee_input_channels_report.json",
     )
     args = parser.parse_args()
 

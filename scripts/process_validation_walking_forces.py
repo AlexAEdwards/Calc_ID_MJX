@@ -14,11 +14,12 @@ from datetime import datetime
 from pathlib import Path
 
 import numpy as np
+from paths import artifact, dataset  # noqa: E402
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = REPO_ROOT / "Datasets_NAS/OpenCapValidationWithVideos"
-DATASET_ROOT = REPO_ROOT / "OpenCapWalkingTrunkSwaySubjects"
+DATASET_ROOT = dataset("OpenCapWalkingTrunkSwaySubjects")
 REPORT_PATH = DATASET_ROOT / "force_processing_report.json"
 
 FORCE_COLUMNS = {

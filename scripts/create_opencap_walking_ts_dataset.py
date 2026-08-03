@@ -23,11 +23,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
+from paths import artifact, dataset  # noqa: E402
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE = REPO_ROOT / "Datasets_NAS" / "OpenCapValidationWithVideos"
-DEFAULT_OUTPUT = REPO_ROOT / "OpenCapWalkingTrunkSwaySubjects"
+DEFAULT_OUTPUT = dataset("OpenCapWalkingTrunkSwaySubjects")
 
 OPENSIM_TO_MJX_IDX: dict[str, int] = {
     "hip_flexion_r": 6,

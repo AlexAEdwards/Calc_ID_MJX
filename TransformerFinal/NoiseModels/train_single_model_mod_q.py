@@ -8,6 +8,7 @@ import signal
 import subprocess
 import sys
 from pathlib import Path
+from paths import artifact, dataset  # noqa: E402
 
 
 # =============================================================================
@@ -81,7 +82,7 @@ CONFIG = {
     "prefetch_batches": 0,
     "auto_backfill_q_mjx": False,
     "check_mjx_gradients": True,
-    "jax_compilation_cache_dir": str(PROJECT_ROOT / ".jax_compilation_cache"),
+    "jax_compilation_cache_dir": str(artifact(".jax_compilation_cache")),
     "full_stage_cache_limit": 2,
     "full_stage_precompile_max_groups": 2,
     "full_stage_compile_ahead_groups": 1,
@@ -93,7 +94,7 @@ CONFIG = {
 }
 
 # 3. Output Configuration
-BASE_OUTPUT_DIR = str(PROJECT_ROOT / "outputs" / "ModQ")
+BASE_OUTPUT_DIR = str(artifact("outputs") / "ModQ")
 EXPERIMENT_NAME = "Noised12_ModQ_ActuallyTrain"
 
 

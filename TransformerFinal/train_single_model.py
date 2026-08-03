@@ -6,6 +6,7 @@ import shutil
 import re
 import argparse
 from pathlib import Path
+from paths import artifact, dataset  # noqa: E402
 
 # =============================================================================
 # USER CONFIGURATION
@@ -19,7 +20,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 # DATA_DIR = str(PROJECT_ROOT / "Datasets_NAS" / "AddBiomechanicsDataset_All_npy" / "TrustedDataSet")  # Path to your training data
 # DATA_DIR = str(PROJECT_ROOT / "Datasets_NAS" / "DifferentNoisedDataset"/"TrustedDataSetNoised12DistributedUnFiltered_Trimmed")  # Path to your training data
 # Note: this workspace does not currently contain a repo-root TrustedDataSet12Distributed folder.
-DATA_DIR = str(PROJECT_ROOT / "TrustedDataSetNoised12Distributed_EdgeHold_AllPatients")
+DATA_DIR = str(dataset("TrustedDataSetNoised12Distributed_EdgeHold_AllPatients"))
 # 2. Model Hyperparameters
 CONFIG = {
     # Best HPO result from
@@ -173,7 +174,7 @@ CONFIG = {
 
 # 3. Output Configuration
 # The script will create a folder with a descriptive name in this directory
-BASE_OUTPUT_DIR = str(PROJECT_ROOT / "outputs")  # Base directory for outputs; will create subfolders per run
+BASE_OUTPUT_DIR = str(artifact("outputs"))  # Base directory for outputs; will create subfolders per run
 # EXPERIMENT_NAME = "BestClean" # Optional custom name tag
 EXPERIMENT_NAME = "ReprocessedDataSet_July9_TorqueInformed_KAM_Weight_Corrected" # Optional custom name tag
 

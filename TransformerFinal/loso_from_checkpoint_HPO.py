@@ -48,6 +48,7 @@ RUNTIME_ENV_APPLIED = configure_runtime_env()
 import train as train_module
 import loso_adapters
 import loso_from_checkpoint as base
+from paths import artifact, dataset  # noqa: E402
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -55,7 +56,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent
 
 
 LOSO_CONFIG: Dict[str, Any] = dict(base.LOSO_CONFIG)
-LOSO_CONFIG["output_dir"] = str(PROJECT_ROOT / "inference_results" / "Nested_LOSO_HPO_LR_Epoch")
+LOSO_CONFIG["output_dir"] = str(artifact("inference_results") / "Nested_LOSO_HPO_LR_Epoch")
 # Ground truth for the nested HPO is the recalculated OpenSim ID. This flag flows
 # through base._apply_cli_overrides -> base._safe_trial_loader for BOTH the training
 # and validation loaders, so the data loader builds the torque regression target as

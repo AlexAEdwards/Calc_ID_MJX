@@ -49,6 +49,7 @@ from experiment_groups import (  # noqa: E402
     detect_layout,
     list_experiment_dirs,
 )
+from paths import artifact, dataset, resolve as paths_resolve  # noqa: E402
 
 TRAIN_SCRIPT = SCRIPT_DIR / "train_directTorque.py"
 INFER_SCRIPT = SCRIPT_DIR / "infer_directTorque.py"
@@ -96,8 +97,13 @@ POOLING_KEYS = (
 # ---------------------------------------------------------------------------
 
 def _resolve(path_like: str) -> Path:
-    path = Path(path_like)
-    return path if path.is_absolute() else (PROJECT_ROOT / path)
+    """Resolve a CLI path, honouring the Stage 1 datasets/ + artifacts/ split.
+
+    A bare name like ``outputs/DirectTorque_LOEO`` or ``TrustedDataSet_ByExperiment``
+    used to sit at the repo root; paths.resolve() maps it to wherever it actually
+    lives now, so the old spellings keep working without a compatibility symlink.
+    """
+    return paths_resolve(path_like)
 
 
 def _run(cmd: Sequence[str], *, log_path: Path, label: str) -> None:
@@ -591,7 +597,7 @@ def _print_report(report: Mapping[str, Any]) -> None:
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--data_dir", required=True, help="Nested dataset root (Dataset/<Experiment>/<Subject>/Trial_#).")
-    p.add_argument("--output_root", default="outputs/DirectTorque_LOEO", help="Where per-round models and logs go.")
+    p.add_argument("--output_root", default=str(artifact("outputs", "DirectTorque_LOEO")), help="Where per-round models and logs go.")
     p.add_argument("--experiments", default="", help="Comma-separated subset of experiments to run (default: all).")
     p.add_argument("--skip_experiments", default="", help="Comma-separated experiments to leave out of the sweep.")
     p.add_argument(

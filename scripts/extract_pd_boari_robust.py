@@ -20,6 +20,7 @@ from typing import Any
 import ezc3d
 import numpy as np
 from scipy.signal import butter, sosfiltfilt
+from paths import artifact, dataset  # noqa: E402
 
 
 VERSION = "2.0.2"
@@ -676,8 +677,8 @@ def discover(dataset_root: Path, only: set[str], limit: int | None) -> list[Path
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset-root", type=Path, default=Path("Datasets_Local/PD_Dataset"))
-    parser.add_argument("--source-root", type=Path, default=Path("Datasets_Local/Boari_preAddBio"))
+    parser.add_argument("--dataset-root", type=Path, default=Path(str(dataset("Datasets_Local", "PD_Dataset"))))
+    parser.add_argument("--source-root", type=Path, default=Path(str(dataset("Datasets_Local", "Boari_preAddBio"))))
     parser.add_argument("--output-name", default="RobustExtracted_v2")
     parser.add_argument("--only", nargs="*", default=[])
     parser.add_argument("--limit", type=int)

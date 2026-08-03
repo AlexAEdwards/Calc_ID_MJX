@@ -158,6 +158,45 @@ def do_apply(p: Dict[str, List[Dict[str, str]]], *, measure: bool) -> None:
     print(f"\n   manifest: {REPO_ROOT / MANIFEST_NAME}")
 
 
+def retire_symlinks(*, apply: bool) -> None:
+    """Delete the Stage 1 compatibility symlinks once no code needs the old names.
+
+    Only safe after scripts/migrate_paths_to_paths_module.py has routed every
+    root-relative reference through paths.py. Reversible: --restore-symlinks
+    recreates them from the manifest.
+    """
+    mf = REPO_ROOT / MANIFEST_NAME
+    if not mf.exists():
+        raise SystemExit(f"No manifest at {mf}")
+    manifest = json.loads(mf.read_text())
+    n = 0
+    for m in manifest.get("moves", []):
+        link = Path(m["src"])
+        if link.is_symlink():
+            n += 1
+            if apply:
+                link.unlink()
+    print(f"   {'removed' if apply else 'would remove'} {n} compatibility symlinks")
+    if apply:
+        manifest["symlinks_retired"] = datetime.now().isoformat(timespec="seconds")
+        mf.write_text(json.dumps(manifest, indent=2))
+
+
+def restore_symlinks() -> None:
+    """Recreate the compatibility symlinks from the manifest."""
+    mf = REPO_ROOT / MANIFEST_NAME
+    manifest = json.loads(mf.read_text())
+    n = 0
+    for m in manifest.get("moves", []):
+        link, target = Path(m["src"]), Path(m["group"]) / Path(m["src"]).name
+        if not link.exists() and not link.is_symlink():
+            os.symlink(target, link)
+            n += 1
+    manifest.pop("symlinks_retired", None)
+    mf.write_text(json.dumps(manifest, indent=2))
+    print(f"   restored {n} symlinks")
+
+
 def do_revert() -> None:
     mf = REPO_ROOT / MANIFEST_NAME
     if not mf.exists():
@@ -183,12 +222,22 @@ def main() -> None:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--revert", action="store_true")
+    ap.add_argument("--retire-symlinks", action="store_true",
+                    help="Delete the compatibility symlinks (after paths.py migration).")
+    ap.add_argument("--restore-symlinks", action="store_true",
+                    help="Recreate them from the manifest.")
     ap.add_argument("--no_measure", action="store_true",
                     help="Skip du-style size measurement (much faster on 600 GB).")
     args = ap.parse_args()
 
     if args.revert:
         do_revert()
+        return
+    if args.restore_symlinks:
+        restore_symlinks()
+        return
+    if args.retire_symlinks:
+        retire_symlinks(apply=args.apply)
         return
 
     p = plan()

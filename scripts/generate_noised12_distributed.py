@@ -29,9 +29,10 @@ if str(NOISE_MODULE_DIR) not in sys.path:
     sys.path.insert(0, str(NOISE_MODULE_DIR))
 
 from generate_sine_noise import generate_multisine_noise
+from paths import artifact, dataset  # noqa: E402
 
 
-DEFAULT_DATASET_ROOT = REPO_ROOT / "Datasets_Local" / "PD_Dataset"
+DEFAULT_DATASET_ROOT = dataset("Datasets_Local") / "PD_Dataset"
 DEFAULT_PROFILE_SUMMARY = (
     REPO_ROOT / "NoiseAndPowerAnalOfInputData" / "StrokeDataset_Noised12_summary.json"
 )

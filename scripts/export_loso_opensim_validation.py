@@ -21,15 +21,16 @@ from pathlib import Path
 from typing import Any, Mapping
 
 import numpy as np
+from paths import artifact, dataset  # noqa: E402
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 TRANSFORMER_DIR = PROJECT_ROOT / "TransformerFinal"
-DEFAULT_DATASET = PROJECT_ROOT / "OpenCapWalkingTrunkSwaySubjects"
-DEFAULT_LOSO = (
-    PROJECT_ROOT
-    / "outputs/ReprocessedDataSet_July9_TorqueInformed_KAM_Weight_Corrected/"
-    "LOSO_video_evalTS_includeTS_KAMFirstStepRatio0p1_PredCOPKAM"
+DEFAULT_DATASET = dataset("OpenCapWalkingTrunkSwaySubjects")
+DEFAULT_LOSO = artifact(
+    "outputs",
+    "ReprocessedDataSet_July9_TorqueInformed_KAM_Weight_Corrected",
+    "LOSO_video_evalTS_includeTS_KAMFirstStepRatio0p1_PredCOPKAM",
 )
 DEFAULT_OUTPUT = PROJECT_ROOT / "OpenCapValSubjectsForScott"
 SUBJECTS = ("subject2", "subject3", "subject4")

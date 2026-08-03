@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
 import numpy as np
+from paths import artifact, dataset  # noqa: E402
 
 try:
     from .refine_q_shared import (
@@ -63,7 +64,7 @@ def _make_parser() -> argparse.ArgumentParser:
         default=OPEN_CAP_SUBJECTS_DIR,
         help="Dataset root (defaults to the OpenCapSubjects dataset root)",
     )
-    parser.add_argument("--output", type=str, default="inference_results/refine_q")
+    parser.add_argument("--output", type=str, default=str(artifact("inference_results", "refine_q")))
     parser.add_argument("--trial_name", type=str, default=None, help="subject/trial or subject/trial/sample_name")
     parser.add_argument("--test_json", type=str, default=None, help="JSON list of selectors to run")
     parser.add_argument("--all_val", action="store_true", help="Run all validation records stored in the checkpoint")

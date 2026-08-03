@@ -52,11 +52,12 @@ from train import (  # noqa: E402
     discover_all_trials,
     infer_input_feature_layout_from_loader,
 )
+from paths import artifact, dataset  # noqa: E402
 
 
 DEFAULT_CONFIG: Dict[str, Any] = {
     "data_dir": str(PROJECT_ROOT / "TrustedDataSetNoised12Distributed_EdgeHold_OYIncluded"),
-    "output_dir": str(PROJECT_ROOT / "outputs" / "DirectTorque_Default"),
+    "output_dir": str(artifact("outputs") / "DirectTorque_Default"),
     "d_model": 384,
     "num_layers": 4,
     "num_heads": 4,

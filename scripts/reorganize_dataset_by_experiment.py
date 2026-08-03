@@ -33,6 +33,7 @@ from typing import Any, Dict, List
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
+from paths import resolve as paths_resolve  # noqa: E402
 from TransformerFinal.experiment_groups import (  # noqa: E402
     experiment_of_subject,
     is_subject_dir,
@@ -45,9 +46,7 @@ STALE_CACHE_NAMES = ("trial_discovery_cache.json", "trial_discovery_cache_modq.j
 
 
 def _resolve_data_dir(raw: str) -> Path:
-    data_dir = Path(raw)
-    if not data_dir.is_absolute():
-        data_dir = REPO_ROOT / data_dir
+    data_dir = paths_resolve(raw)
     if not data_dir.is_dir():
         raise SystemExit(f"Dataset directory does not exist: {data_dir}")
     return data_dir

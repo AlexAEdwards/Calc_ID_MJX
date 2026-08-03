@@ -42,8 +42,9 @@ from typing import Any, Dict, List
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 from TransformerFinal.experiment_groups import LAYOUT_MANIFEST_NAME  # noqa: E402
+from paths import artifact, dataset  # noqa: E402
 
-DEFAULT_SOURCE = REPO_ROOT / "OpenCapWalkingTrunkSwaySubjects"
+DEFAULT_SOURCE = dataset("OpenCapWalkingTrunkSwaySubjects")
 EXPERIMENT_NAME = "OpenCapVal"
 SOURCE_MANIFEST = "dataset_manifest.json"
 TRUNK_SWAY_SUFFIX = "_TS"

@@ -11,6 +11,7 @@ import argparse
 import json
 import shutil
 from pathlib import Path
+from paths import artifact, dataset  # noqa: E402
 
 
 def main() -> None:
@@ -18,17 +19,17 @@ def main() -> None:
     parser.add_argument(
         "--source-root",
         type=Path,
-        default=Path("Datasets_Local/PD_Dataset"),
+        default=Path(str(dataset("Datasets_Local", "PD_Dataset"))),
     )
     parser.add_argument(
         "--manifest",
         type=Path,
-        default=Path("Datasets_Local/PD_Dataset/RobustExtracted_v2_manifest.json"),
+        default=Path(str(dataset("Datasets_Local", "PD_Dataset", "RobustExtracted_v2_manifest.json"))),
     )
     parser.add_argument(
         "--output-root",
         type=Path,
-        default=Path("Datasets_Local/PD_Robust_PASS_All"),
+        default=Path(str(dataset("Datasets_Local", "PD_Robust_PASS_All"))),
     )
     parser.add_argument("--status", default="PASS", choices=("PASS", "REVIEW", "REJECT"))
     parser.add_argument("--robust-dir-name", default="RobustExtracted_v2")
