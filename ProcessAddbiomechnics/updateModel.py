@@ -10,7 +10,41 @@ DoNotFixMassArmatureInertia = True
 AXIS_A_R = np.array([-4.566e-07, -0.07071, -0.9975], dtype=float)
 AXIS_B_R = np.array([-0.1243, 0.9898, -0.07016], dtype=float)
 AXIS_C_R = np.array([0.9922, 0.124, -0.008789], dtype=float)
+AXIS_A_L = np.array([-4.566e-07, -0.07071, 0.9975], dtype=float)
+AXIS_B_L = np.array([-0.1243, 0.9898, 0.07016], dtype=float)
+AXIS_C_L = np.array([-0.9922, -0.124, -0.008789], dtype=float)
+KNEE_AXIS_R = AXIS_A_R
+KNEE_AXIS_L = np.array([4.566e-07, 0.07071, -0.9975], dtype=float)
+CANONICAL_KNEE_RANGE = "0 2.443"
+CANONICAL_KNEE_SOLIMP = "0.9999 0.9999 0.001 0.5 2"
 AXIS_LABELS_R = {"A": AXIS_A_R, "B": AXIS_B_R, "C": AXIS_C_R}
+CANONICAL_KNEE_AXES = {
+    "r": {
+        "translation1": AXIS_A_R,
+        "translation2": AXIS_B_R,
+        "translation3": AXIS_C_R,
+        "knee_angle": KNEE_AXIS_R,
+        "rotation2": AXIS_C_R,
+        "rotation3": AXIS_B_R,
+    },
+    "l": {
+        "translation1": AXIS_A_L,
+        "translation2": AXIS_B_L,
+        "translation3": AXIS_C_L,
+        "knee_angle": KNEE_AXIS_L,
+        "rotation2": AXIS_C_L,
+        "rotation3": AXIS_B_L,
+    },
+}
+CANONICAL_ROTATION_POLYCOEFS = {
+    ("r", "rotation2"): np.array([-1.473e-08, 0.0791, -0.03285, -0.02522, 0.01083], dtype=float),
+    ("l", "rotation2"): np.array([-1.473e-08, 0.0791, -0.03285, -0.02522, 0.01083], dtype=float),
+    ("r", "rotation3"): np.array([-4.43e-08, 0.3695, -0.1695, 0.02517, 0.0], dtype=float),
+    ("l", "rotation3"): np.array([4.43e-08, -0.3695, 0.1695, -0.02517, 0.0], dtype=float),
+}
+CANONICAL_KNEE_JOINT_SUFFIXES = (
+    "translation1", "translation2", "translation3", "knee_angle", "rotation2", "rotation3"
+)
 
 # Femur-length regressions from TrustedDataSetNoised12Distributed_EdgeHold_OYIncluded
 # GaitRetraining cohort (n=83), regenerated 2026-07-02. R2: A=0.971, B=1.000, C=0.908.
@@ -40,10 +74,16 @@ def _fmt_poly(vec):
 
 def femur_length_from_model_xml(path):
     model = mujoco.MjModel.from_xml_path(str(path))
-    tibia_r = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "tibia_r")
-    if tibia_r < 0:
-        raise ValueError(f"Could not find body tibia_r in {path}")
-    return float(np.linalg.norm(model.body_pos[tibia_r]))
+    lengths = []
+    for body_name in ("tibia_r", "tibia_l"):
+        body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, body_name)
+        if body_id >= 0:
+            length = float(np.linalg.norm(model.body_pos[body_id]))
+            if np.isfinite(length) and length > 0.0:
+                lengths.append(length)
+    if not lengths:
+        raise ValueError(f"Could not find tibia_r/tibia_l body offsets in {path}")
+    return float(np.mean(lengths))
 
 
 def _body_named(root, name):
@@ -106,10 +146,81 @@ def _infer_side_axes(root, side):
 
 def _knee_polycoef(axis_label, femur_len, side):
     coef = KNEE_POLYCOEF_SLOPES[axis_label] * float(femur_len) + KNEE_POLYCOEF_INTERCEPTS[axis_label]
-    if side == "l":
+    if side == "l" and axis_label == "C":
         coef = -coef
     coef[0] = 0.0
     return coef
+
+
+def _canonical_knee_joint_name(side, suffix):
+    if suffix == "knee_angle":
+        return f"knee_angle_{side}"
+    return f"walker_knee_{side}_{suffix}"
+
+
+def _canonical_knee_polycoef(side, suffix, femur_len):
+    if suffix.startswith("translation"):
+        label = {"translation1": "A", "translation2": "B", "translation3": "C"}[suffix]
+        return _knee_polycoef(label, femur_len, side)
+    return CANONICAL_ROTATION_POLYCOEFS[(side, suffix)].copy()
+
+
+def _canonical_knee_joint_attrs(side, suffix, femur_len):
+    jtype = "slide" if suffix.startswith("translation") else "hinge"
+    poly = None if suffix == "knee_angle" else _canonical_knee_polycoef(side, suffix, femur_len)
+    user = 0.0 if poly is None else float(poly[0])
+    return {
+        "name": _canonical_knee_joint_name(side, suffix),
+        "range": CANONICAL_KNEE_RANGE,
+        "limited": "true",
+        "user": f"{user:.16g}",
+        "ref": "0",
+        "axis": _fmt_vec(CANONICAL_KNEE_AXES[side][suffix]),
+        "type": jtype,
+    }
+
+
+def _knee_block_joint_names(side):
+    return {_canonical_knee_joint_name(side, suffix) for suffix in CANONICAL_KNEE_JOINT_SUFFIXES}
+
+
+def _canonical_knee_template_attrs(equality):
+    template_attrs = None
+    if equality is not None:
+        for joint_eq in equality.findall("joint"):
+            j1 = joint_eq.get("joint1") or ""
+            j2 = joint_eq.get("joint2") or ""
+            if "walker_knee_" in j1 and j2.startswith("knee_angle_"):
+                template_attrs = {
+                    k: v for k, v in joint_eq.attrib.items()
+                    if k not in {"joint1", "joint2", "polycoef"}
+                }
+                break
+    if template_attrs is None:
+        template_attrs = {"solimp": CANONICAL_KNEE_SOLIMP, "active": "true"}
+    else:
+        template_attrs.setdefault("solimp", CANONICAL_KNEE_SOLIMP)
+        template_attrs.setdefault("active", "true")
+    return template_attrs
+
+
+def _ranges_close(actual, expected=CANONICAL_KNEE_RANGE, atol=1e-6):
+    try:
+        actual_vals = [float(x) for x in str(actual).split()]
+        expected_vals = [float(x) for x in str(expected).split()]
+    except Exception:
+        return False
+    return len(actual_vals) == len(expected_vals) and np.allclose(actual_vals, expected_vals, atol=atol, rtol=0.0)
+
+
+def _poly_close(actual, expected, atol=5e-6):
+    try:
+        vals = np.array([float(x) for x in str(actual).split()], dtype=float)
+    except Exception:
+        return False
+    if vals.size < expected.size:
+        vals = np.pad(vals, (0, expected.size - vals.size))
+    return vals.size >= expected.size and np.allclose(vals[:expected.size], expected, atol=atol, rtol=0.0)
 
 
 def _joint_qpos_count(joint):
@@ -133,67 +244,112 @@ def rebuild_knee_coupling(root, femur_len):
     if equality is None:
         equality = ET.SubElement(root, "equality")
 
-    template_attrs = None
-    for joint_eq in equality.findall("joint"):
-        j1 = joint_eq.get("joint1") or ""
-        j2 = joint_eq.get("joint2") or ""
-        if "walker_knee_" in j1 and j2.startswith("knee_angle_"):
-            template_attrs = {
-                k: v for k, v in joint_eq.attrib.items()
-                if k not in {"joint1", "joint2", "polycoef"}
-            }
-            break
-    if template_attrs is None:
-        template_attrs = {"active": "true"}
+    template_attrs = _canonical_knee_template_attrs(equality)
 
     for side in ("r", "l"):
         tibia = _body_named(root, f"tibia_{side}")
         if tibia is None:
             raise ValueError(f"Could not find tibia_{side} body")
-        axes = _infer_side_axes(root, side)
 
-        old_translation_joints = [
-            joint for joint in tibia.findall("./joint")
-            if (joint.get("name") or "").startswith(f"walker_knee_{side}_translation")
-        ]
-        for joint in old_translation_joints:
-            tibia.remove(joint)
-
+        names_to_rebuild = _knee_block_joint_names(side)
         children = list(tibia)
-        knee_idx = next(
-            (i for i, child in enumerate(children)
-             if child.tag == "joint" and child.get("name") == f"knee_angle_{side}"),
+        insertion_idx = next(
+            (
+                i for i, child in enumerate(children)
+                if child.tag == "joint" and (child.get("name") or "") in names_to_rebuild
+            ),
             None,
         )
-        if knee_idx is None:
-            raise ValueError(f"Could not find knee_angle_{side} joint insertion point")
+        if insertion_idx is None:
+            insertion_idx = next(
+                (i for i, child in enumerate(children) if child.tag != "joint"),
+                len(children),
+            )
 
-        knee_range = children[knee_idx].get("range", "0 2.443")
-        for offset, label in enumerate(("A", "B", "C"), start=0):
-            joint = ET.Element("joint", {
-                "name": f"walker_knee_{side}_translation{offset + 1}",
-                "range": knee_range,
-                "limited": "true",
-                "user": "0.0",
-                "ref": "0",
-                "axis": _fmt_vec(axes[label]),
-                "type": "slide",
-            })
-            tibia.insert(knee_idx + offset, joint)
+        for joint in list(tibia.findall("./joint")):
+            if (joint.get("name") or "") in names_to_rebuild:
+                tibia.remove(joint)
+
+        for offset, suffix in enumerate(CANONICAL_KNEE_JOINT_SUFFIXES):
+            tibia.insert(
+                insertion_idx + offset,
+                ET.Element("joint", _canonical_knee_joint_attrs(side, suffix, femur_len)),
+            )
 
         for joint_eq in list(equality.findall("joint")):
             j1 = joint_eq.get("joint1") or ""
-            if j1.startswith(f"walker_knee_{side}_translation"):
+            j2 = joint_eq.get("joint2") or ""
+            if j1 in names_to_rebuild or j2 in names_to_rebuild:
                 equality.remove(joint_eq)
 
-        for idx, label in enumerate(("A", "B", "C"), start=1):
+        for suffix in ("translation1", "translation2", "translation3", "rotation2", "rotation3"):
             attrs = dict(template_attrs)
             attrs.update({
-                "joint1": f"walker_knee_{side}_translation{idx}",
+                "joint1": _canonical_knee_joint_name(side, suffix),
                 "joint2": f"knee_angle_{side}",
-                "polycoef": _fmt_poly(_knee_polycoef(label, femur_len, side)),
+                "polycoef": _fmt_poly(_canonical_knee_polycoef(side, suffix, femur_len)),
             })
             equality.append(ET.Element("joint", attrs))
+
+
+def knee_coupling_is_canonical_root(root, femur_len, atol=1e-5):
+    equality = root.find("equality")
+    if equality is None:
+        return False
+
+    eq_by_joint1 = {}
+    for eq in equality.findall("joint"):
+        j1 = eq.get("joint1")
+        if j1:
+            eq_by_joint1[j1] = eq
+
+    for side in ("r", "l"):
+        tibia = _body_named(root, f"tibia_{side}")
+        if tibia is None:
+            return False
+
+        joint_order = [
+            joint.get("name") for joint in tibia.findall("./joint")
+            if (joint.get("name") or "") in _knee_block_joint_names(side)
+        ]
+        expected_order = [_canonical_knee_joint_name(side, suffix) for suffix in CANONICAL_KNEE_JOINT_SUFFIXES]
+        if joint_order != expected_order:
+            return False
+
+        for suffix in CANONICAL_KNEE_JOINT_SUFFIXES:
+            name = _canonical_knee_joint_name(side, suffix)
+            joint = tibia.find(f"./joint[@name='{name}']")
+            if joint is None:
+                return False
+            expected_type = "slide" if suffix.startswith("translation") else "hinge"
+            if joint.get("type", "hinge") != expected_type:
+                return False
+            if not _ranges_close(joint.get("range")):
+                return False
+            if joint.get("axis") is None or not np.allclose(
+                _parse_vec(joint.get("axis")),
+                CANONICAL_KNEE_AXES[side][suffix],
+                atol=atol,
+                rtol=0.0,
+            ):
+                return False
+
+        for suffix in ("translation1", "translation2", "translation3", "rotation2", "rotation3"):
+            name = _canonical_knee_joint_name(side, suffix)
+            eq = eq_by_joint1.get(name)
+            if eq is None or eq.get("joint2") != f"knee_angle_{side}":
+                return False
+            expected_poly = _canonical_knee_polycoef(side, suffix, femur_len)
+            if not _poly_close(eq.get("polycoef", ""), expected_poly):
+                return False
+    return True
+
+
+def knee_coupling_is_canonical_xml(xml_path):
+    tree = ET.parse(str(xml_path))
+    root = tree.getroot()
+    femur_len = femur_length_from_model_xml(xml_path)
+    return knee_coupling_is_canonical_root(root, femur_len)
 
 def fix_xml_masses(xml_path, output_path, min_mass=0.5, min_inertia=0.01, min_armature=0.1):
     """Fix zero masses, small inertias, and small armatures directly in XML."""
@@ -441,13 +597,13 @@ def fix_xml_masses(xml_path, output_path, min_mass=0.5, min_inertia=0.01, min_ar
 
     print(f"\n7.5. Knee coupling check...")
     arm_joints_removed_count = 0
-    if model_needs_knee_coupling_fix(root):
-        femur_len = femur_length_from_model_xml(xml_path)
-        print(f"   Missing/renamed knee translation axis detected; rebuilding knee coupling (femur={femur_len:.4f} m).")
-        rebuild_knee_coupling(root, femur_len)
-        print("   ✓ Rebuilt walker-knee translations as translation1=A, translation2=B, translation3=C.")
+    femur_len = femur_length_from_model_xml(xml_path)
+    if knee_coupling_is_canonical_root(root, femur_len):
+        print(f"   ✓ Knee coupling already canonical OpenCap-style (femur={femur_len:.4f} m).")
     else:
-        print("   ✓ Knee coupling already has three translation axes; leaving it unchanged.")
+        print(f"   Canonicalizing OpenCap-style knee coupling (femur={femur_len:.4f} m).")
+        rebuild_knee_coupling(root, femur_len)
+        print("   ✓ Rebuilt walker-knee translations, rotations, axes, ranges, and equality constraints.")
 
     # Always perform cleanup if any joints/bodies were removed
     if removed_count > 0 or arm_joints_removed_count > 0:

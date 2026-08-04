@@ -275,9 +275,8 @@ dropped by this slice. The fixed 39-DOF cohort has no arms, so nothing is droppe
 ## 6. Implementation steps
 
 ### Step A — `ProcessAddbiomechnics/updateModel.py` : `fix_xml_masses`
-(Function at ~line 9. Note: a near-duplicate exists at repo-root `updateModel.py`; the one actually
-imported by `ProcessData.py` is `from ProcessAddbiomechnics.updateModel import fix_xml_masses` —
-edit **that** one. Keep the two in sync or delete the unused copy.)
+(Resolved in Stage 7: the repo-root near-duplicate has been deleted, and this file — the one
+`ProcessData.py` actually imports — is now tracked. There is one copy.)
 
 1. **Add module-level constants**: the §4 regression tables, the §3.3 axis vectors, and a
    `femur_length_from_model_xml(path)` helper.

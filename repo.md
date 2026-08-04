@@ -26,7 +26,9 @@ TransformerFinal/     <-- CORE. Model, training, inference, LOSO, HPO. (see §3)
 scripts/              Data-prep + OpenSim/MJX ID utilities, validation, mass estimation (see §6)
 ProcessData.py        Master preprocessing pipeline: raw Motion -> Trial/ProcessedData/*.npy (see §5)
 Loso_Combined.py      3-stage LOSO over OpenCapSubjects (refine-q -> main -> eval)
-updateModel.py        Fix MuJoCo XML masses/inertias/armatures
+ProcessAddbiomechnics/updateModel.py
+                      Fix MuJoCo XML masses/inertias/armatures; knee-coupling
+                      canonicalisation. Imported by ProcessData.py.
 configs/              Config YAMLs
 Datasets_Local/       Local datasets;  Datasets_NAS -> symlink to NAS shared datasets
 TrustedDataSetNoised12Distributed_*   Primary training datasets (variants: EdgeHold, GRF_Filt,

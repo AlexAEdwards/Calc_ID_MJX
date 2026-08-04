@@ -50,7 +50,14 @@ OpenCapValSubjectsForScott/
 OpenCapFootOptStaging/
 OpenCapAveMAEPerformanceVals/
 BadTrialsFromTrustedDataset/
-ProcessAddbiomechnics/
+
+# ProcessAddbiomechnics/ was listed above as a cohort dataset, but it holds no
+# data - only updateModel.py, which ProcessData.py imports for fix_xml_masses
+# and knee_coupling_is_canonical_xml. Ignoring it meant a fresh clone hit the
+# bare `except Exception` around that import and silently lost mass-fixing and
+# knee-coupling validation. Track the source, ignore anything else.
+ProcessAddbiomechnics/*
+!ProcessAddbiomechnics/*.py
 
 # --- large binary / model assets ---
 *.npy

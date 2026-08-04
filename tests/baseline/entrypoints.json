@@ -1,6 +1,7 @@
 {
   "Clean_COP_experiment.py": "ok",
   "Loso_Combined.py": "ok",
+  "ProcessAddbiomechnics/updateModel.py": "FileNotFoundError: [Errno 2] No such file or directory: 'Results/ModelNoMus/sc",
   "ProcessData.py": "ok",
   "TRC_FootOptimization/make_optimized_pos_npy.py": "ok",
   "TRC_FootOptimization/run_foot_optimization.py": "ok",
@@ -89,6 +90,5 @@
   "scripts/verify_subject5_loso_ready.py": "FileNotFoundError: [Errno 2] No such file or directory: '/home/mobl/Documents/",
   "scripts/write_estimated_mass_to_patient_md.py": "FileNotFoundError: [Errno 2] No such file or directory: '/home/mobl/Documents/",
   "tools/equivalence_check.py": "ok",
-  "tools/stage_test_fixture.py": "ok",
-  "updateModel.py": "FileNotFoundError: [Errno 2] No such file or directory: 'Results/ModelNoMus/sc"
+  "tools/stage_test_fixture.py": "ok"
 }

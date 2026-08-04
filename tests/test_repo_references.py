@@ -59,8 +59,13 @@ IGNORED_NAMES = frozenset({
 })
 
 #: Files whose examples describe something other than this repo's layout.
-#: CHPC_REFERENCE_FOR_AGENTS.txt documents generic Slurm/cluster usage.
-IGNORED_SOURCES = frozenset({"CHPC_REFERENCE_FOR_AGENTS.txt"})
+#: CHPC_REFERENCE_FOR_AGENTS.txt documents generic Slurm/cluster usage. This file
+#: is excluded from its own scan because its patterns and assertions necessarily
+#: contain deliberately-nonexistent paths.
+IGNORED_SOURCES = frozenset({
+    "CHPC_REFERENCE_FOR_AGENTS.txt",
+    "tests/test_repo_references.py",
+})
 
 
 def _tracked_files() -> list[str]:
