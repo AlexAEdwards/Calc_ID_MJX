@@ -21,7 +21,7 @@ CHPC_HPO_results/
 CHPCRepo/outputs/
 HPOAnalysis/
 AnklePowerAnalysis/
-NoiseAndPowerAnalOfInputData/
+NoiseAndPowerAnalOfInputData/*
 AccuracyByGender&Speed/
 VisAndAnalDataset/
 
@@ -58,6 +58,12 @@ BadTrialsFromTrustedDataset/
 # knee-coupling validation. Track the source, ignore anything else.
 ProcessAddbiomechnics/*
 !ProcessAddbiomechnics/*.py
+
+# Same hazard as ProcessAddbiomechnics above: scripts/data_prep/
+# generate_noised12_distributed.py imports generate_sine_noise from here, so
+# that one module has to be tracked or the script cannot run on a fresh clone.
+# The analysis outputs in this directory stay ignored.
+!NoiseAndPowerAnalOfInputData/generate_sine_noise.py
 
 # --- large binary / model assets ---
 *.npy
