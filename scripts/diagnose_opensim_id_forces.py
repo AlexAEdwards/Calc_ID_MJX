@@ -24,7 +24,7 @@ from typing import Iterable
 import numpy as np
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+from paths import REPO_ROOT
 DEFAULT_OUTPUT_DIR_NAME = "OpenSimResults"
 DEFAULT_PROCESSED_DIR_NAME = "ProcessedData"
 TRANSLATIONAL_COORDS = {"pelvis_tx", "pelvis_ty", "pelvis_tz"}

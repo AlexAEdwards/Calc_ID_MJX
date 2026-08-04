@@ -16,7 +16,7 @@ from typing import Iterable
 import numpy as np
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+from paths import REPO_ROOT
 DEFAULT_DATASET_ROOT = REPO_ROOT / "TrustedDataSetNoised12Distributed_EdgeHold_OYIncluded"
 DEFAULT_MODEL_NAME = "OpenSimModel.osim"
 DEFAULT_OUTPUT_DIR_NAME = "OpenSimResults"

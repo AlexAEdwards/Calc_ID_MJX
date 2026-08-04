@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+from paths import REPO_ROOT
 INFER_PY = REPO_ROOT / "TransformerFinal" / "infer.py"
 
 ANKLE_DOF_IDX = {"right": 14, "left": 25}

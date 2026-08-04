@@ -23,7 +23,7 @@ from pathlib import Path
 import numpy as np
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+from paths import REPO_ROOT
 NOISE_MODULE_DIR = REPO_ROOT / "NoiseAndPowerAnalOfInputData"
 if str(NOISE_MODULE_DIR) not in sys.path:
     sys.path.insert(0, str(NOISE_MODULE_DIR))

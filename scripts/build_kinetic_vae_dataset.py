@@ -31,8 +31,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from paths import artifact, dataset, resolve as paths_resolve  # noqa: E402
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-
+from paths import REPO_ROOT
 DEFAULT_SOURCE = dataset("TrustedDataSet_ByExperiment")
 DEFAULT_ACCURACY = artifact("outputs") / "DirectTorque_LOEO_edge70" / "accuracy"
 

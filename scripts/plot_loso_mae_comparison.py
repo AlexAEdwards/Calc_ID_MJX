@@ -16,8 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from paths import artifact, dataset  # noqa: E402
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-
+from paths import REPO_ROOT
 DEFAULT_OPENCAP_RUN = (
     REPO_ROOT
     / str(artifact("inference_results", "Loso_AvgHPO_MJXGT_OriginalWeightsModel_ExcludeSub5"))

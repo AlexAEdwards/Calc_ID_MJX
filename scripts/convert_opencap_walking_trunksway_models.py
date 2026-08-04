@@ -43,7 +43,7 @@ def _preload_opensim_bundled_ezc3d() -> None:
             return
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+from paths import REPO_ROOT
 MYOCONVERTER_ROOT = REPO_ROOT / "myoconverter"
 sys.path.insert(0, str(MYOCONVERTER_ROOT))
 

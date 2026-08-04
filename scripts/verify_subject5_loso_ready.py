@@ -6,8 +6,7 @@ import json
 import sys
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[1]
-
+from paths import REPO_ROOT as REPO
 from TransformerFinal.data_loader import TrialDataLoader, load_single_trial  # noqa: E402
 from TransformerFinal.train import discover_all_trials  # noqa: E402
 

@@ -89,6 +89,7 @@
   "scripts/verify_processdata_shapes.py": "ok",
   "scripts/verify_subject5_loso_ready.py": "FileNotFoundError: [Errno 2] No such file or directory: '/home/mobl/Documents/",
   "scripts/write_estimated_mass_to_patient_md.py": "FileNotFoundError: [Errno 2] No such file or directory: '/home/mobl/Documents/",
+  "tools/entrypoint_check.py": "ok",
   "tools/equivalence_check.py": "ok",
   "tools/stage_test_fixture.py": "ok"
 }

@@ -31,8 +31,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-
+from paths import REPO_ROOT
 from paths import resolve as paths_resolve  # noqa: E402
 from TransformerFinal.experiment_groups import (  # noqa: E402
     experiment_of_subject,

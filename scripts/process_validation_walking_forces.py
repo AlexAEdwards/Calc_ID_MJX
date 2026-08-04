@@ -17,7 +17,7 @@ import numpy as np
 from paths import artifact, dataset  # noqa: E402
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+from paths import REPO_ROOT
 SOURCE_ROOT = REPO_ROOT / "Datasets_NAS/OpenCapValidationWithVideos"
 DATASET_ROOT = dataset("OpenCapWalkingTrunkSwaySubjects")
 REPORT_PATH = DATASET_ROOT / "force_processing_report.json"

@@ -26,7 +26,7 @@ import numpy as np
 from paths import artifact, dataset  # noqa: E402
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+from paths import REPO_ROOT
 DEFAULT_SOURCE = REPO_ROOT / "Datasets_NAS" / "OpenCapValidationWithVideos"
 DEFAULT_OUTPUT = dataset("OpenCapWalkingTrunkSwaySubjects")
 

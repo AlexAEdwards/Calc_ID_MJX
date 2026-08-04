@@ -29,7 +29,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+from paths import REPO_ROOT
 MANIFEST_NAME = "repo_root_layout_manifest.json"
 
 # Pure data. Every one of these is untracked and contains no source.

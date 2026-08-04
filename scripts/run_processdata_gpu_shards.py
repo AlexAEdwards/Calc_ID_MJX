@@ -22,7 +22,7 @@ from typing import IO, Any
 from paths import artifact, dataset  # noqa: E402
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+from paths import REPO_ROOT
 PROCESS_DATA = REPO_ROOT / "ProcessData.py"
 NOISED_REQUIRED = (
     "Trimming_Traceability.json",

@@ -33,7 +33,7 @@ import re
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+from paths import REPO_ROOT
 MANIFEST = REPO_ROOT / "repo_root_layout_manifest.json"
 
 # Names that look like a moved directory but are never a path in these files.

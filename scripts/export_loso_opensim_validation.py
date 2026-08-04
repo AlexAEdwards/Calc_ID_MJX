@@ -24,7 +24,7 @@ import numpy as np
 from paths import artifact, dataset  # noqa: E402
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+from paths import REPO_ROOT as PROJECT_ROOT
 TRANSFORMER_DIR = PROJECT_ROOT / "TransformerFinal"
 DEFAULT_DATASET = dataset("OpenCapWalkingTrunkSwaySubjects")
 DEFAULT_LOSO = artifact(

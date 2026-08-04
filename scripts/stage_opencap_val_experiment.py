@@ -39,8 +39,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-
+from paths import REPO_ROOT
 from TransformerFinal.experiment_groups import LAYOUT_MANIFEST_NAME  # noqa: E402
 from paths import artifact, dataset  # noqa: E402
 
