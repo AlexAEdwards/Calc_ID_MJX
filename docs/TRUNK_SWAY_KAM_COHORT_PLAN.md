@@ -3,11 +3,11 @@
 > **IMPLEMENTATION STATUS (code complete):**
 > - ✅ Part 0 dataset verification (all files present, shapes match, nv=23, input 370).
 > - ✅ Part 2.1/2.2 verified (no MuJoCo model load on eval path → qpos concern N/A; rotation present).
-> - ✅ Part 2.4 KAM-file fallback + warning implemented in `infer.py`
+> - ✅ Part 2.4 KAM-file fallback + warning implemented in `TransformerFinal/infer.py`
 >   (`analyze_stance_phase_torques`): source-specific variant → falls back to plain
 >   `KneeToCOP_Vectors.npy`, warns if none found.
 > - ✅ Part 1 cohort aggregation: `_aggregate_trunk_sway_kam_across_folds` +
->   `_plot_trunk_sway_kam_cohort` added to `loso_from_checkpoint.py`, wired into `main()`
+>   `_plot_trunk_sway_kam_cohort` added to `TransformerFinal/loso_from_checkpoint.py`, wired into `main()`
 >   (guarded by `evaluate_on_ts`), written to `loso_summary.json` +
 >   `trunk_sway_cohort_summary/`. Unit-validated on synthetic folds (Pearson r, MAE, curve
 >   RMSE, per-condition MAE, plots, degenerate cases).
@@ -21,7 +21,7 @@ between trunk-sway (TS) and normal walking, for Ground Truth vs the model's pred
 just the per-subject summaries that already exist. Also close the compatibility items (gap #4)
 for running this with the new `AblatV_JM` checkpoints.
 
-Files: `loso_from_checkpoint.py` (all edits), reading the per-fold artifacts it already writes.
+Files: `TransformerFinal/loso_from_checkpoint.py` (all edits), reading the per-fold artifacts it already writes.
 
 ---
 
@@ -136,7 +136,7 @@ Keep it inside `if evaluate_on_ts:` so non-TS runs are unchanged.
   ddof=1, the GT-vs-LOSO Pearson r on a planted linear relation ≈ expected, and curve RMSE is 0
   when LOSO==GT. Confirm it degrades gracefully (nan, no crash) with 1 subject or a `skipped`
   fold.
-- `python -c "import ast; ast.parse(open('loso_from_checkpoint.py').read())"` after edits.
+- `python -c "import ast; ast.parse(open('TransformerFinal/loso_from_checkpoint.py').read())"` after edits.
 
 ---
 
@@ -146,9 +146,9 @@ Keep it inside `if evaluate_on_ts:` so non-TS runs are unchanged.
 All ProcessedData files are nv=23 → input_dim 370, matching `AblatV_JM`. The
 "31-vs-51-DOF qpos" concern from earlier notes was about the myoconverter model XML used when
 *recomputing* MJX ID. **Confirmed**: `grep -nE "MjModel|from_xml|mujoco\.|mjx\.|load_model"
-loso_from_checkpoint.py` returns nothing on the eval path — LOSO reads the **preprocessed**
+TransformerFinal/loso_from_checkpoint.py` returns nothing on the eval path — LOSO reads the **preprocessed**
 ProcessedData (jacp/jacr, qfrc, rotation all nv=23) and never re-runs MJX ID or loads the model
-XML. Torque uses `select_torque_jacobians` (train.py:1665) → preprocessed jacp/jacr. The concern
+XML. Torque uses `select_torque_jacobians` (TransformerFinal/train.py:1665) → preprocessed jacp/jacr. The concern
 does not apply.
 
 ### 2.2 Rotation matrix — RESOLVED. `WorldToGroundAlignedCalcnRotation.npy` (T,2,3,3) present in
@@ -160,7 +160,7 @@ earlier), so a FiLM `AblatV_JM` checkpoint should reconstruct with `use_film=Tru
 1. Pick a **finished FiLM run**, e.g. `outputs/AblatV_JM_A0B0C0D0E1/best_model.pkl` (E1 = FiLM on).
 2. Run a **minimal LOSO**: 1 held-out subject, 1–2 epochs, `--evaluateOnTS`, plots off:
    ```
-   python loso_from_checkpoint.py \
+   python TransformerFinal/loso_from_checkpoint.py \
      --checkpoint outputs/AblatV_JM_A0B0C0D0E1/best_model.pkl \
      --data_dir OpenCapWalkingTrunkSwaySubjects \
      --evaluateOnTS \
@@ -174,11 +174,11 @@ earlier), so a FiLM `AblatV_JM` checkpoint should reconstruct with `use_film=Tru
 4. Also smoke a **non-FiLM** checkpoint (e.g. `AblatV_JM_A0B0C0D1E0`) to confirm both load.
 
 ### 2.4 KAM vector filename resolution — CONFIRMED BUG, needs a fix.
-The infer KAM logic (infer.py ~6739) resolves the vector file as:
+The infer KAM logic (TransformerFinal/infer.py ~6739) resolves the vector file as:
 `input_source=="mocap"` → `KneeToCOP_Vectors_Mocap.npy`; `use_noised` →
 `KneeToCOP_Vectors_noised.npy`; else → `KneeToCOP_Vectors.npy`. **Verified on the TS trials:
 only `KneeToCOP_Vectors.npy` exists** — the `_Mocap` and `_noised` variants are absent (0 files).
-And KAM is guarded by `if kam_path.exists():` (infer.py ~6751), so if a run uses
+And KAM is guarded by `if kam_path.exists():` (TransformerFinal/infer.py ~6751), so if a run uses
 `input_source=="mocap"` (as MoCap-GT evaluation naturally would), the vector path is missing and
 **KAM is silently skipped for every trial** — the entire TS-vs-normal-vs-GT comparison would be
 empty even though the code "succeeds."
@@ -212,7 +212,7 @@ plots exist, and the normal-trial standard metrics are aggregated as before.
 
 ## Deliverables
 - `_aggregate_trunk_sway_kam_across_folds` + `_plot_trunk_sway_kam_cohort` in
-  `loso_from_checkpoint.py`, wired into `main()`.
+  `TransformerFinal/loso_from_checkpoint.py`, wired into `main()`.
 - `<output_root>/trunk_sway_cohort_summary/cohort_kam_trunk_sway_summary.json` with per-source
   cohort curves/scalars, model-vs-GT agreement (Pearson r, MAE, bias, curve RMSE), and per-
   condition KAM prediction accuracy vs GT.

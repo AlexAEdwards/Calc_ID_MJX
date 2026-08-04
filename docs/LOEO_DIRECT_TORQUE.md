@@ -27,7 +27,7 @@ python scripts/reorganize_dataset_by_experiment.py \
 ```
 
 Experiments come from folder-name prefixes, defined in
-[experiment_groups.py](experiment_groups.py). For
+[TransformerFinal/experiment_groups.py](TransformerFinal/experiment_groups.py). For
 `TrustedDataSetNoised12Distributed_EdgeHold_AllPatients` the dry run reports:
 
 | Experiment       | Subjects | Folder prefixes                       |
@@ -96,7 +96,7 @@ nested they become structurally indistinguishable from a real experiment folder
 and would silently enter training. Discovery therefore takes the experiment list
 from `experiment_layout_manifest.json` when it exists, and otherwise falls back to
 "contains subject folders" minus `NON_EXPERIMENT_DIR_NAMES`
-([experiment_groups.py](experiment_groups.py)). The scan prints which top-level
+([TransformerFinal/experiment_groups.py](TransformerFinal/experiment_groups.py)). The scan prints which top-level
 directories it skipped.
 
 Verify after reorganizing — the nested dataset must discover exactly the trials the
@@ -121,12 +121,12 @@ python TransformerFinal/loeo_direct_torque.py \
 Per experiment `E` the wrapper runs, in separate subprocesses so JAX releases GPU
 memory between rounds:
 
-1. `train_directTorque.py --layout experiment --exclude_experiments E`
+1. `TransformerFinal/train_directTorque.py --layout experiment --exclude_experiments E`
    → `outputs/DirectTorque_LOEO/hold_out_E/best_model.pkl` (+ `train.log`,
    `split.json`, `hyperparameters.json`). The validation split for model
    selection is a random 20 % of the *training* subjects — `--val_fraction`
    — so the held-out experiment is never used for checkpoint selection.
-2. `infer_directTorque.py --experiment E --write_to_trial_dir`
+2. `TransformerFinal/infer_directTorque.py --experiment E --write_to_trial_dir`
    → per-trial results inside the dataset, plus a round summary at
    `hold_out_E/inference/summary_metrics.json`.
 
@@ -135,9 +135,9 @@ so an interrupted sweep just needs to be re-launched. `--force` redoes everythin
 `--force_inference` keeps the checkpoints and re-runs inference only.
 
 Useful flags: `--experiments A,B` (subset), `--skip_experiments C`,
-`--train_arg` (repeatable pass-through to `train_directTorque.py`), plus the usual
+`--train_arg` (repeatable pass-through to `TransformerFinal/train_directTorque.py`), plus the usual
 architecture/optimizer flags, which are forwarded when set and otherwise leave
-`train_directTorque.py`'s defaults alone.
+`TransformerFinal/train_directTorque.py`'s defaults alone.
 
 ### Cohorts barred from every training set
 
@@ -211,6 +211,6 @@ different questions:
 - `discover_all_trials(..., layout="experiment")` is the nested-layout scanner;
   `layout="trusted"` (flat) and `layout="opencap"` are unchanged. Discovered
   trials now carry an `experiment` key, empty for the flat layouts.
-- `train_directTorque.py` gained `--exclude_experiments` / `--include_experiments`.
+- `TransformerFinal/train_directTorque.py` gained `--exclude_experiments` / `--include_experiments`.
   Both refuse to run if no discovered trial carries an experiment, so a forgotten
   reorganization fails loudly instead of silently training on everything.

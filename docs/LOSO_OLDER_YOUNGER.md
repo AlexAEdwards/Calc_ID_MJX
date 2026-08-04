@@ -1,6 +1,6 @@
 # Older/Younger trusted-layout LOSO
 
-`loso_older_younger_from_checkpoint.py` fine-tunes either supported Transformer family while holding out one complete subject at a time:
+`TransformerFinal/loso_older_younger_from_checkpoint.py` fine-tunes either supported Transformer family while holding out one complete subject at a time:
 
 - `direct_torque`: kinematics directly to 14 joint-torque channels.
 - `cop_grf_moments`: kinematics to COP/GRF/free moments, with physics-based torque reconstruction.

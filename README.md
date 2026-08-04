@@ -139,8 +139,15 @@ array bytes and exiting non-zero on any difference. It has been verified to
 *fail* on a deliberate 2% filter change — a gate that has only ever passed proves
 nothing.
 
+## Documentation
+
+[docs/](docs/) holds the design notes and implementation plans — the LOEO sweep,
+older/younger LOSO, trunk-sway KAM aggregation, and the knee-coupling fix. See
+[docs/README.md](docs/README.md) for what each one covers and whether it
+describes shipped behaviour or outstanding work.
+
 ## Repository state
 
 An ongoing reorganisation is tracked in [REFACTOR_PLAN.md](REFACTOR_PLAN.md),
 which records what has been done, what is measured, and what is deferred.
-`repo.md` is a denser orientation map aimed at code-reading tools.
+[repo.md](repo.md) is a denser orientation map aimed at code-reading tools.
