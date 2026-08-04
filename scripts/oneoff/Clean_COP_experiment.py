@@ -22,6 +22,10 @@ from __future__ import annotations
 import argparse
 import random
 from pathlib import Path
+
+# Repo root via paths.py, not via __file__: this script no longer lives at
+# the repo root, so its own directory is not the base for relative --dataset.
+from paths import REPO_ROOT
 from typing import Iterable
 
 import matplotlib.pyplot as plt
@@ -379,7 +383,7 @@ def main() -> None:
 
     dataset_root = Path(args.dataset)
     if not dataset_root.is_absolute():
-        dataset_root = Path(__file__).resolve().parent / dataset_root
+        dataset_root = REPO_ROOT / dataset_root
     source_dir_names = tuple(
         name.strip() for name in str(args.source_dirs).split(",") if name.strip()
     )
