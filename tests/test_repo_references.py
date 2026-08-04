@@ -18,6 +18,7 @@ Runs without jax/mujoco: it reads files, it does not import them.
 
 from __future__ import annotations
 
+import posixpath
 import re
 import subprocess
 from pathlib import Path
@@ -47,6 +48,10 @@ IGNORED_PREFIXES = (
     "datasets/", "artifacts/", "outputs/", "output/", "Results/",
     "ProcessedData/", "Motion/", "StrokeDataset/", "Datasets_NAS/",
     "inference_results/", "checkpoints/", "logs/",
+    # Gitignored local analysis directories. Not part of a clone; the docs that
+    # mention them say so explicitly rather than implying they ship.
+    "AnklePowerAnalysis/", "HPOAnalysis/", "VisAndAnalDataset/",
+    "NoiseAndPowerAnalOfInputData/", "AccuracyByGender&Speed/",
 )
 
 #: Documentation placeholders, and files this repo *generates* elsewhere rather
@@ -88,13 +93,42 @@ def _references(text: str, path: str = "") -> set[str]:
     return found
 
 
+def _tracked_set() -> set[str]:
+    """Tracked paths, plus every directory prefix, so `[docs/](docs/)` resolves."""
+    files = subprocess.run(["git", "ls-files"], cwd=REPO_ROOT,
+                           capture_output=True, text=True, check=True).stdout.split("\n")
+    out: set[str] = set()
+    for f in files:
+        if not f:
+            continue
+        out.add(f)
+        parts = f.split("/")
+        for i in range(1, len(parts)):
+            out.add("/".join(parts[:i]))
+            out.add("/".join(parts[:i]) + "/")
+    return out
+
+
+_TRACKED = _tracked_set()
+
+
 def _is_ok(ref: str, referencing_file: str) -> bool:
+    """Resolve against *tracked* paths, not the working tree.
+
+    Checking the disk makes this test machine-dependent: an ignored directory
+    that happens to exist locally satisfies a reference that would dangle for
+    anyone else. That is not hypothetical - docs/LOSO_OLDER_YOUNGER.md pointed
+    at AnklePowerAnalysis/, a gitignored local analysis directory, and the check
+    passed here while failing on a fresh clone.
+    """
     if ref in IGNORED_NAMES or ref.startswith(IGNORED_PREFIXES):
         return True
-    # Resolvable from the repo root, or from the referencing file's directory.
-    if (REPO_ROOT / ref).exists():
+    ref = ref.rstrip("/") or ref
+    if posixpath.normpath(ref) in _TRACKED:
         return True
-    return (REPO_ROOT / Path(referencing_file).parent / ref).exists()
+    # Relative to the referencing file's directory, with ../ collapsed.
+    sibling = posixpath.normpath(posixpath.join(str(Path(referencing_file).parent), ref))
+    return sibling in _TRACKED
 
 
 def _collect_dangling() -> dict[str, list[str]]:

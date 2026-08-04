@@ -156,13 +156,17 @@ def test_the_two_known_offenders_are_now_tracked() -> None:
 
 
 def test_scan_is_not_vacuous() -> None:
-    """The check must actually be looking at things."""
-    tracked = _tracked()
-    py = [f for f in tracked if f.endswith(".py")]
+    """The check must actually be looking at something.
+
+    Note this asserts only on the tracked side. A working tree with *no*
+    untracked .py is the correct state, not a broken scan - it is exactly what a
+    fresh clone and CI look like. The proof that the detector still detects is
+    test_detector_resolves_the_two_known_offenders, which does not depend on any
+    untracked file being present.
+    """
+    py = [f for f in _tracked() if f.endswith(".py")]
     assert len(py) > 100, f"only {len(py)} tracked .py files seen"
-    # There should still be untracked .py in the repo - if not, the comparison
-    # would pass trivially and prove nothing.
-    assert _untracked_py(tracked), "no untracked .py found; check SKIP_DIR_PARTS"
+    assert _walk_py(), "directory walk found no .py at all; check SKIP_DIR_PARTS"
 
 
 @pytest.mark.parametrize("dotted,rel", [

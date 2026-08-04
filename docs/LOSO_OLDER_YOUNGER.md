@@ -61,6 +61,10 @@ Each fold also writes stance-level dual-source ankle-power JSON files under
 as aliases for the original checkpoint and add separate `original_pred_*` and
 `fine_tuned_pred_*` values. Run the existing analysis directly on a fold:
 
+> `AnklePowerAnalysis/` is a local, gitignored analysis directory — it is **not
+> part of a clone of this repository**. The commands below assume you already
+> have it. Nothing in the pipeline depends on it.
+
 ```bash
 python AnklePowerAnalysis/run_ankle_power_analysis.py \
   outputs/loso_older_younger/direct_torque/held_out_Y1/ankle_power_results \
