@@ -5,15 +5,15 @@ writes ``experiment_layout_manifest.json`` at the dataset root so the move can b
 undone with ``--revert``.
 
     # inspect the plan
-    python scripts/reorganize_dataset_by_experiment.py \
+    python scripts/data_prep/reorganize_dataset_by_experiment.py \
         --data_dir TrustedDataSetNoised12Distributed_EdgeHold_AllPatients
 
     # perform the moves
-    python scripts/reorganize_dataset_by_experiment.py \
+    python scripts/data_prep/reorganize_dataset_by_experiment.py \
         --data_dir TrustedDataSetNoised12Distributed_EdgeHold_AllPatients --apply
 
     # undo
-    python scripts/reorganize_dataset_by_experiment.py \
+    python scripts/data_prep/reorganize_dataset_by_experiment.py \
         --data_dir TrustedDataSetNoised12Distributed_EdgeHold_AllPatients --revert
 
 Only directories carrying ``Patient_MD.json`` (or a ``Trial_*`` subfolder) are

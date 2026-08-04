@@ -8,7 +8,7 @@ are written to the _id.mot output file. This script uses those as the kinematic 
 so that MJX inverse dynamics uses the same kinematics OpenSim ID used.
 
 Usage:
-    python3 scripts/replace_kinematics_from_id_mot.py [--dry_run] [--subject OA1] [--workers N]
+    python3 scripts/data_prep/replace_kinematics_from_id_mot.py [--dry_run] [--subject OA1] [--workers N]
 
 Output files (float32, matching original shape):
     Motion/Pos.npy   <- GCV-smoothed positions (rad for rotational, m for translational)

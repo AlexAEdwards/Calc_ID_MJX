@@ -1,7 +1,7 @@
 """Leave-one-experiment-out (LOEO) sweep for the direct joint-torque model.
 
 Expects the nested dataset layout produced by
-``scripts/reorganize_dataset_by_experiment.py``::
+``scripts/data_prep/reorganize_dataset_by_experiment.py``::
 
     Dataset/<Experiment>/<Subject>/Trial_#/ProcessedData/...
 
@@ -665,7 +665,7 @@ def _select_experiments(data_dir: Path, args: argparse.Namespace) -> List[str]:
     if layout != "experiment":
         raise SystemExit(
             f"{data_dir} is not in the nested Experiment/Subject/Trial layout.\n"
-            "Run: python scripts/reorganize_dataset_by_experiment.py "
+            "Run: python scripts/data_prep/reorganize_dataset_by_experiment.py "
             f"--data_dir {data_dir} --apply"
         )
     available = [p.name for p in list_experiment_dirs(data_dir)]

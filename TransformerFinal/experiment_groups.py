@@ -9,7 +9,7 @@ The nested ``experiment`` layout adds the source study as an extra level::
     Dataset/<Experiment>/<Subject>/Trial_#/ProcessedData/...
 
 Subjects are assigned to an experiment purely from their folder name, using the
-same folder-prefix convention that ``scripts/estimate_mass_from_grf.py`` uses for
+same folder-prefix convention that ``scripts/analysis/estimate_mass_from_grf.py`` uses for
 its cohorts.  ``OA``/``Y`` are one experiment, and the bare ``S#`` subjects share
 an experiment with ``S_GAH_*``.
 
@@ -23,7 +23,7 @@ import json
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
-# Written by scripts/reorganize_dataset_by_experiment.py. When present it is the
+# Written by scripts/data_prep/reorganize_dataset_by_experiment.py. When present it is the
 # authoritative list of experiment folders, which matters because a leftover
 # directory of quarantined subjects (UnwantedSubjects/) is structurally
 # indistinguishable from a real experiment: both contain subject folders.

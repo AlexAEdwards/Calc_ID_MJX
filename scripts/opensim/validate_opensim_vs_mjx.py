@@ -13,7 +13,7 @@ difference in joint moments is attributable to the ID method, not the inputs. Th
 Metric conventions mirror the existing codebase:
   - norm_factor = mass_kg * height_m * 9.8067   (TransformerFinal/.../infer_mod_q.py:2184)
   - mae_bwh = (mae / norm_factor) * 100         (infer_mod_q.py:1773)
-  - stance via dual_threshold_stance_intervals  (scripts/ankle_stance_common.py)
+  - stance via dual_threshold_stance_intervals  (scripts/opensim/ankle_stance_common.py)
 
 Run under the ``opencap-processing`` conda env (needs the OpenSim Python API for ID).
 """

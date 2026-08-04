@@ -21,8 +21,8 @@ directory name but are not paths - ``("Hip_OA", ("HOA", "HEA"))`` is an
 experiment rule, and ``default="inference_results"`` in the inference scripts is
 a *subfolder name* created inside each trial directory, not a repo path.
 
-    python scripts/migrate_paths_to_paths_module.py            # dry run
-    python scripts/migrate_paths_to_paths_module.py --apply
+    python scripts/maintenance/migrate_paths_to_paths_module.py            # dry run
+    python scripts/maintenance/migrate_paths_to_paths_module.py --apply
 """
 
 from __future__ import annotations
@@ -39,8 +39,8 @@ MANIFEST = REPO_ROOT / "repo_root_layout_manifest.json"
 # Names that look like a moved directory but are never a path in these files.
 SKIP_FILES = {
     "TransformerFinal/experiment_groups.py",      # "Hip_OA" is an experiment label
-    "scripts/migrate_paths_to_paths_module.py",   # this file
-    "scripts/reorganize_repo_root.py",            # owns the move lists verbatim
+    "scripts/maintenance/migrate_paths_to_paths_module.py",   # this file
+    "scripts/maintenance/reorganize_repo_root.py",            # owns the move lists verbatim
     "paths.py",
 }
 SKIP_DIR_PARTS = ("__pycache__", "legacy_forward_sim", "legacy_scott_data",
@@ -86,7 +86,9 @@ def migrate(groups: Dict[str, str]) -> List[Tuple[str, int, int]]:
     results: List[Tuple[str, int, int]] = []
     files = sorted(set(
         list(REPO_ROOT.glob("TransformerFinal/**/*.py"))
-        + list(REPO_ROOT.glob("scripts/*.py"))
+        # Recursive: Stage 7 grouped scripts/ into subdirectories, so a
+        # single-level glob now matches nothing at all.
+        + list(REPO_ROOT.glob("scripts/**/*.py"))
         + list(REPO_ROOT.glob("*.py"))
     ))
     for f in files:

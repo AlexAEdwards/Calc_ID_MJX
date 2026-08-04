@@ -5,9 +5,9 @@ Moves the unambiguous dataset and artifact directories under ``datasets/`` and
 references the old location breaks. Both roots are on one filesystem, so each
 move is a rename: instant, and it needs no free space.
 
-    python scripts/reorganize_repo_root.py            # dry run
-    python scripts/reorganize_repo_root.py --apply
-    python scripts/reorganize_repo_root.py --revert
+    python scripts/maintenance/reorganize_repo_root.py            # dry run
+    python scripts/maintenance/reorganize_repo_root.py --apply
+    python scripts/maintenance/reorganize_repo_root.py --revert
 
 Deliberately conservative about scope:
 
@@ -161,7 +161,7 @@ def do_apply(p: Dict[str, List[Dict[str, str]]], *, measure: bool) -> None:
 def retire_symlinks(*, apply: bool) -> None:
     """Delete the Stage 1 compatibility symlinks once no code needs the old names.
 
-    Only safe after scripts/migrate_paths_to_paths_module.py has routed every
+    Only safe after scripts/maintenance/migrate_paths_to_paths_module.py has routed every
     root-relative reference through paths.py. Reversible: --restore-symlinks
     recreates them from the manifest.
     """

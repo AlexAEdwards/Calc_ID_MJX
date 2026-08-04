@@ -16,8 +16,8 @@ recognized legacy schema derived from the same MJX state and timebase.
 
 Run with the project's MuJoCo-capable Python environment:
 
-    python scripts/restore_knee_input_channels.py
-    python scripts/restore_knee_input_channels.py --apply
+    python scripts/data_prep/restore_knee_input_channels.py
+    python scripts/data_prep/restore_knee_input_channels.py --apply
 """
 
 from __future__ import annotations

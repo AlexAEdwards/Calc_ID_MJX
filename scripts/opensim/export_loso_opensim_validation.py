@@ -583,7 +583,7 @@ The torque files use the MJX model's 23 independent generalized coordinates in t
 From the repository root:
 
 ```bash
-JAX_PLATFORMS=cpu MPLCONFIGDIR=/tmp/matplotlib-cache /home/mobl/miniconda3/envs/myoconverter/bin/python scripts/export_loso_opensim_validation.py
+JAX_PLATFORMS=cpu MPLCONFIGDIR=/tmp/matplotlib-cache /home/mobl/miniconda3/envs/myoconverter/bin/python scripts/opensim/export_loso_opensim_validation.py
 ```
 
 ## Synchronization and transforms

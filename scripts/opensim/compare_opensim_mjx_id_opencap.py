@@ -9,11 +9,11 @@ never from ``ProcessedData/`` (OpenCap motion inputs).
 Examples
 --------
     # All subjects + dataset summary folder
-    python scripts/compare_opensim_mjx_id_opencap.py \\
+    python scripts/opensim/compare_opensim_mjx_id_opencap.py \\
         --dataset-root OpenCapSubjects_Filt --all-subjects
 
     # Single subject
-    python scripts/compare_opensim_mjx_id_opencap.py \\
+    python scripts/opensim/compare_opensim_mjx_id_opencap.py \\
         --dataset-root OpenCapSubjects_Filt --subject subject5
 """
 from __future__ import annotations

@@ -617,7 +617,7 @@ def main() -> None:
         if not available:
             raise ValueError(
                 "Experiment filtering was requested but no discovered trial carries an experiment. "
-                "Reorganize the dataset (scripts/reorganize_dataset_by_experiment.py) and pass --layout experiment."
+                "Reorganize the dataset (scripts/data_prep/reorganize_dataset_by_experiment.py) and pass --layout experiment."
             )
         unknown = sorted((set(excluded_experiments) | set(included_experiments)) - set(available))
         if unknown:

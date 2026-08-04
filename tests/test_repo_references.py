@@ -51,7 +51,7 @@ IGNORED_PREFIXES = (
 
 #: Documentation placeholders, and files this repo *generates* elsewhere rather
 #: than contains. example_torque_reconstruction.py is written into the built
-#: KineticVAEDataset by scripts/build_kinetic_vae_dataset.py.
+#: KineticVAEDataset by scripts/data_prep/build_kinetic_vae_dataset.py.
 IGNORED_NAMES = frozenset({
     "my_script.py", "script.py", "scripts/foo.py", "foo.py", "bar.py",
     "example.py", "your_script.py", "path/to/file.py",

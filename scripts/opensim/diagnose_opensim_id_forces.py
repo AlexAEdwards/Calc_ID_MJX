@@ -3,7 +3,7 @@
 
 Run this with an environment that can import OpenSim, e.g.
 
-    conda run -n opensim-nmd python scripts/diagnose_opensim_id_forces.py \
+    conda run -n opensim-nmd python scripts/opensim/diagnose_opensim_id_forces.py \
         TrustedDataSetNoised12Distributed_EdgeHold_OYIncluded/02/Trial_11
 """
 

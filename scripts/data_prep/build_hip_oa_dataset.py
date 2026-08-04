@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """QC-first extraction of the Hip_OA dataset from Datasets_Local/Bertaux_withForces.
 
-Follows the extraction conventions established by scripts/extract_pd_boari_robust.py
+Follows the extraction conventions established by scripts/data_prep/extract_pd_boari_robust.py
 (versioned output, Config dataclass, hysteresis contact detection, per-event foot
 assignment with distance/margin/consistency metrics, PASS/REVIEW/REJECT QC) and the
-force interchange format of scripts/npy_from_force_mot.py.
+force interchange format of scripts/data_prep/npy_from_force_mot.py.
 
 Source (AddBiomechanics export, one directory per *session*, e.g. HOA001_M0):
     _subject.json                                  subject metadata
@@ -528,7 +528,7 @@ def write_mot(path: Path, time, values, columns, in_degrees=False) -> None:
 
 
 def write_force_mot(path: Path, time, grf, cop, grm) -> None:
-    """Canonical 19-column R/L force file consumed by scripts/npy_from_force_mot.py."""
+    """Canonical 19-column R/L force file consumed by scripts/data_prep/npy_from_force_mot.py."""
     values = np.column_stack([grf[:, :3], cop[:, :3], grm[:, :3],
                               grf[:, 3:], cop[:, 3:], grm[:, 3:]])
     write_mot(path, time, values, list(FORCE_COLUMNS[1:]))

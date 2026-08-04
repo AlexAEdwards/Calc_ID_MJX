@@ -16,13 +16,13 @@ source, and registers ``OpenCapVal`` in the dataset's
 ``experiment_layout_manifest.json`` so trial discovery picks it up.
 
     # inspect the plan
-    python scripts/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment
+    python scripts/data_prep/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment
 
     # copy
-    python scripts/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment --apply
+    python scripts/data_prep/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment --apply
 
     # undo
-    python scripts/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment --revert
+    python scripts/data_prep/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment --revert
 
 These trials have no ``_noised.npy`` bundle. Training must therefore run with
 ``--allow_missing_noised True`` (the LOEO wrapper's default) or every one of them

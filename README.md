@@ -111,7 +111,7 @@ self-describing `schema/`, per-subject MuJoCo qpos layouts, model predictions, a
 a runnable `example_torque_reconstruction.py`. Build it with:
 
 ```bash
-python scripts/build_kinetic_vae_dataset.py --dest KineticVAEDataset --apply
+python scripts/data_prep/build_kinetic_vae_dataset.py --dest KineticVAEDataset --apply
 ```
 
 Three things that regularly catch people out, all documented in that dataset's

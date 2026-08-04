@@ -4,13 +4,13 @@ Keeps only what a downstream user needs, renames inconsistent files to a single
 convention, and ships the schema/README material needed to interpret every array.
 
     # inspect the plan
-    python scripts/build_kinetic_vae_dataset.py --dest KineticVAEDataset
+    python scripts/data_prep/build_kinetic_vae_dataset.py --dest KineticVAEDataset
 
     # build it
-    python scripts/build_kinetic_vae_dataset.py --dest KineticVAEDataset --apply
+    python scripts/data_prep/build_kinetic_vae_dataset.py --dest KineticVAEDataset --apply
 
     # fill in one experiment later (e.g. Hip_OA once inference finishes)
-    python scripts/build_kinetic_vae_dataset.py --dest KineticVAEDataset --apply \
+    python scripts/data_prep/build_kinetic_vae_dataset.py --dest KineticVAEDataset --apply \
         --experiments Hip_OA --force
 
 Idempotent: trials that already exist at the destination are skipped unless

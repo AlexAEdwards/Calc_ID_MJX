@@ -14,15 +14,15 @@ Dataset/<Experiment>/<Subject>/Trial_#/ProcessedData/...
 
 ```bash
 # dry run - prints the plan, moves nothing
-python scripts/reorganize_dataset_by_experiment.py \
+python scripts/data_prep/reorganize_dataset_by_experiment.py \
     --data_dir TrustedDataSetNoised12Distributed_EdgeHold_AllPatients
 
 # perform the moves (writes experiment_layout_manifest.json at the dataset root)
-python scripts/reorganize_dataset_by_experiment.py \
+python scripts/data_prep/reorganize_dataset_by_experiment.py \
     --data_dir TrustedDataSetNoised12Distributed_EdgeHold_AllPatients --apply
 
 # undo, using that manifest
-python scripts/reorganize_dataset_by_experiment.py \
+python scripts/data_prep/reorganize_dataset_by_experiment.py \
     --data_dir TrustedDataSetNoised12Distributed_EdgeHold_AllPatients --revert
 ```
 
@@ -56,9 +56,9 @@ The OpenCap normal-walking trials live in a different layout
 (`subjectN/trial_M/{Video,MoCap}/ProcessedData`) and are staged in separately:
 
 ```bash
-python scripts/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment          # dry run
-python scripts/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment --apply
-python scripts/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment --revert
+python scripts/data_prep/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment          # dry run
+python scripts/data_prep/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment --apply
+python scripts/data_prep/stage_opencap_val_experiment.py --dest TrustedDataSet_ByExperiment --revert
 ```
 
 This copies **non-trunk-sway trials only** — the source `dataset_manifest.json`
