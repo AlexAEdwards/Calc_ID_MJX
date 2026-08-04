@@ -7207,7 +7207,7 @@ if __name__ == "__main__":
                         action="store_true", default=CONFIG["RescaleModelsToEstimatedMass"],
                         help="Force-regenerate the fixed model XML from the raw model, then rescale that generated "
                              "model's inertial masses and inertias to Patient_MD.json Mass_kg using "
-                             "scripts/rescale_models_to_estimated_mass.py. This avoids reusing older scaled fixed "
+                             "scripts/data_prep/rescale_models_to_estimated_mass.py. This avoids reusing older scaled fixed "
                              "models that may have stripped upper-body DOFs, while preserving joints, geometry, "
                              "upper-body DOFs, and the knee-fixed model structure from the current updater.")
     # --- Filter-ablation knobs (default None/unspecified -> canonical behavior) ---
