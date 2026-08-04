@@ -23,9 +23,24 @@ physiologically normalized (COP by height `h`, GRF/Moments by mass `m`, with gra
 
 ```
 TransformerFinal/     <-- CORE. Model, training, inference, LOSO, HPO. (see §3)
-scripts/              Data-prep + OpenSim/MJX ID utilities, validation, mass estimation (see §6)
+core/                 Shared model/loss/physics extracted from train.py (Stage 5)
+processing/           ProcessData phases: filtering, contact, cop, geometry,
+                      resampling, trial_io, artifact_names (Stage 6)
 ProcessData.py        Master preprocessing pipeline: raw Motion -> Trial/ProcessedData/*.npy (see §5)
-Loso_Combined.py      3-stage LOSO over OpenCapSubjects (refine-q -> main -> eval)
+scripts/              Standalone utilities, grouped by purpose (see §6 and scripts/README.md):
+                        data_prep/    build/extract/stage/convert datasets
+                        opensim/      OpenSim ID and MJX-vs-OpenSim validation
+                        analysis/     read-only reporting and plots
+                        maintenance/  repo-structure migrations
+                        oneoff/       past investigations
+                        legacy_*/     superseded pipelines
+tools/                Test-fixture staging, equivalence and entry-point gates
+tests/                Unit tests + recorded baselines (equivalence, entry points)
+docs/                 Design notes and implementation plans (see docs/README.md)
+paths.py              Single source of truth for dataset/artifact locations
+Loso_Combined.py      3-stage LOSO over OpenCapSubjects (refine-q -> main -> eval).
+                      Stays at the repo root: it derives REPO_ROOT from its own
+                      location to find TransformerFinal/ and NoiseModels/.
 ProcessAddbiomechnics/updateModel.py
                       Fix MuJoCo XML masses/inertias/armatures; knee-coupling
                       canonicalisation. Imported by ProcessData.py.
@@ -38,7 +53,12 @@ outputs/              Training runs, HPO sweeps, checkpoints (best_model.pkl)
 inference_results/    Inference + LOSO outputs, metrics, plots
 artifacts/CHPC_HPO_results/, HPOAnalysis/   CHPC sweep outputs
                       (CHPC code itself: separate repo AlexAEdwards/CHPC_MJX)
-figures/, RMASBFigures/, AnklePowerAnalysis/, AccuracyByGender&Speed/   Analysis + paper figures
+figures/, RMASBFigures/, AnklePowerAnalysis/, AccuracyByGender&Speed/,
+VisAndAnalDataset/, NoiseAndPowerAnalOfInputData/   Analysis + paper figures.
+                      Gitignored working directories, not part of a clone. The one
+                      exception is NoiseAndPowerAnalOfInputData/generate_sine_noise.py,
+                      which scripts/data_prep/generate_noised12_distributed.py imports
+                      and is therefore tracked.
 GeometryWithMus/, myoconverter/   Musculoskeletal model geometry / OpenSim->MJX conversion
 BadTrialsFromTrustedDataset/      Quarantined bad trials
 ```
@@ -235,6 +255,9 @@ OpenCapSubjects_Filt/
 
 ## 6. scripts/ — data prep & ID/validation utilities
 
+Grouped by purpose since Stage 7; paths below are exact. See `scripts/README.md`.
+
+`scripts/opensim/` — OpenSim ID and validation against it:
 - **generate_opensim_id_inputs.py** — build OpenSim ID setup; **strips patella**
   (`create_patella_free_model`) to avoid ~10,000 N·m artifact moments (patellofemoral
   CoordinateCouplerConstraint). Key fix, see auto-memory.
@@ -242,12 +265,26 @@ OpenCapSubjects_Filt/
 - **recalculate_opensim_id_mocap_kin_processed_forces.py** — recompute OpenSim ID GT.
 - **validate_opensim_vs_mjx.py** — proves MJX ID ≈ OpenSim ID (MAE ~0.06% BW×H, r~0.997);
   writes AccuracyMetrics.json + OpenSimToMJX_Accuracy/ plots.
-- **estimate_mass_from_grf.py** — estimate subject mass from vertical GRF/CoM vs Patient_MD.
-- **rescale_models_to_estimated_mass.py**, **write_estimated_mass_to_patient_md.py** — apply it.
 - **compare_opensim_mjx_id_opencap.py**, **diagnose_opensim_id_forces.py** — diagnostics.
+- **prescribed_accel_id.py**, **ankle_stance_common.py**, **export_loso_opensim_validation.py**.
+
+These import each other by bare module name, so they must stay in one directory.
+
+`scripts/data_prep/` — building and converting datasets:
+- **rescale_models_to_estimated_mass.py**, **write_estimated_mass_to_patient_md.py** —
+  apply estimated masses to models and metadata.
 - **extract_{stroke,pd_boari}_c3d_forces.py**, **create_stroke_cleaned_dataset.py** — cohort import.
-- **npy_from_force_mot.py**, **prescribed_accel_id.py**, **attribute_kinematic_torque_error.py**,
-  **verify_subject5_loso_ready.py**, **ankle_stance_common.py**.
+- **npy_from_force_mot.py**, **reorganize_dataset_by_experiment.py**,
+  **stage_opencap_val_experiment.py**, **build_kinetic_vae_dataset.py**,
+  **generate_noised12_distributed.py**, **run_processdata_gpu_shards.py**.
+
+`scripts/analysis/` — read-only reporting:
+- **estimate_mass_from_grf.py** — estimate subject mass from vertical GRF/CoM vs Patient_MD.
+- **attribute_kinematic_torque_error.py**, **verify_subject5_loso_ready.py**,
+  **verify_processdata_shapes.py**, **plot_loso_mae_comparison.py**.
+
+`scripts/maintenance/` — REFACTOR_PLAN.md migrations, run once and kept for provenance.
+`scripts/oneoff/`, `scripts/legacy_*/` — past investigations and superseded pipelines.
 
 ---
 
