@@ -53,7 +53,7 @@ Two datasets were built and one model sweep was rerun. Neither is in git:
 | `outputs/DirectTorque_LOEO_edge70/` | — | 8-experiment LOEO re-sweep, new edge-frame policy |
 
 New source files, all untracked: `TransformerFinal/experiment_groups.py`,
-`loeo_direct_torque.py`, `scripts/reorganize_dataset_by_experiment.py`,
+`loeo_direct_torque.py`, `scripts/data_prep/reorganize_dataset_by_experiment.py`,
 `stage_opencap_val_experiment.py`, `build_kinetic_vae_dataset.py`,
 `build_visual_trimmed_dataset.py`, `promote_hip_oa_experiment.py`,
 `restore_knee_input_channels.py`, `verify_processdata_shapes.py`.
@@ -499,6 +499,48 @@ here silently poison every downstream dataset.
 
 **Risk:** Low. **Effort:** ~1–2 days.
 
+### Status 2026-08-04 — done
+
+Root went from 41 tracked entries to 16. `scripts/` is grouped into `data_prep/`
+(23), `opensim/` (9), `analysis/` (5), `maintenance/` (2) alongside `oneoff/` and
+the `legacy_*` directories; the four plan documents moved to `docs/` with an
+index; `repo.md` and `README.md` match the layout.
+
+**Stage 7 needed a different gate.** Stages 5–6 were guarded by
+`tools/equivalence_check.py`, which asks whether the output changed. Moving files
+does not change output — a script that stops resolving its imports produces no
+arrays to differ — so two new checks were built *before* anything moved:
+
+* `tools/entrypoint_check.py` runs all 94 entry points with `--help` against a
+  recorded baseline. 76 start; the 18 that do not are pre-existing and recorded,
+  so they cannot mask a regression. Unchanged across every move.
+* `tests/test_repo_references.py` asserts every in-repo path mentioned in code or
+  docs resolves — against the **tracked** set, not the working tree.
+
+**Three latent bugs surfaced, none of them about file locations:**
+
+1. `ProcessData.py` imported `ProcessAddbiomechnics.updateModel` under a bare
+   `except Exception`, and that directory was gitignored among the cohort
+   *datasets* despite holding no data. Every fresh clone silently lost mass
+   fixing and knee-coupling validation. The tracked repo-root `updateModel.py`
+   was meanwhile a stale 760-line near-duplicate of the live 916-line module,
+   with no function unique to it.
+2. `scripts/data_prep/generate_noised12_distributed.py` imported
+   `generate_sine_noise` from another gitignored directory — the same fault.
+   `tests/test_no_untracked_imports.py` now prevents a third.
+3. 17 scripts computed the repo root as `Path(__file__).resolve().parents[1]`,
+   correct only while sitting one level below the root. Grouping `scripts/` would
+   have rebased them all onto `scripts/` with no error raised. Rewired to
+   `paths.REPO_ROOT` as a separate commit before any move.
+
+**Deliberately not done.** Item 4, normalising `--CamelCase` and string-boolean
+flags: renaming a flag breaks saved commands and shell history for no functional
+gain. Recorded in `scripts/README.md`. Item 3, folding the standalone analysis
+directories under one `analysis/` parent: they are gitignored working
+directories, absent from any clone, so the move buys nothing for the repository
+while being unrevertible by git and breaking a live import path. The docs now
+state plainly that they are not part of a clone.
+
 ---
 
 ## Summary
@@ -512,7 +554,7 @@ here silently poison every downstream dataset.
 | 4 | Golden + unit tests, equivalence harness, cheap CI | None | 1–2 d | **done** — 199 MB fixture, 8 layers, 80 tests, CI green |
 | 5 | `core/` + `evaluation/` extracted behind shims | Medium | 2–3 d | **done** — 18 symbols into `core/` (1,273 LOC), gate clean |
 | 6 | `ProcessData.py` → `processing/` package | Med-high | 2–3 d | **done** — 8,156 → 7,319 lines, 7 modules, gate clean per commit |
-| 7 | Entry points, scripts, docs organised | Low | 1–2 d | not started — awaiting approval |
+| 7 | Entry points, scripts, docs organised | Low | 1–2 d | **done** — root 41→16, scripts grouped, 2 latent import bugs fixed |
 
 Roughly 10–14 working days end to end. Stages 0–3 are complete and delivered most
 of the "understandable and manageable" benefit: the code is in version control,

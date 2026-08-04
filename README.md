@@ -20,9 +20,15 @@ torques actually observed.
 core/            shared model, loss and physics code
 processing/      ProcessData pipeline, split by phase
 TransformerFinal/  training, inference, LOSO/LOEO drivers
-scripts/         data preparation, OpenSim/MJX utilities, validation
-tools/           test-fixture staging and the equivalence harness
-tests/           unit tests + the recorded equivalence baseline
+scripts/         standalone utilities, grouped by purpose (see scripts/README.md)
+  data_prep/       build, extract, stage and convert datasets
+  opensim/         OpenSim ID, and validation of MJX ID against it
+  analysis/        read-only reporting and plots
+  maintenance/     one-time repo migrations, kept for provenance
+  oneoff/          past investigations
+tools/           test-fixture staging, equivalence and entry-point gates
+tests/           unit tests + recorded baselines
+docs/            design notes and implementation plans
 paths.py         single source of truth for where data and outputs live
 ProcessData.py   raw motion -> ProcessedData (the preprocessing spine)
 ```
@@ -138,6 +144,20 @@ training loss, LOEO aggregation, and a full `ProcessData` round trip, hashing ra
 array bytes and exiting non-zero on any difference. It has been verified to
 *fail* on a deliberate 2% filter change — a gate that has only ever passed proves
 nothing.
+
+It cannot, however, see code it does not execute, and it cannot see a file that
+merely moved. Three checks cover what it misses:
+
+```bash
+python tools/entrypoint_check.py     # every entry point still starts (--help)
+pytest tests/test_repo_references.py         # no doc or docstring points at a moved file
+pytest tests/test_no_untracked_imports.py    # tracked code imports nothing gitignored
+```
+
+Each was written against a real bug it then caught: an extracted module missing
+an import that only an unexercised path used, a plan document whose sibling
+references rotted when it moved to `docs/`, and two modules that live code
+imported but git did not track — so a fresh clone lost the feature silently.
 
 ## Documentation
 
